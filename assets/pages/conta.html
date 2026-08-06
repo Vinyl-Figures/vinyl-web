@@ -60,18 +60,30 @@
 
     <section id="enderecos">
       <h2>Endereços</h2>
+      <!-- A API guarda apenas número, complemento e CEP -->
       <ul>
         <li>
           <address>
-            Rua Exemplo, 000<br>
-            São Paulo &mdash; SP<br>
+            Nº 000<br>
+            Complemento<br>
             00000-000
           </address>
-          <button type="button">Editar</button>
           <button type="button">Remover</button>
         </li>
       </ul>
-      <button type="button">Adicionar endereço</button>
+
+      <form action="conta.html" method="post">
+        <label for="end-numero">Número</label>
+        <input type="text" id="end-numero" name="numero" maxlength="12" required>
+
+        <label for="end-complemento">Complemento</label>
+        <input type="text" id="end-complemento" name="complemento">
+
+        <label for="end-cep">CEP</label>
+        <input type="text" id="end-cep" name="cep" inputmode="numeric" maxlength="9" required>
+
+        <button type="submit">Adicionar endereço</button>
+      </form>
     </section>
 
     <section id="pedidos">
@@ -145,6 +157,8 @@
     </nav>
     <p>&copy; 2026 Vinyl Records</p>
   </footer>
+
+  <script type="module" src="../js/controller/account.js"></script>
 
 </body>
 </html>

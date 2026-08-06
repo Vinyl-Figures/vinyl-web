@@ -36,6 +36,13 @@
       <label for="cad-nome">Nome completo</label>
       <input type="text" id="cad-nome" name="nome" autocomplete="name" required>
 
+      <!-- CPF e celular são obrigatórios no POST /users da API -->
+      <label for="cad-documento">CPF</label>
+      <input type="text" id="cad-documento" name="documento" inputmode="numeric" maxlength="14" autocomplete="off" required>
+
+      <label for="cad-celular">Celular</label>
+      <input type="tel" id="cad-celular" name="celular" autocomplete="tel" required>
+
       <label for="cad-email">E-mail</label>
       <input type="email" id="cad-email" name="email" autocomplete="email" required>
 
@@ -68,6 +75,8 @@
     </nav>
     <p>&copy; 2026 Vinyl Records</p>
   </footer>
+
+  <script type="module" src="../js/controller/auth.js"></script>
 
 </body>
 </html>
