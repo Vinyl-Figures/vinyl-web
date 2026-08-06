@@ -1,20 +1,26 @@
 // Ponto único de comunicação com a API.
 // Monta a URL, coloca o Bearer, converte JSON e transforma
-// qualquer falha em um ErroApi com mensagens legíveis.
+// qualquer falha em um ErroApi.
+//
+// O ErroApi carrega o contexto da operação (login, checkout, cadastro…).
+// Quem decide a frase mostrada na tela é o erros.js, a partir desse
+// contexto e do status. As mensagens cruas da API ficam guardadas em
+// .mensagens e vão para o console — servem para depurar, não para o usuário.
 
 import { API_BASE_URL } from '../config.js';
 import { getToken, limparSessao } from './session.js';
 
 export class ErroApi extends Error {
-  constructor(status, mensagens) {
+  constructor(status, mensagens, contexto) {
     super(mensagens[0] || 'Erro inesperado.');
     this.name = 'ErroApi';
     this.status = status;
     this.mensagens = mensagens;
+    this.contexto = contexto;
   }
 }
 
-async function requisitar(metodo, caminho, { corpo, query, autenticado = true } = {}) {
+async function requisitar(metodo, caminho, { corpo, query, autenticado = true, contexto } = {}) {
   const url = new URL(API_BASE_URL + caminho);
 
   if (query) {
@@ -30,7 +36,10 @@ async function requisitar(metodo, caminho, { corpo, query, autenticado = true } 
 
   if (autenticado) {
     const token = getToken();
-    if (!token) throw new ErroApi(401, ['Sua sessão expirou. Entre novamente.']);
+    if (!token) {
+      document.dispatchEvent(new CustomEvent('api:sessao-expirada'));
+      throw new ErroApi(401, ['Token ausente ou vencido no cliente.'], contexto);
+    }
     headers.Authorization = `Bearer ${token}`;
   }
 
@@ -59,7 +68,7 @@ async function requisitar(metodo, caminho, { corpo, query, autenticado = true } 
         'respostas 401 e as requisições OPTIONS (preflight) voltam sem o ' +
         'cabeçalho Access-Control-Allow-Origin.'
     );
-    throw new ErroApi(0, ['Não foi possível falar com o servidor. Verifique se a API está no ar.']);
+    throw new ErroApi(0, ['Servidor inalcançável.'], contexto);
   } finally {
     clearTimeout(avisoDemora);
     document.dispatchEvent(new CustomEvent('api:respondeu'));
@@ -68,7 +77,8 @@ async function requisitar(metodo, caminho, { corpo, query, autenticado = true } 
   // Token recusado pelo servidor: derruba a sessão local para não insistir.
   if (resposta.status === 401 && autenticado) {
     limparSessao();
-    throw new ErroApi(401, ['Sua sessão expirou. Entre novamente.']);
+    document.dispatchEvent(new CustomEvent('api:sessao-expirada'));
+    throw new ErroApi(401, ['Token recusado pelo servidor.'], contexto);
   }
 
   if (resposta.status === 204) return null;
@@ -80,7 +90,12 @@ async function requisitar(metodo, caminho, { corpo, query, autenticado = true } 
     const mensagens = Array.isArray(dados?.messages) && dados.messages.length
       ? dados.messages
       : [`Erro ${resposta.status}.`];
-    throw new ErroApi(resposta.status, mensagens);
+
+    // O detalhe cru fica no console: é o que serve para depurar um 400 de
+    // validação, já que a tela vai mostrar só a frase genérica da operação.
+    console.error(`[api] ${metodo} ${caminho} -> ${resposta.status}`, mensagens);
+
+    throw new ErroApi(resposta.status, mensagens, contexto);
   }
 
   return dados;

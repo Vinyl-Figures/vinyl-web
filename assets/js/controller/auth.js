@@ -2,7 +2,7 @@
 
 import { ROTAS } from '../config.js';
 import { auth, usuarios } from '../model/store.js';
-import { alertar, mostrarErro, travarBotao } from '../view/ui.js';
+import { alertar, avisar, mostrarErro, travarBotao } from '../view/ui.js';
 import { sincronizar } from '../acessibility-features/index.js';
 import { destinoAposLogin } from './app.js';
 
@@ -16,6 +16,13 @@ function apenasDigitos(valor) {
 const formEntrar = document.querySelector('#login-email')?.form;
 
 if (formEntrar) {
+  // Quem foi mandado para cá por token vencido merece saber disso,
+  // em vez de encarar um formulário de login sem explicação.
+  if (sessionStorage.getItem('vinyl.motivoSaida') === 'sessao-expirada') {
+    sessionStorage.removeItem('vinyl.motivoSaida');
+    avisar('Sua sessão expirou. Entre novamente.', 'info');
+  }
+
   formEntrar.addEventListener('submit', async (evento) => {
     // O HTML aponta o action para conta.html com method="post".
     // Em site estático isso não vai a lugar nenhum: quem envia é o fetch.

@@ -1,5 +1,9 @@
 // Um objeto por recurso da API. Cada método é uma chamada só,
 // com o nome dos campos exatamente como a especificação pede.
+//
+// Cada chamada declara um contexto. É ele que o erros.js usa para escolher
+// a frase mostrada ao usuário quando a operação falha — por isso o contexto
+// mora aqui, junto da operação, e não espalhado pelos controllers.
 
 import { api } from './api.js';
 import { salvarSessao, limparSessao, getUserId } from './session.js';
@@ -11,7 +15,7 @@ export const auth = {
     const resposta = await api.post(
       '/auth/tokens',
       { email, password: senha },
-      { autenticado: false }
+      { autenticado: false, contexto: 'login' }
     );
     salvarSessao(resposta);
     return resposta;
@@ -20,7 +24,7 @@ export const auth = {
   // Mesmo se o servidor recusar, a sessão local tem que morrer.
   async sair() {
     try {
-      await api.delete('/auth/tokens/current');
+      await api.delete('/auth/tokens/current', { contexto: 'logout' });
     } catch {
       // token já vencido ou servidor fora: seguir e limpar mesmo assim
     }
@@ -35,21 +39,21 @@ export const usuarios = {
     return api.post(
       '/users',
       { name, document, cellphone, email, password },
-      { autenticado: false }
+      { autenticado: false, contexto: 'cadastro' }
     );
   },
 
   buscar(id) {
-    return api.get(`/users/${id}`);
+    return api.get(`/users/${id}`, { contexto: 'perfil-carregar' });
   },
 
   // Só envia o que foi preenchido: todos os campos do PATCH são opcionais.
   atualizar(id, dados) {
-    return api.patch(`/users/${id}`, dados);
+    return api.patch(`/users/${id}`, dados, { contexto: 'perfil-salvar' });
   },
 
   excluir(id) {
-    return api.delete(`/users/${id}`);
+    return api.delete(`/users/${id}`, { contexto: 'conta-excluir' });
   },
 };
 
@@ -58,36 +62,46 @@ export const vinis = {
   // A API filtra por genreId OU artistId. Busca por texto, faixa de preço,
   // ordenação e paginação não existem no servidor: são feitas na tela.
   listar({ genreId, artistId } = {}) {
-    return api.get('/vinyls', { query: { genreId, artistId } });
+    return api.get('/vinyls', {
+      query: { genreId, artistId },
+      contexto: 'catalogo-listar',
+    });
   },
 
   // expand aceita 'genres', 'artists' ou 'genres,artists'.
   buscar(id, expand) {
-    return api.get(`/vinyls/${id}`, { query: { expand } });
+    return api.get(`/vinyls/${id}`, { query: { expand }, contexto: 'vinil-carregar' });
   },
 };
 
 export const artistas = {
-  listar: () => api.get('/artists'),
-  buscar: (id) => api.get(`/artists/${id}`),
+  listar: () => api.get('/artists', { contexto: 'artistas-listar' }),
+  buscar: (id) => api.get(`/artists/${id}`, { contexto: 'artistas-listar' }),
 };
 
 export const generos = {
-  listar: () => api.get('/genres'),
-  buscar: (id) => api.get(`/genres/${id}`),
+  listar: () => api.get('/genres', { contexto: 'generos-listar' }),
+  buscar: (id) => api.get(`/genres/${id}`, { contexto: 'generos-listar' }),
 };
 
 // --- Endereços ---
 // A API guarda apenas número, complemento e CEP (8 dígitos, sem traço).
 export const enderecos = {
-  listar: (userId) => api.get(`/users/${userId}/addresses`),
+  listar: (userId) =>
+    api.get(`/users/${userId}/addresses`, { contexto: 'enderecos-listar' }),
 
   criar: (userId, { number, complement, zipCode }) =>
-    api.post(`/users/${userId}/addresses`, { number, complement, zipCode }),
+    api.post(
+      `/users/${userId}/addresses`,
+      { number, complement, zipCode },
+      { contexto: 'endereco-criar' }
+    ),
 
-  atualizar: (addressId, dados) => api.patch(`/addresses/${addressId}`, dados),
+  atualizar: (addressId, dados) =>
+    api.patch(`/addresses/${addressId}`, dados, { contexto: 'endereco-atualizar' }),
 
-  excluir: (addressId) => api.delete(`/addresses/${addressId}`),
+  excluir: (addressId) =>
+    api.delete(`/addresses/${addressId}`, { contexto: 'endereco-excluir' }),
 };
 
 // --- Carrinho ---
@@ -95,20 +109,29 @@ export const enderecos = {
 export const carrinho = {
   // expand=vinyl traz título e preço junto, evitando uma chamada por item.
   listar(userId = getUserId()) {
-    return api.get(`/users/${userId}/cartItems`, { query: { expand: 'vinyl' } });
+    return api.get(`/users/${userId}/cartItems`, {
+      query: { expand: 'vinyl' },
+      contexto: 'carrinho-listar',
+    });
   },
 
   // POST em lote -> { created: [...], skipped: { id: motivo } }
   adicionar(vinylIds, userId = getUserId()) {
-    return api.post(`/users/${userId}/cartItems/bulk`, { vinylIds });
+    return api.post(
+      `/users/${userId}/cartItems/bulk`,
+      { vinylIds },
+      { contexto: 'carrinho-adicionar' }
+    );
   },
 
   remover(vinylId, userId = getUserId()) {
-    return api.delete(`/users/${userId}/cartItems/${vinylId}`);
+    return api.delete(`/users/${userId}/cartItems/${vinylId}`, {
+      contexto: 'carrinho-remover',
+    });
   },
 
   esvaziar(userId = getUserId()) {
-    return api.delete(`/users/${userId}/cartItems`);
+    return api.delete(`/users/${userId}/cartItems`, { contexto: 'carrinho-esvaziar' });
   },
 };
 
@@ -117,64 +140,89 @@ export const pedidos = {
   // Checkout: a API soma o total, copia o preço para priceAtPurchase
   // e esvazia o carrinho.
   finalizar(userId = getUserId()) {
-    return api.post('/orders', { userId });
+    return api.post('/orders', { userId }, { contexto: 'checkout' });
   },
 
   listar(userId = getUserId()) {
-    return api.get(`/users/${userId}/orders`);
+    return api.get(`/users/${userId}/orders`, { contexto: 'pedidos-listar' });
   },
 
   buscar(orderId) {
-    return api.get(`/orders/${orderId}`, { query: { expand: 'items' } });
+    return api.get(`/orders/${orderId}`, {
+      query: { expand: 'items' },
+      contexto: 'pedido-carregar',
+    });
   },
 
   itens(orderId) {
-    return api.get(`/orders/${orderId}/items`);
+    return api.get(`/orders/${orderId}/items`, { contexto: 'pedido-carregar' });
   },
 
   excluir(orderId) {
-    return api.delete(`/orders/${orderId}`);
+    return api.delete(`/orders/${orderId}`, { contexto: 'pedido-excluir' });
   },
 };
 
 // --- Pagamentos ---
 export const pagamentos = {
   criar({ userId = getUserId(), orderId, value, paymentMethod, status = 'PENDENTE' }) {
-    return api.post('/payments', { userId, orderId, value, paymentMethod, status });
+    return api.post(
+      '/payments',
+      { userId, orderId, value, paymentMethod, status },
+      { contexto: 'pagamento-criar' }
+    );
   },
 
   // Os filtros podem ser combinados.
   listar({ userId, orderId, status, paymentMethod } = {}) {
-    return api.get('/payments', { query: { userId, orderId, status, paymentMethod } });
+    return api.get('/payments', {
+      query: { userId, orderId, status, paymentMethod },
+      contexto: 'pagamentos-listar',
+    });
   },
 
-  buscar: (id) => api.get(`/payments/${id}`),
+  buscar: (id) => api.get(`/payments/${id}`, { contexto: 'pagamentos-listar' }),
 
-  atualizarStatus: (id, status) => api.patch(`/payments/${id}`, { status }),
+  atualizarStatus: (id, status) =>
+    api.patch(`/payments/${id}`, { status }, { contexto: 'pagamento-status' }),
 };
 
 // --- Acessibilidade ---
 // O catálogo de recursos vem do banco, não do front: os nomes são
 // cadastrados pela API e precisam ser casados com os módulos locais.
 export const acessibilidade = {
-  catalogo: () => api.get('/accessibility'),
+  catalogo: () => api.get('/accessibility', { contexto: 'acessibilidade-carregar' }),
 
-  doUsuario: (userId = getUserId()) => api.get(`/users/${userId}/accessibility`),
+  doUsuario: (userId = getUserId()) =>
+    api.get(`/users/${userId}/accessibility`, { contexto: 'acessibilidade-carregar' }),
 
   selecionar: (accessibilityId, userId = getUserId()) =>
-    api.post(`/users/${userId}/accessibility`, { accessibilityId }),
+    api.post(
+      `/users/${userId}/accessibility`,
+      { accessibilityId },
+      { contexto: 'acessibilidade-salvar' }
+    ),
 
   remover: (accessibilityId, userId = getUserId()) =>
-    api.delete(`/users/${userId}/accessibility/${accessibilityId}`),
+    api.delete(`/users/${userId}/accessibility/${accessibilityId}`, {
+      contexto: 'acessibilidade-salvar',
+    }),
 };
 
 // --- Gêneros favoritos ---
 export const generosFavoritos = {
-  listar: (userId = getUserId()) => api.get(`/users/${userId}/favoriteGenres`),
+  listar: (userId = getUserId()) =>
+    api.get(`/users/${userId}/favoriteGenres`, { contexto: 'favoritos-listar' }),
 
   adicionar: (genreId, userId = getUserId()) =>
-    api.post(`/users/${userId}/favoriteGenres`, { genreId }),
+    api.post(
+      `/users/${userId}/favoriteGenres`,
+      { genreId },
+      { contexto: 'favorito-adicionar' }
+    ),
 
   remover: (genreId, userId = getUserId()) =>
-    api.delete(`/users/${userId}/favoriteGenres/${genreId}`),
+    api.delete(`/users/${userId}/favoriteGenres/${genreId}`, {
+      contexto: 'favorito-remover',
+    }),
 };

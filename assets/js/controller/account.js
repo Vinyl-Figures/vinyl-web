@@ -3,7 +3,7 @@
 import { getUserId } from '../model/session.js';
 import { usuarios, enderecos, pedidos, pagamentos } from '../model/store.js';
 import { itemEndereco, linhaPedido, preencher } from '../view/templates.js';
-import { avisar, confirmar, mostrarErro, ocupado, travarBotao } from '../view/ui.js';
+import { avisar, avisarErro, confirmar, mostrarErro, ocupado, travarBotao } from '../view/ui.js';
 import { listarRecursos, preferenciasLocais, definir, sincronizar } from '../acessibility-features/index.js';
 import { exigirLogin } from './app.js';
 
@@ -190,9 +190,9 @@ formAcessibilidade?.addEventListener('change', async (evento) => {
     await definir(input.value, input.checked);
   } catch (erro) {
     // O recurso já foi aplicado na tela e salvo no navegador;
-    // aqui só falhou o envio para a conta.
-    input.checked = !input.checked;
-    mostrarErro(erro);
+    // aqui só falhou o envio para a conta. Um popup modal seria exagero:
+    // basta o aviso passageiro.
+    avisarErro(erro);
   }
 });
 

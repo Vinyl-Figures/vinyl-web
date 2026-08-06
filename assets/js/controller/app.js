@@ -53,6 +53,20 @@ if (estaLogado()) {
   sincronizar().catch(() => {});
 }
 
+// A API avisa quando o token venceu no meio de uma operação.
+// Não adianta mostrar o erro e deixar o usuário na página: sem token,
+// nada mais ali vai funcionar. Ele volta para o login sabendo o motivo,
+// e depois retorna para onde estava.
+let saindoPorSessao = false;
+document.addEventListener('api:sessao-expirada', () => {
+  if (saindoPorSessao) return; // várias chamadas podem falhar juntas
+  saindoPorSessao = true;
+
+  sessionStorage.setItem('vinyl.voltarPara', location.href);
+  sessionStorage.setItem('vinyl.motivoSaida', 'sessao-expirada');
+  location.href = ROTAS.entrar;
+});
+
 // Páginas que dependem de token chamam isto no início.
 // A API só deixa duas rotas públicas — o catálogo, inclusive, exige token.
 export function exigirLogin() {

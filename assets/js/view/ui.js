@@ -7,6 +7,8 @@
 // Nenhum outro módulo mexe em aparência: estado visual sai por atributo
 // (hidden, data-a11y-*, aria-*).
 
+import { mensagemDoErro } from './erros.js';
+
 const PREFIXO = 'vinyl-ui';
 
 let estilosInjetados = false;
@@ -296,11 +298,21 @@ export function avisar(mensagem, tipo = 'sucesso') {
 }
 
 // Atalho para qualquer erro vindo do store.
-// O ErroApi pode trazer várias mensagens de validação de uma vez.
-export function mostrarErro(erro) {
-  const mensagens = erro?.mensagens?.length
-    ? erro.mensagens
-    : [erro?.message || 'Erro inesperado.'];
+//
+// A frase vem do erros.js, escolhida pelo contexto da operação que falhou
+// (login, checkout, cadastro…) junto com o status HTTP. O texto cru da API
+// nunca chega à tela: "cellphone: must not be blank" não ajuda quem está
+// comprando um disco. Ele fica no console, que é onde serve.
+//
+// contextoAlternativo permite um controller pedir uma frase mais específica
+// do que a declarada no store.
+export function mostrarErro(erro, contextoAlternativo) {
+  const alvo = contextoAlternativo ? { ...erro, contexto: contextoAlternativo } : erro;
+  return alertar({ titulo: mensagemDoErro(alvo), tipo: 'erro' });
+}
 
-  return alertar({ titulo: 'Não foi possível concluir', mensagem: mensagens, tipo: 'erro' });
+// Mesma frase, mas como aviso passageiro, para falhas que não travam a tela.
+export function avisarErro(erro, contextoAlternativo) {
+  const alvo = contextoAlternativo ? { ...erro, contexto: contextoAlternativo } : erro;
+  avisar(mensagemDoErro(alvo), 'erro');
 }
