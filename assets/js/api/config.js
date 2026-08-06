@@ -1,4 +1,4 @@
-export const API_URL = 'https://vinyl-api-m6y9.onrender.com/api/v1'
+export const API_URL = 'https://api-9z1u.onrender.com/api/v1'
 
 export async function apiRequest(endpoint, options = {}) {
     const response = await fetch(`${API_URL}${endpoint}`, {
