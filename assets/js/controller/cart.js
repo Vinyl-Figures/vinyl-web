@@ -1,8 +1,4 @@
-// Carrinho, checkout e pagamento.
-//
-// O carrinho da API é um conjunto de vinis, sem quantidade: o mesmo disco
-// não se repete para o mesmo usuário. Por isso não há campo de quantidade
-// nem subtotal por linha.
+// O carrinho da API não tem quantidade: cada disco aparece uma vez só.
 
 import { ROTAS, METODOS_PAGAMENTO } from '../config.js';
 import { carrinho, pedidos, pagamentos } from '../model/store.js';
@@ -43,8 +39,7 @@ const botaoFinalizar = formCarrinho?.querySelector('button[type="submit"]');
 let itens = [];
 
 // --- Cupom e frete ---
-// Nenhum dos dois existe na API. Em vez de fingir que funcionam, os campos
-// ficam desligados com o motivo à vista.
+// Não existem na API: os campos ficam desligados com o motivo à vista.
 
 function desligarSecaoSemApi(secao, motivo) {
   if (!secao) return;
@@ -86,8 +81,7 @@ function renderizar() {
   const total = totalDoCarrinho();
   if (totalRodape) totalRodape.textContent = formatarBRL(total);
 
-  // O resumo tem três valores: subtotal, frete e total.
-  // Sem API de frete, o frete é sempre zero e o total é o subtotal.
+  // Sem API de frete, o frete é zero e o total é o subtotal.
   const valores = secaoResumo?.querySelectorAll('dd');
   if (valores?.length >= 3) {
     valores[0].textContent = formatarBRL(total);
@@ -95,7 +89,6 @@ function renderizar() {
     valores[2].textContent = formatarBRL(total);
   }
 
-  // Os dois estados já vêm prontos no HTML; aqui só se escolhe qual mostrar.
   const temItens = itens.length > 0;
   alternar(formCarrinho, temItens);
   alternar(secaoVazia, !temItens);
@@ -121,6 +114,17 @@ corpo?.addEventListener('click', async (evento) => {
 
 // --- Checkout ---
 
+function nomeDoMetodo(valor) {
+  const nomes = {
+    DEBITO: 'Cartão de débito',
+    CREDITO: 'Cartão de crédito',
+    PIX: 'PIX',
+    BOLETO: 'Boleto bancário',
+    TED: 'TED',
+  };
+  return nomes[valor] || valor;
+}
+
 formCarrinho?.addEventListener('submit', async (evento) => {
   evento.preventDefault();
 
@@ -128,8 +132,8 @@ formCarrinho?.addEventListener('submit', async (evento) => {
 
   const total = totalDoCarrinho();
 
-  // A forma de pagamento é perguntada antes do pedido. Se fosse depois e o
-  // usuário desistisse, ficaria um pedido criado sem pagamento nenhum.
+  // Perguntado antes do pedido: se fosse depois e o usuário desistisse,
+  // sobraria um pedido criado sem pagamento.
   const metodo = await escolher({
     titulo: 'Finalizar compra',
     mensagem: `Total: ${formatarBRL(total)}`,
@@ -142,8 +146,6 @@ formCarrinho?.addEventListener('submit', async (evento) => {
   travarBotao(botaoFinalizar, true, 'Finalizando…');
 
   try {
-    // O checkout soma o total no servidor, copia o preço de cada item
-    // para priceAtPurchase e esvazia o carrinho.
     const pedido = await pedidos.finalizar();
 
     await pagamentos.criar({
@@ -166,25 +168,12 @@ formCarrinho?.addEventListener('submit', async (evento) => {
   } catch (erro) {
     travarBotao(botaoFinalizar, false);
     mostrarErro(erro);
-    // O pedido pode ter sido criado mesmo com o pagamento falhando:
-    // recarrega para mostrar o estado real do carrinho.
+    // O pedido pode ter sido criado mesmo com o pagamento falhando.
     carregar();
   }
 });
 
-function nomeDoMetodo(valor) {
-  const nomes = {
-    DEBITO: 'Cartão de débito',
-    CREDITO: 'Cartão de crédito',
-    PIX: 'PIX',
-    BOLETO: 'Boleto bancário',
-    TED: 'TED',
-  };
-  return nomes[valor] || valor;
-}
-
 // --- Esvaziar carrinho ---
-// Ligado a qualquer botão marcado com data-acao="esvaziar-carrinho".
 
 document.querySelector('[data-acao="esvaziar-carrinho"]')?.addEventListener('click', async () => {
   const confirmado = await confirmar({
@@ -201,7 +190,5 @@ document.querySelector('[data-acao="esvaziar-carrinho"]')?.addEventListener('cli
     mostrarErro(erro);
   }
 });
-
-// --- Início ---
 
 if (exigirLogin()) carregar();

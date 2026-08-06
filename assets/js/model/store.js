@@ -1,16 +1,10 @@
-// Um objeto por recurso da API. Cada método é uma chamada só,
-// com o nome dos campos exatamente como a especificação pede.
-//
-// Cada chamada declara um contexto. É ele que o erros.js usa para escolher
-// a frase mostrada ao usuário quando a operação falha — por isso o contexto
-// mora aqui, junto da operação, e não espalhado pelos controllers.
+// O contexto de cada chamada é o que o erros.js usa para escolher
+// a mensagem mostrada ao usuário quando a operação falha.
 
 import { api } from './api.js';
 import { salvarSessao, limparSessao, getUserId } from './session.js';
 
-// --- Autenticação (rotas públicas + logout) ---
 export const auth = {
-  // POST /auth/tokens -> { token, tokenType, expiresIn, userId }
   async entrar(email, senha) {
     const resposta = await api.post(
       '/auth/tokens',
@@ -21,20 +15,17 @@ export const auth = {
     return resposta;
   },
 
-  // Mesmo se o servidor recusar, a sessão local tem que morrer.
   async sair() {
     try {
       await api.delete('/auth/tokens/current', { contexto: 'logout' });
     } catch {
-      // token já vencido ou servidor fora: seguir e limpar mesmo assim
+      // token vencido ou servidor fora: limpar local mesmo assim
     }
     limparSessao();
   },
 };
 
-// --- Usuários ---
 export const usuarios = {
-  // POST /users é público. document = 11 dígitos, todos os campos obrigatórios.
   criar({ name, document, cellphone, email, password }) {
     return api.post(
       '/users',
@@ -47,7 +38,6 @@ export const usuarios = {
     return api.get(`/users/${id}`, { contexto: 'perfil-carregar' });
   },
 
-  // Só envia o que foi preenchido: todos os campos do PATCH são opcionais.
   atualizar(id, dados) {
     return api.patch(`/users/${id}`, dados, { contexto: 'perfil-salvar' });
   },
@@ -57,10 +47,9 @@ export const usuarios = {
   },
 };
 
-// --- Catálogo ---
 export const vinis = {
-  // A API filtra por genreId OU artistId. Busca por texto, faixa de preço,
-  // ordenação e paginação não existem no servidor: são feitas na tela.
+  // A API filtra por genreId OU artistId. Busca, preço, ordenação
+  // e paginação não existem no servidor: são feitas na tela.
   listar({ genreId, artistId } = {}) {
     return api.get('/vinyls', {
       query: { genreId, artistId },
@@ -68,7 +57,7 @@ export const vinis = {
     });
   },
 
-  // expand aceita 'genres', 'artists' ou 'genres,artists'.
+  // expand: 'genres', 'artists' ou 'genres,artists'
   buscar(id, expand) {
     return api.get(`/vinyls/${id}`, { query: { expand }, contexto: 'vinil-carregar' });
   },
@@ -84,7 +73,6 @@ export const generos = {
   buscar: (id) => api.get(`/genres/${id}`, { contexto: 'generos-listar' }),
 };
 
-// --- Endereços ---
 // A API guarda apenas número, complemento e CEP (8 dígitos, sem traço).
 export const enderecos = {
   listar: (userId) =>
@@ -104,10 +92,8 @@ export const enderecos = {
     api.delete(`/addresses/${addressId}`, { contexto: 'endereco-excluir' }),
 };
 
-// --- Carrinho ---
-// Não há quantidade: o carrinho é um conjunto de vinis, sem repetição.
+// Conjunto de vinis, sem quantidade e sem repetição.
 export const carrinho = {
-  // expand=vinyl traz título e preço junto, evitando uma chamada por item.
   listar(userId = getUserId()) {
     return api.get(`/users/${userId}/cartItems`, {
       query: { expand: 'vinyl' },
@@ -115,7 +101,7 @@ export const carrinho = {
     });
   },
 
-  // POST em lote -> { created: [...], skipped: { id: motivo } }
+  // Devolve { created: [...], skipped: { id: motivo } }
   adicionar(vinylIds, userId = getUserId()) {
     return api.post(
       `/users/${userId}/cartItems/bulk`,
@@ -135,10 +121,8 @@ export const carrinho = {
   },
 };
 
-// --- Pedidos ---
 export const pedidos = {
-  // Checkout: a API soma o total, copia o preço para priceAtPurchase
-  // e esvazia o carrinho.
+  // Soma o total, congela o preço em priceAtPurchase e esvazia o carrinho.
   finalizar(userId = getUserId()) {
     return api.post('/orders', { userId }, { contexto: 'checkout' });
   },
@@ -163,7 +147,6 @@ export const pedidos = {
   },
 };
 
-// --- Pagamentos ---
 export const pagamentos = {
   criar({ userId = getUserId(), orderId, value, paymentMethod, status = 'PENDENTE' }) {
     return api.post(
@@ -173,7 +156,6 @@ export const pagamentos = {
     );
   },
 
-  // Os filtros podem ser combinados.
   listar({ userId, orderId, status, paymentMethod } = {}) {
     return api.get('/payments', {
       query: { userId, orderId, status, paymentMethod },
@@ -187,9 +169,7 @@ export const pagamentos = {
     api.patch(`/payments/${id}`, { status }, { contexto: 'pagamento-status' }),
 };
 
-// --- Acessibilidade ---
-// O catálogo de recursos vem do banco, não do front: os nomes são
-// cadastrados pela API e precisam ser casados com os módulos locais.
+// Os recursos vêm do banco: o front casa pelo nome, não por id fixo.
 export const acessibilidade = {
   catalogo: () => api.get('/accessibility', { contexto: 'acessibilidade-carregar' }),
 
@@ -209,7 +189,6 @@ export const acessibilidade = {
     }),
 };
 
-// --- Gêneros favoritos ---
 export const generosFavoritos = {
   listar: (userId = getUserId()) =>
     api.get(`/users/${userId}/favoriteGenres`, { contexto: 'favoritos-listar' }),

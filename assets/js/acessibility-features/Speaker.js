@@ -1,16 +1,8 @@
-// Leitor de tela embutido.
-//
-// Usa a API SpeechSynthesis do próprio navegador — sem biblioteca externa.
-// Lê em voz alta o elemento que recebe o foco e o texto que o usuário clica.
-//
-// Não substitui um leitor de tela de verdade (NVDA, VoiceOver): é um apoio
-// para quem não usa um. Por isso a marcação semântica das páginas continua
-// sendo o que importa.
+// Leitura em voz alta com a SpeechSynthesis do navegador.
+// Não substitui um leitor de tela de verdade: é apoio para quem não usa um.
 
 const sintetizador = window.speechSynthesis;
 
-// Descobre o que faz sentido ler de um elemento, na mesma ordem de
-// prioridade que um leitor de tela usaria.
 function textoDoElemento(elemento) {
   if (!elemento) return '';
 
@@ -19,7 +11,7 @@ function textoDoElemento(elemento) {
 
   if (elemento.tagName === 'IMG') return elemento.alt || '';
 
-  if (elemento.tagName === 'INPUT' || elemento.tagName === 'TEXTAREA' || elemento.tagName === 'SELECT') {
+  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(elemento.tagName)) {
     const rotulo = elemento.labels?.[0]?.textContent || elemento.placeholder || '';
     const tipo = elemento.type === 'checkbox'
       ? elemento.checked ? ', marcado' : ', desmarcado'
@@ -33,7 +25,6 @@ function textoDoElemento(elemento) {
 function falar(texto) {
   if (!texto) return;
 
-  // Cancela o que estava sendo lido: o usuário mudou de alvo.
   sintetizador.cancel();
 
   const fala = new SpeechSynthesisUtterance(texto.slice(0, 300));
@@ -51,7 +42,6 @@ function aoClicar(evento) {
   if (alvo) falar(textoDoElemento(alvo));
 }
 
-// Escape interrompe a leitura a qualquer momento.
 function aoTeclar(evento) {
   if (evento.key === 'Escape') sintetizador.cancel();
 }
@@ -59,11 +49,9 @@ function aoTeclar(evento) {
 export default {
   slug: 'leitor-de-tela',
   rotulo: 'Leitor de tela',
-
   apelidos: ['leitor-de-tela', 'leitor', 'screen-reader', 'speaker', 'narrador'],
 
   aplicar(ativo) {
-    // Navegador sem suporte: não adianta ligar nem avisar de erro.
     if (!sintetizador) return;
 
     if (ativo) {

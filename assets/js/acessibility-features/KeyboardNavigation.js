@@ -1,15 +1,5 @@
-// Navegação por teclado.
-//
-// Substitui o arquivo KeyboradNavegation.js, que estava vazio e com o nome
-// grafado errado.
-//
-// Este recurso não tinha checkbox em conta.html — se ele for cadastrado na
-// API, aparece automaticamente na lista de recursos.
-//
-// Comportamento puro, sem CSS:
-//  - insere um link "Pular para o conteúdo" no topo da página;
-//  - marca o <html> para o CSS poder reforçar o indicador de foco;
-//  - atalhos Alt + número para as seções principais.
+// Link "Pular para o conteúdo", marcação para o CSS reforçar o foco
+// e atalhos Alt + número.
 
 import { ROTAS } from '../config.js';
 
@@ -35,7 +25,7 @@ function criarLinkDeAtalho() {
   link.href = `#${principal.id}`;
   link.textContent = 'Pular para o conteúdo';
 
-  // O main precisa ser focável para receber o foco depois do pulo.
+  // Focável para receber o foco depois do pulo.
   principal.tabIndex = -1;
 
   document.body.prepend(link);
@@ -58,13 +48,7 @@ function aoTeclar(evento) {
 export default {
   slug: 'navegacao-por-teclado',
   rotulo: 'Navegação por teclado',
-
-  apelidos: [
-    'navegacao-por-teclado',
-    'navegacao-teclado',
-    'keyboard-navigation',
-    'teclado',
-  ],
+  apelidos: ['navegacao-por-teclado', 'navegacao-teclado', 'keyboard-navigation', 'teclado'],
 
   aplicar(ativo) {
     if (ativo) {

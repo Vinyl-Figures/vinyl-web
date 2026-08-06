@@ -1,10 +1,13 @@
-// Minha conta: dados pessoais, endereços, pedidos e acessibilidade.
-
 import { getUserId } from '../model/session.js';
 import { usuarios, enderecos, pedidos, pagamentos } from '../model/store.js';
 import { itemEndereco, linhaPedido, preencher } from '../view/templates.js';
 import { avisar, avisarErro, confirmar, mostrarErro, ocupado, travarBotao } from '../view/ui.js';
-import { listarRecursos, preferenciasLocais, definir, sincronizar } from '../acessibility-features/index.js';
+import {
+  listarRecursos,
+  preferenciasLocais,
+  definir,
+  sincronizar,
+} from '../acessibility-features/index.js';
 import { exigirLogin } from './app.js';
 
 function apenasDigitos(valor) {
@@ -30,7 +33,7 @@ formDados?.addEventListener('submit', async (evento) => {
   travarBotao(botao, true, 'Salvando…');
 
   try {
-    // No PATCH todos os campos são opcionais: só vai o que foi preenchido.
+    // No PATCH todo campo é opcional: só vai o que foi preenchido.
     const dados = {};
     const nome = formDados.querySelector('#conta-nome').value.trim();
     const email = formDados.querySelector('#conta-email').value.trim();
@@ -78,7 +81,6 @@ formEndereco?.addEventListener('submit', async (evento) => {
   travarBotao(botao, true, 'Salvando…');
 
   try {
-    // A API guarda apenas número, complemento e CEP.
     await enderecos.criar(getUserId(), {
       number: formEndereco.querySelector('#end-numero').value.trim(),
       complement: formEndereco.querySelector('#end-complemento').value.trim(),
@@ -123,7 +125,7 @@ async function carregarPedidos() {
   ocupado(secaoPedidos, true);
 
   try {
-    // OrderResp não traz status: ele vem do pagamento associado ao pedido.
+    // O status do pedido vem do pagamento associado.
     const [lista, listaPagamentos] = await Promise.all([
       pedidos.listar(getUserId()),
       pagamentos.listar({ userId: getUserId() }).catch(() => []),
@@ -148,8 +150,7 @@ async function carregarPedidos() {
 const formAcessibilidade = document.querySelector('#acessibilidade form');
 const fieldsetAcessibilidade = formAcessibilidade?.querySelector('fieldset');
 
-// O HTML tem quatro checkboxes. Navegação por teclado não tem checkbox,
-// então os recursos que faltam são acrescentados aqui, na mesma estrutura.
+// Navegação por teclado não tem checkbox no HTML: é acrescentada aqui.
 function completarCheckboxes() {
   if (!fieldsetAcessibilidade) return;
 
@@ -181,7 +182,7 @@ function marcarCheckboxes(slugsAtivos) {
   }
 }
 
-// Acessibilidade tem que valer na hora, não só depois de salvar.
+// Acessibilidade vale na hora, não só depois de salvar.
 formAcessibilidade?.addEventListener('change', async (evento) => {
   const input = evento.target;
   if (input.name !== 'acessibilidade') return;
@@ -189,16 +190,14 @@ formAcessibilidade?.addEventListener('change', async (evento) => {
   try {
     await definir(input.value, input.checked);
   } catch (erro) {
-    // O recurso já foi aplicado na tela e salvo no navegador;
-    // aqui só falhou o envio para a conta. Um popup modal seria exagero:
-    // basta o aviso passageiro.
+    // Já aplicado e salvo no navegador; só o envio para a conta falhou.
     avisarErro(erro);
   }
 });
 
 formAcessibilidade?.addEventListener('submit', (evento) => {
   evento.preventDefault();
-  // Cada marcação já foi salva quando mudou; o botão só confirma.
+  // Cada marcação já foi salva quando mudou.
   avisar('Preferências de acessibilidade salvas.');
 });
 
@@ -210,15 +209,12 @@ async function carregarAcessibilidade() {
   completarCheckboxes();
   marcarCheckboxes(preferenciasLocais());
 
-  // Depois confere com o que está salvo na conta.
   const doServidor = await sincronizar().catch(() => null);
   if (doServidor) marcarCheckboxes(doServidor);
 }
 
-// --- Início ---
-
+// Cada bloco carrega sozinho: erro em pedidos não derruba o perfil.
 if (exigirLogin()) {
-  // Cada bloco carrega sozinho: um erro em pedidos não derruba o perfil.
   carregarDados().catch(mostrarErro);
   carregarEnderecos().catch(mostrarErro);
   carregarPedidos().catch(mostrarErro);

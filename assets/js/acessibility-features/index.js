@@ -1,13 +1,5 @@
-// Reúne os recursos de acessibilidade e cuida de onde eles ficam salvos.
-//
-// A API guarda os recursos no banco (GET /accessibility devolve id + name),
-// então o front não pode assumir ids fixos: ele casa o nome cadastrado com
-// o módulo local pelos apelidos de cada recurso.
-//
-// Onde a preferência é salva:
-//  - sempre no localStorage, para valer já na próxima página, inclusive
-//    para quem não está logado (a rota da API exige token);
-//  - também na API, quando há sessão, para seguir o usuário entre aparelhos.
+// Preferências ficam sempre no localStorage (vale para quem não está
+// logado) e também na API quando há sessão.
 
 import { acessibilidade } from '../model/store.js';
 import { estaLogado } from '../model/session.js';
@@ -22,10 +14,9 @@ const RECURSOS = [HighContrast, IncreasedText, CursorHighlight, Speaker, Keyboar
 
 const CHAVE_LOCAL = 'vinyl.acessibilidade';
 
-// Preenchido no sincronizar(): slug do módulo -> id do recurso na API.
+// slug do módulo -> id do recurso na API, preenchido no sincronizar()
 let mapaSlugParaId = {};
 
-// "Alto Contraste" e "alto-contraste" viram a mesma coisa.
 function normalizar(nome) {
   return String(nome || '')
     .normalize('NFD')
@@ -45,8 +36,6 @@ export function listarRecursos() {
   return RECURSOS.map(({ slug, rotulo }) => ({ slug, rotulo }));
 }
 
-// --- Preferências salvas no navegador ---
-
 export function preferenciasLocais() {
   try {
     const salvo = JSON.parse(localStorage.getItem(CHAVE_LOCAL));
@@ -60,9 +49,6 @@ function salvarLocais(slugs) {
   localStorage.setItem(CHAVE_LOCAL, JSON.stringify(slugs));
 }
 
-// --- Aplicação ---
-
-// Liga os recursos da lista e desliga todos os outros.
 export function aplicar(slugsAtivos) {
   const ativos = new Set(slugsAtivos);
   for (const recurso of RECURSOS) {
@@ -70,16 +56,11 @@ export function aplicar(slugsAtivos) {
   }
 }
 
-// Aplica o que já está salvo no navegador. Roda em toda página, antes
-// de qualquer chamada de rede, para não haver piscada de conteúdo.
+// Roda em toda página antes de qualquer chamada de rede, para não piscar.
 export function aplicarSalvas() {
   aplicar(preferenciasLocais());
 }
 
-// --- Sincronização com a API ---
-
-// Busca o catálogo de recursos e o que o usuário tem selecionado,
-// aplica na tela e guarda no navegador. Só funciona logado.
 export async function sincronizar() {
   if (!estaLogado()) return preferenciasLocais();
 
@@ -90,15 +71,12 @@ export async function sincronizar() {
 
   mapaSlugParaId = {};
   for (const item of catalogo) {
+    // Recurso cadastrado na API sem módulo aqui é ignorado.
     const recurso = acharRecurso(item.name);
-    // Recurso cadastrado na API sem módulo correspondente aqui:
-    // não dá para aplicar, então é ignorado em silêncio.
     if (recurso) mapaSlugParaId[recurso.slug] = item.id;
   }
 
-  const idsSelecionados = new Set(
-    doUsuario.map((item) => item.accessibilityId ?? item.id)
-  );
+  const idsSelecionados = new Set(doUsuario.map((item) => item.accessibilityId ?? item.id));
 
   const ativos = Object.entries(mapaSlugParaId)
     .filter(([, id]) => idsSelecionados.has(id))
@@ -109,8 +87,6 @@ export async function sincronizar() {
   return ativos;
 }
 
-// Liga ou desliga um recurso. Aplica na hora, salva no navegador
-// e tenta salvar na API quando há sessão.
 export async function definir(slug, ativo) {
   const atuais = new Set(preferenciasLocais());
   if (ativo) atuais.add(slug);
@@ -122,8 +98,8 @@ export async function definir(slug, ativo) {
 
   if (!estaLogado()) return;
 
-  const id = mapaSlugParaId[slug];
   // Sem id mapeado o recurso não existe no banco: fica só no navegador.
+  const id = mapaSlugParaId[slug];
   if (!id) return;
 
   if (ativo) await acessibilidade.selecionar(id);

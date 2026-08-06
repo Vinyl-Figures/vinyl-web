@@ -1,11 +1,4 @@
-// Utilidades de tela: formatação, estados e os popups de feedback.
-//
-// ATENÇÃO — este é o único arquivo do projeto que escreve CSS, e o estilo
-// aqui vale só para os popups (autorizado). Ele usa cores de sistema
-// (Canvas / CanvasText) justamente para não brigar com o CSS da loja e
-// funcionar em tema claro e escuro sem configuração.
-// Nenhum outro módulo mexe em aparência: estado visual sai por atributo
-// (hidden, data-a11y-*, aria-*).
+// Único arquivo que escreve CSS, e só para os popups.
 
 import { mensagemDoErro } from './erros.js';
 
@@ -83,7 +76,6 @@ export function formatarBRL(valor) {
   return numero.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
-// A API devolve o ano como string de 4 dígitos.
 export function formatarData(iso) {
   if (!iso) return '—';
   const data = new Date(iso);
@@ -91,7 +83,6 @@ export function formatarData(iso) {
 }
 
 // --- Estados de elemento ---
-// Usa atributos nativos, nunca style nem classe de aparência.
 
 export function mostrar(elemento) {
   if (elemento) elemento.hidden = false;
@@ -105,12 +96,10 @@ export function alternar(elemento, visivel) {
   if (elemento) elemento.hidden = !visivel;
 }
 
-// Marca a região como ocupada para leitores de tela enquanto carrega.
 export function ocupado(elemento, carregando) {
   if (elemento) elemento.setAttribute('aria-busy', String(Boolean(carregando)));
 }
 
-// Desabilita o botão durante o envio para evitar clique duplo.
 export function travarBotao(botao, travado, textoOcupado = 'Aguarde…') {
   if (!botao) return;
   if (travado) {
@@ -138,42 +127,34 @@ function criarDialogo() {
   return dialogo;
 }
 
+function criarAcoes() {
+  const acoes = document.createElement('div');
+  acoes.setAttribute('data-' + PREFIXO, 'acoes');
+  return acoes;
+}
+
 function listaDeMensagens(mensagens) {
-  if (mensagens.length === 1) {
-    const p = document.createElement('p');
-    p.textContent = mensagens[0];
-    return p;
-  }
+  if (mensagens.length === 1) return criar('p', mensagens[0]);
+
   const ul = document.createElement('ul');
-  for (const mensagem of mensagens) {
-    const li = document.createElement('li');
-    li.textContent = mensagem;
-    ul.append(li);
-  }
+  for (const mensagem of mensagens) ul.append(criar('li', mensagem));
   return ul;
 }
 
-// Popup com um botão. Resolve quando o usuário fecha.
-// Ex.: alertar({ titulo: 'Cadastro realizado com sucesso' })
 export function alertar({ titulo, mensagem = '', tipo = 'sucesso', textoBotao = 'OK' }) {
   const mensagens = Array.isArray(mensagem) ? mensagem : mensagem ? [mensagem] : [];
 
   const dialogo = criarDialogo();
   dialogo.setAttribute('data-' + PREFIXO + '-tipo', tipo);
 
-  const h2 = document.createElement('h2');
-  h2.textContent = titulo;
-
-  const acoes = document.createElement('div');
-  acoes.setAttribute('data-' + PREFIXO, 'acoes');
-
-  const botao = document.createElement('button');
+  const botao = criar('button', textoBotao);
   botao.type = 'button';
-  botao.textContent = textoBotao;
   botao.addEventListener('click', () => dialogo.close());
+
+  const acoes = criarAcoes();
   acoes.append(botao);
 
-  dialogo.append(h2);
+  dialogo.append(criar('h2', titulo));
   if (mensagens.length) dialogo.append(listaDeMensagens(mensagens));
   dialogo.append(acoes);
   document.body.append(dialogo);
@@ -188,29 +169,26 @@ export function alertar({ titulo, mensagem = '', tipo = 'sucesso', textoBotao = 
   });
 }
 
-// Popup de confirmação. Resolve true se confirmou.
-export function confirmar({ titulo, mensagem = '', textoConfirmar = 'Confirmar', textoCancelar = 'Cancelar' }) {
+export function confirmar({
+  titulo,
+  mensagem = '',
+  textoConfirmar = 'Confirmar',
+  textoCancelar = 'Cancelar',
+}) {
   const dialogo = criarDialogo();
 
-  const h2 = document.createElement('h2');
-  h2.textContent = titulo;
-
-  const acoes = document.createElement('div');
-  acoes.setAttribute('data-' + PREFIXO, 'acoes');
-
-  const cancelar = document.createElement('button');
+  const cancelar = criar('button', textoCancelar);
   cancelar.type = 'button';
-  cancelar.textContent = textoCancelar;
   cancelar.addEventListener('click', () => dialogo.close('nao'));
 
-  const confirmarBotao = document.createElement('button');
+  const confirmarBotao = criar('button', textoConfirmar);
   confirmarBotao.type = 'button';
-  confirmarBotao.textContent = textoConfirmar;
   confirmarBotao.addEventListener('click', () => dialogo.close('sim'));
 
+  const acoes = criarAcoes();
   acoes.append(cancelar, confirmarBotao);
 
-  dialogo.append(h2);
+  dialogo.append(criar('h2', titulo));
   if (mensagem) dialogo.append(listaDeMensagens([mensagem]));
   dialogo.append(acoes);
   document.body.append(dialogo);
@@ -226,12 +204,8 @@ export function confirmar({ titulo, mensagem = '', textoConfirmar = 'Confirmar',
   });
 }
 
-// Popup com uma lista de opções. Resolve com o valor escolhido ou null.
-// Usado no checkout para escolher a forma de pagamento.
 export function escolher({ titulo, mensagem = '', opcoes, rotuloCampo = 'Opção' }) {
   const dialogo = criarDialogo();
-
-  const h2 = criar('h2', titulo);
 
   const campoId = 'vinyl-ui-escolha';
   const rotulo = criar('label', rotuloCampo);
@@ -240,14 +214,10 @@ export function escolher({ titulo, mensagem = '', opcoes, rotuloCampo = 'Opção
   const select = document.createElement('select');
   select.id = campoId;
   for (const opcao of opcoes) {
-    const item = document.createElement('option');
+    const item = criar('option', opcao.rotulo);
     item.value = opcao.valor;
-    item.textContent = opcao.rotulo;
     select.append(item);
   }
-
-  const acoes = document.createElement('div');
-  acoes.setAttribute('data-' + PREFIXO, 'acoes');
 
   const cancelar = criar('button', 'Cancelar');
   cancelar.type = 'button';
@@ -257,9 +227,10 @@ export function escolher({ titulo, mensagem = '', opcoes, rotuloCampo = 'Opção
   confirmarBotao.type = 'button';
   confirmarBotao.addEventListener('click', () => dialogo.close(select.value));
 
+  const acoes = criarAcoes();
   acoes.append(cancelar, confirmarBotao);
 
-  dialogo.append(h2);
+  dialogo.append(criar('h2', titulo));
   if (mensagem) dialogo.append(listaDeMensagens([mensagem]));
   dialogo.append(rotulo, select, acoes);
   document.body.append(dialogo);
@@ -275,7 +246,6 @@ export function escolher({ titulo, mensagem = '', opcoes, rotuloCampo = 'Opção
   });
 }
 
-// Aviso rápido, sem bloquear a tela. Some sozinho.
 export function avisar(mensagem, tipo = 'sucesso') {
   injetarEstilos();
 
@@ -288,30 +258,19 @@ export function avisar(mensagem, tipo = 'sucesso') {
     document.body.append(area);
   }
 
-  const aviso = document.createElement('p');
+  const aviso = criar('p', mensagem);
   aviso.setAttribute('data-' + PREFIXO, 'aviso');
   aviso.setAttribute('data-' + PREFIXO + '-tipo', tipo);
-  aviso.textContent = mensagem;
   area.append(aviso);
 
   setTimeout(() => aviso.remove(), 4000);
 }
 
-// Atalho para qualquer erro vindo do store.
-//
-// A frase vem do erros.js, escolhida pelo contexto da operação que falhou
-// (login, checkout, cadastro…) junto com o status HTTP. O texto cru da API
-// nunca chega à tela: "cellphone: must not be blank" não ajuda quem está
-// comprando um disco. Ele fica no console, que é onde serve.
-//
-// contextoAlternativo permite um controller pedir uma frase mais específica
-// do que a declarada no store.
 export function mostrarErro(erro, contextoAlternativo) {
   const alvo = contextoAlternativo ? { ...erro, contexto: contextoAlternativo } : erro;
   return alertar({ titulo: mensagemDoErro(alvo), tipo: 'erro' });
 }
 
-// Mesma frase, mas como aviso passageiro, para falhas que não travam a tela.
 export function avisarErro(erro, contextoAlternativo) {
   const alvo = contextoAlternativo ? { ...erro, contexto: contextoAlternativo } : erro;
   avisar(mensagemDoErro(alvo), 'erro');

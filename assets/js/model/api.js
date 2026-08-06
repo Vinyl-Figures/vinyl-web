@@ -1,12 +1,3 @@
-// Ponto único de comunicação com a API.
-// Monta a URL, coloca o Bearer, converte JSON e transforma
-// qualquer falha em um ErroApi.
-//
-// O ErroApi carrega o contexto da operação (login, checkout, cadastro…).
-// Quem decide a frase mostrada na tela é o erros.js, a partir desse
-// contexto e do status. As mensagens cruas da API ficam guardadas em
-// .mensagens e vão para o console — servem para depurar, não para o usuário.
-
 import { API_BASE_URL } from '../config.js';
 import { getToken, limparSessao } from './session.js';
 
@@ -43,9 +34,7 @@ async function requisitar(metodo, caminho, { corpo, query, autenticado = true, c
     headers.Authorization = `Bearer ${token}`;
   }
 
-  // A API está hospedada no plano gratuito do Render, que desliga o servidor
-  // depois de um tempo parado. A primeira chamada do dia leva ~35s para
-  // acordar a máquina. Sem aviso, a tela parece travada.
+  // O Render desliga o servidor parado: a primeira chamada leva ~35s.
   const avisoDemora = setTimeout(() => {
     document.dispatchEvent(new CustomEvent('api:demorando'));
   }, 3000);
@@ -58,23 +47,14 @@ async function requisitar(metodo, caminho, { corpo, query, autenticado = true, c
       body: corpo === undefined ? undefined : JSON.stringify(corpo),
     });
   } catch {
-    // Servidor fora do ar, DNS ou CORS bloqueado: o fetch nem chegou a responder.
-    // O navegador não deixa o JavaScript distinguir os casos por segurança,
-    // então a pista fica no console para quem estiver depurando.
-    console.error(
-      `[api] ${metodo} ${caminho} não completou.\n` +
-        'Se o console acima mostrar "blocked by CORS policy", o problema é no ' +
-        'servidor: o filtro de JWT está respondendo antes do CORS, então as ' +
-        'respostas 401 e as requisições OPTIONS (preflight) voltam sem o ' +
-        'cabeçalho Access-Control-Allow-Origin.'
-    );
+    // Servidor fora, DNS ou CORS: o navegador não deixa distinguir.
+    console.error(`[api] ${metodo} ${caminho} não completou. Veja se há erro de CORS acima.`);
     throw new ErroApi(0, ['Servidor inalcançável.'], contexto);
   } finally {
     clearTimeout(avisoDemora);
     document.dispatchEvent(new CustomEvent('api:respondeu'));
   }
 
-  // Token recusado pelo servidor: derruba a sessão local para não insistir.
   if (resposta.status === 401 && autenticado) {
     limparSessao();
     document.dispatchEvent(new CustomEvent('api:sessao-expirada'));
@@ -83,7 +63,6 @@ async function requisitar(metodo, caminho, { corpo, query, autenticado = true, c
 
   if (resposta.status === 204) return null;
 
-  // A API responde erro no formato { messages: [...], status: 400 }.
   const dados = await resposta.json().catch(() => null);
 
   if (!resposta.ok) {
@@ -91,8 +70,7 @@ async function requisitar(metodo, caminho, { corpo, query, autenticado = true, c
       ? dados.messages
       : [`Erro ${resposta.status}.`];
 
-    // O detalhe cru fica no console: é o que serve para depurar um 400 de
-    // validação, já que a tela vai mostrar só a frase genérica da operação.
+    // Detalhe cru só no console; a tela mostra a frase da operação.
     console.error(`[api] ${metodo} ${caminho} -> ${resposta.status}`, mensagens);
 
     throw new ErroApi(resposta.status, mensagens, contexto);

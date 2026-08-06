@@ -1,15 +1,5 @@
-// Traduz a falha da API para uma frase que faça sentido para quem está
-// usando a loja.
-//
-// A API responde em inglês e às vezes em linguagem de programador
-// ("cellphone: must not be blank"). Mostrar isso na tela não ajuda ninguém,
-// e num 401 de login dizer "sessão expirada" seria simplesmente errado.
-//
-// Cada operação do store declara um contexto. A mensagem sai da combinação
-// contexto + status HTTP, caindo para alternativas mais genéricas quando
-// não há uma frase específica.
+// Frase mostrada ao usuário, escolhida por contexto da operação + status.
 
-// Valem para qualquer operação que não tenha frase própria.
 const POR_STATUS = {
   0: 'Não foi possível falar com o servidor. Verifique sua conexão e tente de novo.',
   400: 'Confira os dados informados e tente de novo.',
@@ -117,17 +107,10 @@ const POR_OPERACAO = {
   'favorito-remover': { padrao: 'Não foi possível remover o favorito.' },
 };
 
-// Servidor inalcançável não é falha da operação: a frase é sempre a mesma,
-// venha de onde vier.
 const STATUS_SEM_RESPOSTA = 0;
 
-// Nesses dois status o motivo real (sessão vencida, sem permissão) explica
-// melhor do que a frase padrão da operação. Se a sessão expira no meio do
-// carrinho, dizer "não foi possível carregar seu carrinho" esconde o que
-// aconteceu e o usuário fica tentando de novo à toa.
-//
-// Uma operação ainda pode sobrescrever: no login, 401 é senha errada,
-// não sessão expirada — e é por isso que a frase específica vem antes.
+// Sessão vencida e falta de permissão explicam melhor que a frase padrão
+// da operação. A operação ainda sobrescreve: no login, 401 é senha errada.
 const STATUS_QUE_EXPLICAM_MELHOR = [401, 403];
 
 export function mensagemDoErro(erro) {

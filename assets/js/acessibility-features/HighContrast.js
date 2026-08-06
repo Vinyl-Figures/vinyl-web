@@ -1,14 +1,8 @@
-// Alto contraste.
-//
-// O módulo não escreve CSS: ele só marca o <html> com um atributo.
-// Quem estiliza escreve a regra do lado do CSS, por exemplo:
-//   html[data-a11y-contraste="alto"] { ... }
+// html[data-a11y-contraste="alto"] — o CSS engancha aqui.
 
 export default {
   slug: 'alto-contraste',
   rotulo: 'Alto contraste',
-
-  // Nomes que o recurso pode ter no cadastro da API.
   apelidos: ['alto-contraste', 'high-contrast', 'contraste', 'contraste-alto'],
 
   aplicar(ativo) {

@@ -1,8 +1,5 @@
-// Catálogo.
-//
-// A API só filtra por genreId ou artistId. Busca por texto, faixa de preço,
-// ordenação e paginação não existem no servidor e são feitas aqui, em cima
-// da lista já carregada.
+// Busca, faixa de preço, ordenação e paginação não existem na API:
+// são feitas aqui, em cima da lista já carregada.
 
 import { vinis, generos, carrinho } from '../model/store.js';
 import { cardVinil, preencher } from '../view/templates.js';
@@ -11,8 +8,7 @@ import { exigirLogin } from './app.js';
 
 const POR_PAGINA = 8;
 
-// --- Elementos da página ---
-// Encontrados pela estrutura que já existe, sem precisar editar o HTML.
+// --- Elementos ---
 
 const listaProdutos = [...document.querySelectorAll('main ul')].find((ul) =>
   ul.querySelector('li > article')
@@ -44,9 +40,8 @@ let visiveis = [];
 let pagina = 1;
 
 // --- Gêneros ---
-// O HTML traz rock/pop/indie/eletronica fixos, mas os gêneros vêm do banco
-// com id próprio. A lista é trocada pela real assim que chega.
 
+// Troca os gêneros fixos do HTML pelos do banco, que têm id próprio.
 async function carregarGeneros() {
   if (!fieldsetGenero) return;
 
@@ -81,8 +76,8 @@ async function carregarVinis() {
     if (ids.length === 0) {
       carregados = await vinis.listar();
     } else {
-      // A API aceita um gênero por vez; várias seleções viram várias
-      // chamadas, unidas depois sem repetir o mesmo disco.
+      // A API aceita um gênero por vez: várias seleções viram várias
+      // chamadas, unidas sem repetir o mesmo disco.
       const respostas = await Promise.all(ids.map((genreId) => vinis.listar({ genreId })));
       const porId = new Map();
       for (const lista of respostas) {
@@ -124,7 +119,7 @@ function ordenar() {
     'menor-preco': (a, b) => Number(a.price) - Number(b.price),
     'maior-preco': (a, b) => Number(b.price) - Number(a.price),
     az: (a, b) => a.title.localeCompare(b.title, 'pt-BR'),
-    // releasedAt é uma string de 4 dígitos; comparar como número basta.
+    // releasedAt é string de 4 dígitos
     recentes: (a, b) => Number(b.releasedAt || 0) - Number(a.releasedAt || 0),
   };
 
@@ -150,7 +145,6 @@ function renderizar() {
       : 'Nenhum disco para mostrar';
   }
 
-  // Os dois estados já existem no HTML; aqui só se decide qual aparece.
   alternar(secaoResultados, visiveis.length > 0);
   alternar(secaoVazia, visiveis.length === 0);
 
@@ -205,7 +199,6 @@ navPaginacao?.addEventListener('click', (evento) => {
 });
 
 formBusca?.addEventListener('submit', (evento) => {
-  // O action manda para catalogo.html?q=... e recarregaria a página à toa.
   evento.preventDefault();
   pagina = 1;
   aplicarFiltros();
@@ -213,12 +206,12 @@ formBusca?.addEventListener('submit', (evento) => {
 
 formFiltros?.addEventListener('submit', (evento) => {
   evento.preventDefault();
-  // Gênero é filtro do servidor, então recarrega; o resto é local.
+  // Gênero é filtro do servidor: recarrega. O resto é local.
   carregarVinis();
 });
 
 formFiltros?.addEventListener('reset', () => {
-  // O reset limpa os campos depois deste evento; por isso o setTimeout.
+  // O reset limpa os campos só depois deste evento.
   setTimeout(() => {
     if (campoBusca) campoBusca.value = '';
     carregarVinis();
@@ -240,10 +233,8 @@ listaProdutos?.addEventListener('click', async (evento) => {
   try {
     const resposta = await carrinho.adicionar([vinylId]);
 
-    // A API devolve em skipped o que não entrou, com o motivo.
-    // O caso comum é o disco já estar no carrinho.
-    const motivo = resposta?.skipped?.[vinylId];
-    if (motivo) {
+    // skipped traz o que não entrou; o caso comum é já estar no carrinho.
+    if (resposta?.skipped?.[vinylId]) {
       avisar('Este disco já está no seu carrinho.', 'info');
     } else {
       avisar('Adicionado ao carrinho.');
@@ -254,10 +245,6 @@ listaProdutos?.addEventListener('click', async (evento) => {
     travarBotao(botao, false);
   }
 });
-
-// --- Início ---
-// A API exige token até para listar o catálogo, então visitante anônimo
-// não passa daqui.
 
 if (exigirLogin()) {
   carregarGeneros()

@@ -1,8 +1,4 @@
-// Guarda o token e o userId devolvidos pelo login.
-// A API não tem rota "quem sou eu": o userId só chega no POST /auth/tokens,
-// e quase toda rota pessoal é /users/{userId}/..., então ele precisa ficar salvo.
-//
-// Este arquivo só mexe em localStorage. Quem fala com a rede é o store.
+// Só localStorage. Quem fala com a rede é o store.
 
 const CHAVE = 'vinyl.sessao';
 
@@ -15,7 +11,6 @@ function ler() {
 }
 
 // Recebe o TokenResp: { token, tokenType, expiresIn, userId }.
-// expiresIn vem em segundos; guardamos o instante de expiração já calculado.
 export function salvarSessao({ token, expiresIn, userId }) {
   localStorage.setItem(
     CHAVE,
@@ -31,8 +26,7 @@ export function limparSessao() {
   localStorage.removeItem(CHAVE);
 }
 
-// Devolve null se não há sessão ou se o token já venceu.
-// Não existe refresh token na API: quando vence, é login de novo.
+// Null se não há sessão ou se o token venceu. Não existe refresh token.
 export function getToken() {
   const sessao = ler();
   if (!sessao) return null;
