@@ -4,12 +4,41 @@
 // Tudo é criado com createElement e textContent (nunca innerHTML),
 // porque título, descrição e nome de artista vêm do servidor.
 
+import { IMAGEM_PLACEHOLDER } from '../config.js';
 import { formatarBRL, formatarData } from './ui.js';
 
 function criar(tag, texto) {
   const elemento = document.createElement(tag);
   if (texto !== undefined) elemento.textContent = texto;
   return elemento;
+}
+
+// O campo imageUrl da API é descrito como "URL ou referência textual da
+// imagem" e na prática guarda o PNG inteiro em base64, sem o prefixo data:.
+// Aqui os três formatos possíveis viram um src que a <img> entende.
+export function fonteDaImagem(valor) {
+  const bruto = String(valor || '').trim();
+  if (!bruto) return IMAGEM_PLACEHOLDER;
+
+  // Já veio pronto como data URI.
+  if (/^data:image\//i.test(bruto)) return bruto;
+
+  // Veio como endereço.
+  if (/^https?:\/\//i.test(bruto)) return bruto;
+
+  // Base64 puro. O PNG começa sempre com iVBORw0KGgo (bytes \x89PNG),
+  // então esse prefixo é a confirmação; o resto é checagem de formato.
+  const semEspacos = bruto.replace(/\s/g, '');
+  const pareceBase64 = /^[A-Za-z0-9+/]+={0,2}$/.test(semEspacos) && semEspacos.length > 100;
+
+  if (semEspacos.startsWith('iVBORw0KGgo') || pareceBase64) {
+    return `data:image/png;base64,${semEspacos}`;
+  }
+
+  // Caminho relativo cadastrado à mão.
+  if (bruto.includes('/') || /\.(png|jpe?g|webp|gif|svg)$/i.test(bruto)) return bruto;
+
+  return IMAGEM_PLACEHOLDER;
 }
 
 // Card do catálogo. Mesma estrutura do catalogo.html:
@@ -19,14 +48,22 @@ export function cardVinil(vinil) {
   const artigo = criar('article');
   artigo.dataset.vinilId = vinil.id;
 
-  // imageUrl é opcional na API; sem ele não adianta gerar uma <img> quebrada.
-  if (vinil.imageUrl) {
-    const imagem = criar('img');
-    imagem.src = vinil.imageUrl;
-    imagem.alt = `Capa do álbum ${vinil.title}`;
-    imagem.loading = 'lazy';
-    artigo.append(imagem);
-  }
+  // imageUrl é opcional na API. Sem ele entra o placeholder, para o card
+  // manter a mesma estrutura e o layout não dançar entre um disco e outro.
+  const imagem = criar('img');
+  imagem.src = fonteDaImagem(vinil.imageUrl);
+  imagem.alt = `Capa do álbum ${vinil.title}`;
+  imagem.loading = 'lazy';
+  // Se a imagem cadastrada estiver quebrada, cai no placeholder.
+  // O once garante que um placeholder com problema não vire laço infinito.
+  imagem.addEventListener(
+    'error',
+    () => {
+      imagem.src = IMAGEM_PLACEHOLDER;
+    },
+    { once: true }
+  );
+  artigo.append(imagem);
 
   artigo.append(criar('h3', vinil.title));
   artigo.append(criar('p', formatarBRL(vinil.price)));

@@ -22,6 +22,10 @@ export const ROTAS = {
   cadastro: pages + 'cadastro.html',
 };
 
+// Usada quando o vinil não tem imageUrl cadastrado na API.
+export const IMAGEM_PLACEHOLDER =
+  (dentroDePages ? '../imagens/' : 'assets/imagens/') + 'capa-placeholder.svg';
+
 // Enumerações aceitas pela API (seção 7.11 da especificação).
 export const METODOS_PAGAMENTO = ['DEBITO', 'CREDITO', 'PIX', 'BOLETO', 'TED'];
 export const STATUS_PAGAMENTO = ['PENDENTE', 'APROVADO', 'CANCELADO'];

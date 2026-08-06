@@ -31,19 +31,10 @@ document.addEventListener('api:respondeu', () => {
   avisouDemora = false;
 });
 
-// O link "Sair" do menu da conta ainda não tem identificador no HTML.
-// Enquanto não tiver, é encontrado pelo texto.
-// Para deixar robusto, basta marcar o link com data-acao="sair".
-function acharLinkSair() {
-  const marcado = document.querySelector('[data-acao="sair"]');
-  if (marcado) return marcado;
-
-  return [...document.querySelectorAll('a')].find(
-    (link) => link.textContent.trim().toLowerCase() === 'sair'
-  );
-}
-
-const linkSair = acharLinkSair();
+// O link de sair é marcado com data-acao="sair" no HTML.
+// O href dele aponta para a home, que é o destino certo mesmo se o
+// JavaScript não carregar — a diferença é que aí a sessão não é encerrada.
+const linkSair = document.querySelector('[data-acao="sair"]');
 if (linkSair) {
   linkSair.addEventListener('click', async (evento) => {
     evento.preventDefault();
