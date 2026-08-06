@@ -1,7 +1,7 @@
 // Configuração da aplicação.
 // Para apontar para outro servidor, troque apenas API_BASE_URL.
 
-export const API_BASE_URL = 'https://vinyl-api-m6y9.onrender.com/api/v1';
+export const API_BASE_URL = 'https://api-9z1u.onrender.com/api/v1';
 
 // Para rodar contra a API local, troque pela linha abaixo:
 // export const API_BASE_URL = 'http://localhost:8080/api/v1';
