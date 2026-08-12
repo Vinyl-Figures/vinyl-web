@@ -2,6 +2,7 @@ import { getUserId } from '../model/session.js';
 import { usuarios, enderecos, pedidos, pagamentos } from '../model/store.js';
 import { itemEndereco, linhaPedido, preencher } from '../view/templates.js';
 import { avisar, avisarErro, confirmar, mostrarErro, ocupado, travarBotao } from '../view/ui.js';
+import { apenasDigitos, aplicarMascara, mascararCep, mascararTelefone } from '../view/mascaras.js';
 import {
   listarRecursos,
   preferenciasLocais,
@@ -10,20 +11,17 @@ import {
 } from '../acessibility-features/index.js';
 import { exigirLogin } from './app.js';
 
-function apenasDigitos(valor) {
-  return String(valor || '').replace(/\D/g, '');
-}
-
 // --- Dados pessoais ---
 
 const formDados = document.querySelector('#conta-nome')?.form;
+aplicarMascara(formDados?.querySelector('#conta-telefone'), mascararTelefone);
 
 async function carregarDados() {
   const usuario = await usuarios.buscar(getUserId());
 
   formDados.querySelector('#conta-nome').value = usuario.name || '';
   formDados.querySelector('#conta-email').value = usuario.email || '';
-  formDados.querySelector('#conta-telefone').value = usuario.cellphone || '';
+  formDados.querySelector('#conta-telefone').value = mascararTelefone(apenasDigitos(usuario.cellphone));
 }
 
 formDados?.addEventListener('submit', async (evento) => {
@@ -57,6 +55,7 @@ formDados?.addEventListener('submit', async (evento) => {
 const secaoEnderecos = document.querySelector('#enderecos');
 const listaEnderecos = secaoEnderecos?.querySelector('ul');
 const formEndereco = document.querySelector('#end-cep')?.form;
+aplicarMascara(formEndereco?.querySelector('#end-cep'), mascararCep);
 
 async function carregarEnderecos() {
   ocupado(secaoEnderecos, true);

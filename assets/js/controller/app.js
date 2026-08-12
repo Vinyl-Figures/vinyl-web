@@ -3,13 +3,25 @@
 import { ROTAS } from '../config.js';
 import { estaLogado } from '../model/session.js';
 import { auth } from '../model/store.js';
-import { avisar, mostrarErro } from '../view/ui.js';
+import { avisar, mostrarErro, alternar } from '../view/ui.js';
 import { aplicarSalvas, sincronizar } from '../acessibility-features/index.js';
 
 aplicarSalvas();
 
+const logado = estaLogado();
+
 // html[data-sessao="inativa"] fica disponível para o CSS.
-document.documentElement.setAttribute('data-sessao', estaLogado() ? 'ativa' : 'inativa');
+document.documentElement.setAttribute('data-sessao', logado ? 'ativa' : 'inativa');
+
+// Sem sessão, "Conta" vira "Entrar" no header, e o footer mostra só o link certo.
+const linkConta = document.querySelector(`header nav a[href="${ROTAS.conta}"]`);
+if (linkConta && !logado) {
+  linkConta.textContent = 'Entrar';
+  linkConta.href = ROTAS.entrar;
+}
+
+alternar(document.querySelector(`footer nav a[href="${ROTAS.conta}"]`)?.closest('li'), logado);
+alternar(document.querySelector(`footer nav a[href="${ROTAS.entrar}"]`)?.closest('li'), !logado);
 
 let avisouDemora = false;
 document.addEventListener('api:demorando', () => {
@@ -35,7 +47,7 @@ if (linkSair) {
 }
 
 // Falhar aqui não pode quebrar a página: o localStorage já valeu.
-if (estaLogado()) {
+if (logado) {
   sincronizar().catch(() => {});
 }
 

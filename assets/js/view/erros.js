@@ -46,7 +46,6 @@ const POR_OPERACAO = {
     padrao: 'Não foi possível carregar o disco.',
   },
   'generos-listar': { padrao: 'Não foi possível carregar os gêneros.' },
-  'artistas-listar': { padrao: 'Não foi possível carregar os artistas.' },
 
   // Endereços
   'enderecos-listar': { padrao: 'Não foi possível carregar seus endereços.' },
@@ -97,14 +96,6 @@ const POR_OPERACAO = {
   'acessibilidade-salvar': {
     padrao: 'A preferência valeu neste navegador, mas não foi salva na sua conta.',
   },
-
-  // Gêneros favoritos
-  'favoritos-listar': { padrao: 'Não foi possível carregar seus gêneros favoritos.' },
-  'favorito-adicionar': {
-    409: 'Esse gênero já está nos seus favoritos.',
-    padrao: 'Não foi possível favoritar o gênero.',
-  },
-  'favorito-remover': { padrao: 'Não foi possível remover o favorito.' },
 };
 
 const STATUS_SEM_RESPOSTA = 0;

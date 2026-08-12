@@ -15,8 +15,4 @@ export const ROTAS = {
   cadastro: pages + 'cadastro.html',
 };
 
-export const IMAGEM_PLACEHOLDER =
-  (dentroDePages ? '../imagens/' : 'assets/imagens/') + 'capa-placeholder.svg';
-
 export const METODOS_PAGAMENTO = ['DEBITO', 'CREDITO', 'PIX', 'BOLETO', 'TED'];
-export const STATUS_PAGAMENTO = ['PENDENTE', 'APROVADO', 'CANCELADO'];

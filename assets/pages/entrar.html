@@ -38,6 +38,10 @@
 
       <label for="login-senha">Senha</label>
       <input type="password" id="login-senha" name="senha" autocomplete="current-password" required>
+      <button type="button" data-acao="mostrar-senha" data-alvo="login-senha" aria-pressed="false" aria-label="Mostrar senha">
+        <img data-icone="fechado" src="../icons/eye_closed.svg" width="16" height="16" alt="" aria-hidden="true">
+        <img data-icone="aberto" hidden src="../icons/eye_open.svg" width="16" height="16" alt="" aria-hidden="true">
+      </button>
 
       <label>
         <input type="checkbox" name="lembrar" value="1">

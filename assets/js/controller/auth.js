@@ -1,12 +1,27 @@
 import { ROTAS } from '../config.js';
 import { auth, usuarios } from '../model/store.js';
-import { alertar, avisar, mostrarErro, travarBotao } from '../view/ui.js';
+import { alertar, avisar, mostrarErro, travarBotao, alternar } from '../view/ui.js';
+import { apenasDigitos, aplicarMascara, mascararCpf, mascararTelefone } from '../view/mascaras.js';
 import { sincronizar } from '../acessibility-features/index.js';
 import { destinoAposLogin } from './app.js';
 
-function apenasDigitos(valor) {
-  return String(valor || '').replace(/\D/g, '');
-}
+// --- Mostrar/ocultar senha ---
+
+document.addEventListener('click', (evento) => {
+  const botao = evento.target.closest('[data-acao="mostrar-senha"]');
+  if (!botao) return;
+
+  const campo = document.getElementById(botao.dataset.alvo);
+  if (!campo) return;
+
+  const vaiMostrar = campo.type === 'password';
+  campo.type = vaiMostrar ? 'text' : 'password';
+  botao.setAttribute('aria-pressed', String(vaiMostrar));
+  botao.setAttribute('aria-label', vaiMostrar ? 'Ocultar senha' : 'Mostrar senha');
+
+  alternar(botao.querySelector('[data-icone="fechado"]'), !vaiMostrar);
+  alternar(botao.querySelector('[data-icone="aberto"]'), vaiMostrar);
+});
 
 // --- Entrar ---
 
@@ -45,6 +60,9 @@ if (formEntrar) {
 const formCadastro = document.querySelector('#cad-nome')?.form;
 
 if (formCadastro) {
+  aplicarMascara(formCadastro.querySelector('#cad-documento'), mascararCpf);
+  aplicarMascara(formCadastro.querySelector('#cad-celular'), mascararTelefone);
+
   formCadastro.addEventListener('submit', async (evento) => {
     evento.preventDefault();
 

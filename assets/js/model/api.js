@@ -39,6 +39,8 @@ async function requisitar(metodo, caminho, { corpo, query, autenticado = true, c
     document.dispatchEvent(new CustomEvent('api:demorando'));
   }, 3000);
 
+  console.debug(`[api] ${metodo} ${url}`, corpo ?? '');
+
   let resposta;
   try {
     resposta = await fetch(url, {
@@ -61,7 +63,10 @@ async function requisitar(metodo, caminho, { corpo, query, autenticado = true, c
     throw new ErroApi(401, ['Token recusado pelo servidor.'], contexto);
   }
 
-  if (resposta.status === 204) return null;
+  if (resposta.status === 204) {
+    console.debug(`[api] ${metodo} ${url} -> 204`);
+    return null;
+  }
 
   const dados = await resposta.json().catch(() => null);
 
@@ -75,6 +80,8 @@ async function requisitar(metodo, caminho, { corpo, query, autenticado = true, c
 
     throw new ErroApi(resposta.status, mensagens, contexto);
   }
+
+  console.debug(`[api] ${metodo} ${url} -> ${resposta.status}`, dados);
 
   return dados;
 }

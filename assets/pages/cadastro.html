@@ -41,16 +41,24 @@
       <input type="text" id="cad-documento" name="documento" inputmode="numeric" maxlength="14" autocomplete="off" required>
 
       <label for="cad-celular">Celular</label>
-      <input type="tel" id="cad-celular" name="celular" autocomplete="tel" required>
+      <input type="tel" id="cad-celular" name="celular" inputmode="numeric" maxlength="15" autocomplete="tel" required>
 
       <label for="cad-email">E-mail</label>
       <input type="email" id="cad-email" name="email" autocomplete="email" required>
 
       <label for="cad-senha">Senha</label>
       <input type="password" id="cad-senha" name="senha" autocomplete="new-password" required>
+      <button type="button" data-acao="mostrar-senha" data-alvo="cad-senha" aria-pressed="false" aria-label="Mostrar senha">
+        <img data-icone="fechado" src="../icons/eye_closed.svg" width="16" height="16" alt="" aria-hidden="true">
+        <img data-icone="aberto" hidden src="../icons/eye_open.svg" width="16" height="16" alt="" aria-hidden="true">
+      </button>
 
       <label for="cad-senha-confirma">Confirmar senha</label>
       <input type="password" id="cad-senha-confirma" name="senha_confirma" autocomplete="new-password" required>
+      <button type="button" data-acao="mostrar-senha" data-alvo="cad-senha-confirma" aria-pressed="false" aria-label="Mostrar senha">
+        <img data-icone="fechado" src="../icons/eye_closed.svg" width="16" height="16" alt="" aria-hidden="true">
+        <img data-icone="aberto" hidden src="../icons/eye_open.svg" width="16" height="16" alt="" aria-hidden="true">
+      </button>
 
       <label>
         <input type="checkbox" name="newsletter" value="1">

@@ -63,11 +63,6 @@ export const vinis = {
   },
 };
 
-export const artistas = {
-  listar: () => api.get('/artists', { contexto: 'artistas-listar' }),
-  buscar: (id) => api.get(`/artists/${id}`, { contexto: 'artistas-listar' }),
-};
-
 export const generos = {
   listar: () => api.get('/genres', { contexto: 'generos-listar' }),
   buscar: (id) => api.get(`/genres/${id}`, { contexto: 'generos-listar' }),
@@ -186,22 +181,5 @@ export const acessibilidade = {
   remover: (accessibilityId, userId = getUserId()) =>
     api.delete(`/users/${userId}/accessibility/${accessibilityId}`, {
       contexto: 'acessibilidade-salvar',
-    }),
-};
-
-export const generosFavoritos = {
-  listar: (userId = getUserId()) =>
-    api.get(`/users/${userId}/favoriteGenres`, { contexto: 'favoritos-listar' }),
-
-  adicionar: (genreId, userId = getUserId()) =>
-    api.post(
-      `/users/${userId}/favoriteGenres`,
-      { genreId },
-      { contexto: 'favorito-adicionar' }
-    ),
-
-  remover: (genreId, userId = getUserId()) =>
-    api.delete(`/users/${userId}/favoriteGenres/${genreId}`, {
-      contexto: 'favorito-remover',
     }),
 };

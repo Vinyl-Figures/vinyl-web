@@ -1,6 +1,5 @@
 // Sempre createElement + textContent, nunca innerHTML: o conteúdo vem do servidor.
 
-import { IMAGEM_PLACEHOLDER } from '../config.js';
 import { formatarBRL, formatarData } from './ui.js';
 
 function criar(tag, texto) {
@@ -9,41 +8,27 @@ function criar(tag, texto) {
   return elemento;
 }
 
-// imageUrl guarda o PNG em base64, sem o prefixo data:, mas também
-// aceita URL ou caminho.
+// imageUrl guarda o PNG em base64, sem o prefixo data:. Sem imagem, null.
 export function fonteDaImagem(valor) {
-  const bruto = String(valor || '').trim();
-  if (!bruto) return IMAGEM_PLACEHOLDER;
-
-  if (/^data:image\//i.test(bruto)) return bruto;
-  if (/^https?:\/\//i.test(bruto)) return bruto;
-
-  const semEspacos = bruto.replace(/\s/g, '');
-  const pareceBase64 = /^[A-Za-z0-9+/]+={0,2}$/.test(semEspacos) && semEspacos.length > 100;
-
-  // Todo PNG em base64 começa com iVBORw0KGgo.
-  if (semEspacos.startsWith('iVBORw0KGgo') || pareceBase64) {
-    return `data:image/png;base64,${semEspacos}`;
-  }
-
-  if (bruto.includes('/') || /\.(png|jpe?g|webp|gif|svg)$/i.test(bruto)) return bruto;
-
-  return IMAGEM_PLACEHOLDER;
+  const base64 = String(valor || '').trim();
+  return base64 ? `data:image/png;base64,${base64}` : null;
 }
 
-// <li><article><img><h3><p><button>, igual ao catalogo.html
+// <li><article><img?><h3><p><button>, igual ao catalogo.html
 export function cardVinil(vinil) {
   const item = criar('li');
   const artigo = criar('article');
   artigo.dataset.vinilId = vinil.id;
 
-  const imagem = criar('img');
-  imagem.src = fonteDaImagem(vinil.imageUrl);
-  imagem.alt = `Capa do álbum ${vinil.title}`;
-  imagem.loading = 'lazy';
-  // once evita laço se o próprio placeholder falhar
-  imagem.addEventListener('error', () => { imagem.src = IMAGEM_PLACEHOLDER; }, { once: true });
-  artigo.append(imagem);
+  const src = fonteDaImagem(vinil.imageUrl);
+  if (src) {
+    const imagem = criar('img');
+    imagem.src = src;
+    imagem.alt = `Capa do álbum ${vinil.title}`;
+    imagem.loading = 'lazy';
+    imagem.addEventListener('error', () => imagem.remove(), { once: true });
+    artigo.append(imagem);
+  }
 
   artigo.append(criar('h3', vinil.title));
   artigo.append(criar('p', formatarBRL(vinil.price)));

@@ -84,14 +84,6 @@ export function formatarData(iso) {
 
 // --- Estados de elemento ---
 
-export function mostrar(elemento) {
-  if (elemento) elemento.hidden = false;
-}
-
-export function esconder(elemento) {
-  if (elemento) elemento.hidden = true;
-}
-
 export function alternar(elemento, visivel) {
   if (elemento) elemento.hidden = !visivel;
 }
