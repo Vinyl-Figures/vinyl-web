@@ -1,4 +1,4 @@
-export const API_BASE_URL = 'https://api-9z1u.onrender.com/api/v1';
+export const API_BASE_URL = 'https://api-production-0425.up.railway.app/api/v1';
 // Local: 'http://localhost:8080/api/v1'
 
 // Todo redirecionamento feito por JavaScript passa por ROTAS.

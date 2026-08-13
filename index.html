@@ -4,15 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vinyl Figures Store</title>
+  <link rel="preconnect" href="https://googleapis.com">
+  <link rel="preconnect" href="https://gstatic.com" crossorigin>
+  <link href="https://googleapis.com/css2?family=Krona+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
-  <!-- ===== NAVBAR ===== -->
   <header>
     <nav>
       <a href="index.html">Vinyl Records</a>
 
-      <ul>
+      <div class="menu-toggle" id="mobile-menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <ul class="nav-list">
         <li><a href="index.html">Início</a></li>
         <li><a href="assets/pages/catalogo.html">Catálogo</a></li>
         <li><a href="assets/pages/carrinho.html">Carrinho</a></li>
@@ -22,8 +31,6 @@
   </header>
 
   <main>
-
-    <!-- ===== HERO ===== -->
     <section>
       <h1>Vinyl Figures Store</h1>
       <p>Expanda sua coleção e ouça a música no giro.</p>
@@ -31,24 +38,33 @@
         Ver Catálogo
         <span aria-hidden="true">&#8599;</span>
       </a>
-      <img src="assets/imagens/disco-vinil.svg" alt="Disco de vinil em close">
     </section>
 
+    <div class="vinyl-container">
+      <img src="assets/images/Vinil.png" alt="Disco de vinil em close">
+    </div>
   </main>
 
   <footer>
     <nav>
-      <ul>
+      <ul class="nav-list">
+        <li><a href="index.html">Início</a></li>
         <li><a href="assets/pages/catalogo.html">Catálogo</a></li>
-        <li><a href="assets/pages/conta.html">Minha conta</a></li>
-        <li><a href="assets/pages/entrar.html">Entrar</a></li>
-        <li><a href="assets/pages/cadastro.html">Criar conta</a></li>
+        <li><a href="assets/pages/carrinho.html">Carrinho</a></li>
+        <li><a href="assets/pages/conta.html">Conta</a></li>
       </ul>
     </nav>
     <p>&copy; 2026 Vinyl Records</p>
   </footer>
 
-  <script type="module" src="assets/js/controller/app.js"></script>
+  <script>
+    const mobileMenu = document.getElementById('mobile-menu');
+    const navList = document.querySelector('.nav-list');
+
+    mobileMenu.addEventListener('click', () => {
+      navList.classList.toggle('active');
+    });
+  </script>
 
 </body>
 </html>

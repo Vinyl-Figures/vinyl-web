@@ -11,7 +11,11 @@ function criar(tag, texto) {
 // imageUrl guarda o PNG em base64, sem o prefixo data:. Sem imagem, null.
 export function fonteDaImagem(valor) {
   const base64 = String(valor || '').trim();
-  return base64 ? `data:image/png;base64,${base64}` : null;
+
+  if (!base64) return null;
+  if (base64.startsWith('data:image/')) return base64;
+
+  return `data:image/jpeg;base64,${base64}`;
 }
 
 // <li><article><img?><h3><p><button>, igual ao catalogo.html

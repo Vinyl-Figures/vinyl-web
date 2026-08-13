@@ -1,0 +1,314 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400..800&display=swap');
+
+body {
+  background-color: #ffffff;
+  color: #000000;
+  font-family: 'Syne', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+/* ===== HEADER ===== */
+header {
+  width: 100%;
+  background-color: #000000;
+  color: #ffffff;
+  padding: 22px 60px;
+}
+
+header nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+header nav > a:first-child {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+header ul {
+  display: flex;
+  gap: 40px;
+}
+
+header ul li a {
+  font-size: 0.9rem;
+  font-weight: 500;
+  opacity: 0.85;
+  transition: opacity 0.3s ease;
+}
+
+header ul li a:hover {
+  opacity: 1;
+}
+
+/* ===== MAIN CONTAINER ===== */
+main {
+  flex: 1;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 50px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* ===== BREADCRUMB ===== */
+main > nav[aria-label="Você está aqui"] ol {
+  display: flex;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: #666666;
+}
+
+main > nav[aria-label="Você está aqui"] ol li + li::before {
+  content: "/";
+  margin-right: 10px;
+  color: #cccccc;
+}
+
+main > nav[aria-label="Você está aqui"] ol li a:hover {
+  text-decoration: underline;
+}
+
+main > h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  letter-spacing: -2px;
+  color: #000000;
+}
+
+/* ===== SEARCH & FILTERS SECTIONS ===== */
+main section h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+main section form {
+  background-color: #f9f9f9;
+  border: 1px solid #e5e5e5;
+  padding: 25px;
+  border-radius: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-end;
+}
+
+main section form label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+  display: block;
+}
+
+main section form input[type="search"],
+main section form input[type="number"],
+main section form select {
+  padding: 12px 18px;
+  border-radius: 30px;
+  border: 1px solid #dcdcdc;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.9rem;
+  background-color: #ffffff;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+main section form input[type="search"]:focus,
+main section form input[type="number"]:focus,
+main section form select:focus {
+  border-color: #000000;
+}
+
+main section form button[type="submit"],
+main section form button[type="reset"] {
+  background-color: #000000;
+  color: #ffffff;
+  padding: 12px 28px;
+  border-radius: 30px;
+  border: none;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+main section form button[type="submit"]:hover {
+  background-color: #333333;
+}
+
+main section form button[type="reset"] {
+  background-color: #e0e0e0;
+  color: #000000;
+}
+
+main section form button[type="reset"]:hover {
+  background-color: #cccccc;
+}
+
+main section form fieldsets {
+  border: none;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+main section form legend {
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+/* ===== PRODUCT LIST / GRID ===== */
+main section ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 30px;
+  margin-top: 20px;
+}
+
+main section ul li article {
+  background-color: #fafafa;
+  border: 1px solid #eaeaea;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+main section ul li article:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+main section ul li article img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+main section ul li article h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+main section ul li article p {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #555555;
+}
+
+main section ul li article button {
+  background-color: #000000;
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: 30px;
+  border: none;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: auto;
+}
+
+main section ul li article button:hover {
+  background-color: #333333;
+}
+
+/* ===== PAGINATION ===== */
+main section nav[aria-label="Paginação"] ul {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 40px;
+}
+
+main section nav[aria-label="Paginação"] ul li a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #e0e0e0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+main section nav[aria-label="Paginação"] ul li a[aria-current="page"],
+main section nav[aria-label="Paginação"] ul li a:hover {
+  background-color: #000000;
+  color: #ffffff;
+  border-color: #000000;
+}
+
+main section nav[aria-label="Paginação"] ul li:last-child a {
+  width: auto;
+  padding: 0 20px;
+  border-radius: 20px;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  width: 100%;
+  background-color: #0c0c0c;
+  color: #ffffff;
+  padding: 35px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  font-size: 0.85rem;
+}
+
+footer nav ul {
+  display: flex;
+  gap: 35px;
+}
+
+footer nav ul li a {
+  opacity: 0.8;
+  font-weight: 500;
+  transition: opacity 0.3s ease;
+}
+
+footer nav ul li a:hover {
+  opacity: 1;
+}
+
+footer p {
+  font-size: 0.75rem;
+  opacity: 0.5;
+}
