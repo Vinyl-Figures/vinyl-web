@@ -1,7 +1,8 @@
-// O carrinho da API não tem quantidade: cada disco aparece uma vez só.
+// Quantidade soma via POST repetido (o backend soma dentro da mesma
+// transação); não existe endpoint pra diminuir, só remover a linha toda.
 
 import { ROTAS, METODOS_PAGAMENTO } from '../config.js';
-import { carrinho, pedidos, pagamentos } from '../model/store.js';
+import { carrinho, cupons, frete, pedidos, pagamentos } from '../model/store.js';
 import { linhaCarrinho, preencher } from '../view/templates.js';
 import {
   alertar,
@@ -14,6 +15,7 @@ import {
   ocupado,
   travarBotao,
 } from '../view/ui.js';
+import { aplicarMascara, mascararCep } from '../view/mascaras.js';
 import { exigirLogin } from './app.js';
 
 // --- Elementos ---
@@ -31,30 +33,16 @@ function secaoPorTitulo(inicio) {
 
 const secaoVazia = secaoPorTitulo('Carrinho vazio');
 const secaoResumo = secaoPorTitulo('Resumo');
-const secaoCupom = secaoPorTitulo('Cupom');
-const secaoFrete = secaoPorTitulo('Frete');
+
+const campoCupom = document.querySelector('#cupom');
+const campoCep = document.querySelector('#cep');
+aplicarMascara(campoCep, mascararCep);
 
 const botaoFinalizar = formCarrinho?.querySelector('button[type="submit"]');
 
 let itens = [];
-
-// --- Cupom e frete ---
-// Não existem na API: os campos ficam desligados com o motivo à vista.
-
-function desligarSecaoSemApi(secao, motivo) {
-  if (!secao) return;
-
-  for (const campo of secao.querySelectorAll('input, button, select')) {
-    campo.disabled = true;
-  }
-
-  const aviso = document.createElement('p');
-  aviso.textContent = motivo;
-  secao.append(aviso);
-}
-
-desligarSecaoSemApi(secaoCupom, 'Indisponível: a API ainda não tem cupom de desconto.');
-desligarSecaoSemApi(secaoFrete, 'Indisponível: a API ainda não calcula frete.');
+let cupomAplicado = null; // { code, discountPercent }
+let freteCalculado = null; // { zipCode, distanceKm, price }
 
 // --- Carregamento ---
 
@@ -71,8 +59,19 @@ async function carregar() {
   }
 }
 
+function subtotalDoCarrinho() {
+  return itens.reduce((soma, item) => soma + Number(item.vinyl?.price || 0) * (item.quantity || 1), 0);
+}
+
+// Mesma fórmula do OrderService.checkout no backend: (subtotal + frete)
+// com desconto percentual aplicado por cima. Se divergir daqui, o resumo
+// mostra um total que o checkout não vai cobrar.
 function totalDoCarrinho() {
-  return itens.reduce((soma, item) => soma + Number(item.vinyl?.price || 0), 0);
+  const subtotal = subtotalDoCarrinho();
+  const valorFrete = freteCalculado?.price || 0;
+  const desconto = cupomAplicado?.discountPercent || 0;
+  const bruto = subtotal + valorFrete;
+  return bruto * (1 - desconto / 100);
 }
 
 function renderizar() {
@@ -81,18 +80,57 @@ function renderizar() {
   const total = totalDoCarrinho();
   if (totalRodape) totalRodape.textContent = formatarBRL(total);
 
-  // Sem API de frete, o frete é zero e o total é o subtotal.
+  const subtotal = subtotalDoCarrinho();
+  const valorFrete = freteCalculado?.price || 0;
+  const valorDesconto = (subtotal + valorFrete) - total;
+
   const valores = secaoResumo?.querySelectorAll('dd');
-  if (valores?.length >= 3) {
-    valores[0].textContent = formatarBRL(total);
-    valores[1].textContent = formatarBRL(0);
-    valores[2].textContent = formatarBRL(total);
+  if (valores?.length >= 4) {
+    valores[0].textContent = formatarBRL(subtotal);
+    valores[1].textContent = formatarBRL(valorFrete);
+    valores[2].textContent = formatarBRL(valorDesconto);
+    valores[3].textContent = formatarBRL(total);
   }
 
   const temItens = itens.length > 0;
   alternar(formCarrinho, temItens);
   alternar(secaoVazia, !temItens);
 }
+
+// --- Quantidade ---
+
+corpo?.addEventListener('change', async (evento) => {
+  const input = evento.target.closest('[data-acao="atualizar-quantidade"]');
+  if (!input) return;
+
+  const vinylId = Number(input.dataset.vinilId);
+  const atual = Number(input.dataset.qtdAtual);
+  const nova = Number(input.value);
+
+  if (!Number.isInteger(nova) || nova <= 0 || nova === atual) {
+    input.value = String(atual);
+    return;
+  }
+
+  if (nova < atual) {
+    input.value = String(atual);
+    avisar('Pra diminuir, remova o item e adicione de novo.', 'info');
+    return;
+  }
+
+  const diferenca = nova - atual;
+  input.disabled = true;
+
+  try {
+    await carrinho.adicionar(Array(diferenca).fill(vinylId));
+    await carregar();
+    avisar('Quantidade atualizada.');
+  } catch (erro) {
+    input.value = String(atual);
+    input.disabled = false;
+    mostrarErro(erro);
+  }
+});
 
 // --- Remover item ---
 
@@ -109,6 +147,51 @@ corpo?.addEventListener('click', async (evento) => {
   } catch (erro) {
     travarBotao(botao, false);
     mostrarErro(erro);
+  }
+});
+
+// --- Cupom ---
+
+document.querySelector('[data-acao="aplicar-cupom"]')?.addEventListener('click', async (evento) => {
+  const botao = evento.target;
+  const codigo = campoCupom?.value.trim();
+  if (!codigo) return;
+
+  travarBotao(botao, true, 'Aplicando…');
+
+  try {
+    const cupom = await cupons.buscar(codigo);
+    cupomAplicado = { code: cupom.code, discountPercent: Number(cupom.discountPercent) };
+    renderizar();
+    avisar(`Cupom ${cupom.code} aplicado.`);
+  } catch (erro) {
+    mostrarErro(erro);
+  } finally {
+    travarBotao(botao, false);
+  }
+});
+
+// --- Frete ---
+
+document.querySelector('[data-acao="calcular-frete"]')?.addEventListener('click', async (evento) => {
+  const botao = evento.target;
+  const cep = campoCep?.value.replace(/\D/g, '');
+  if (!cep || cep.length !== 8) {
+    avisar('O CEP precisa ter 8 dígitos.', 'erro');
+    return;
+  }
+
+  travarBotao(botao, true, 'Calculando…');
+
+  try {
+    const resultado = await frete.calcular(cep);
+    freteCalculado = { zipCode: cep, distanceKm: resultado.distanceKm, price: Number(resultado.price) };
+    renderizar();
+    avisar('Frete calculado.');
+  } catch (erro) {
+    mostrarErro(erro);
+  } finally {
+    travarBotao(botao, false);
   }
 });
 
@@ -146,7 +229,10 @@ formCarrinho?.addEventListener('submit', async (evento) => {
   travarBotao(botaoFinalizar, true, 'Finalizando…');
 
   try {
-    const pedido = await pedidos.finalizar();
+    const pedido = await pedidos.finalizar({
+      zipCode: freteCalculado?.zipCode,
+      couponCode: cupomAplicado?.code,
+    });
 
     await pagamentos.criar({
       orderId: pedido.id,
@@ -185,6 +271,8 @@ document.querySelector('[data-acao="esvaziar-carrinho"]')?.addEventListener('cli
 
   try {
     await carrinho.esvaziar();
+    cupomAplicado = null;
+    freteCalculado = null;
     await carregar();
   } catch (erro) {
     mostrarErro(erro);

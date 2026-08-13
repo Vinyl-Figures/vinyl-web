@@ -37,15 +37,13 @@
     <form action="carrinho.html" method="post">
       <table>
         <caption>Itens no carrinho</caption>
-        <!--
-          Sem coluna de Quantidade nem Subtotal: o carrinho da API é um
-          conjunto de vinis sem repetição, não existe quantidade por item.
-          As linhas abaixo são só exemplo — o JavaScript troca pelo conteúdo real.
-        -->
+        <!-- Linha abaixo é só exemplo — o JavaScript troca pelo conteúdo real. -->
         <thead>
           <tr>
             <th scope="col">Produto</th>
             <th scope="col">Preço</th>
+            <th scope="col">Quantidade</th>
+            <th scope="col">Subtotal</th>
             <th scope="col">Remover</th>
           </tr>
         </thead>
@@ -55,12 +53,17 @@
               <span>Arctic Monkeys &mdash; AM</span>
             </th>
             <td>R$ 130,00</td>
+            <td>
+              <label for="qtd-exemplo">Quantidade de AM</label>
+              <input type="number" id="qtd-exemplo" min="1" value="1">
+            </td>
+            <td>R$ 130,00</td>
             <td><button type="button">Remover</button></td>
           </tr>
         </tbody>
         <tfoot>
           <tr>
-            <th scope="row" colspan="2">Total</th>
+            <th scope="row" colspan="4">Total</th>
             <td>R$ 130,00</td>
           </tr>
         </tfoot>
@@ -70,14 +73,14 @@
         <h2>Cupom</h2>
         <label for="cupom">Código do cupom</label>
         <input type="text" id="cupom" name="cupom">
-        <button type="button">Aplicar cupom</button>
+        <button type="button" data-acao="aplicar-cupom">Aplicar cupom</button>
       </section>
 
       <section>
         <h2>Frete</h2>
         <label for="cep">CEP</label>
         <input type="text" id="cep" name="cep" inputmode="numeric" maxlength="9">
-        <button type="button">Calcular frete</button>
+        <button type="button" data-acao="calcular-frete">Calcular frete</button>
       </section>
 
       <section>
@@ -86,6 +89,8 @@
           <dt>Subtotal</dt>
           <dd>R$ 250,00</dd>
           <dt>Frete</dt>
+          <dd>R$ 0,00</dd>
+          <dt>Desconto</dt>
           <dd>R$ 0,00</dd>
           <dt>Total</dt>
           <dd>R$ 250,00</dd>

@@ -68,6 +68,14 @@ const POR_OPERACAO = {
   },
   'carrinho-remover': { padrao: 'Não foi possível remover o item do carrinho.' },
   'carrinho-esvaziar': { padrao: 'Não foi possível esvaziar o carrinho.' },
+  'cupom-buscar': {
+    404: 'Cupom não encontrado.',
+    padrao: 'Não foi possível aplicar o cupom.',
+  },
+  'frete-calcular': {
+    400: 'CEP inválido.',
+    padrao: 'Não foi possível calcular o frete.',
+  },
 
   // Pedidos
   checkout: {

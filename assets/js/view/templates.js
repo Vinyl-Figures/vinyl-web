@@ -45,9 +45,11 @@ export function cardVinil(vinil) {
   return item;
 }
 
-// Sem quantidade nem subtotal: cada vinil aparece uma vez só.
+// Aumentar quantidade soma no backend (POST repetido); diminuir não tem
+// endpoint — só remover a linha inteira. Por isso o input tem min = atual.
 export function linhaCarrinho(item) {
   const vinil = item.vinyl || {};
+  const quantidade = item.quantity || 1;
   const linha = criar('tr');
   linha.dataset.vinilId = item.vinylId;
 
@@ -57,6 +59,22 @@ export function linhaCarrinho(item) {
 
   const preco = criar('td', formatarBRL(vinil.price));
 
+  const qtdId = `qtd-${item.vinylId}`;
+  const qtdCelula = criar('td');
+  const qtdRotulo = criar('label', `Quantidade de ${vinil.title || `vinil ${item.vinylId}`}`);
+  qtdRotulo.htmlFor = qtdId;
+  const qtdInput = document.createElement('input');
+  qtdInput.type = 'number';
+  qtdInput.id = qtdId;
+  qtdInput.min = '1';
+  qtdInput.value = String(quantidade);
+  qtdInput.dataset.acao = 'atualizar-quantidade';
+  qtdInput.dataset.vinilId = item.vinylId;
+  qtdInput.dataset.qtdAtual = String(quantidade);
+  qtdCelula.append(qtdRotulo, qtdInput);
+
+  const subtotal = criar('td', formatarBRL(Number(vinil.price || 0) * quantidade));
+
   const acao = criar('td');
   const remover = criar('button', 'Remover');
   remover.type = 'button';
@@ -64,7 +82,7 @@ export function linhaCarrinho(item) {
   remover.dataset.vinilId = item.vinylId;
   acao.append(remover);
 
-  linha.append(produto, preco, acao);
+  linha.append(produto, preco, qtdCelula, subtotal, acao);
   return linha;
 }
 
