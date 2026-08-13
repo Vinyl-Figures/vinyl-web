@@ -105,6 +105,12 @@ export const carrinho = {
     );
   },
 
+  atualizar(vinylId, quantity, userId = getUserId()) {
+    return api.patch(`/users/${userId}/cartItems/${vinylId}`, { quantity }, {
+      contexto: 'carrinho-atualizar',
+    });
+  },
+
   remover(vinylId, userId = getUserId()) {
     return api.delete(`/users/${userId}/cartItems/${vinylId}`, {
       contexto: 'carrinho-remover',

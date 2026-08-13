@@ -66,6 +66,7 @@ const POR_OPERACAO = {
     409: 'Esse disco já está no seu carrinho.',
     padrao: 'Não foi possível adicionar ao carrinho.',
   },
+  'carrinho-atualizar': { padrao: 'Não foi possível atualizar a quantidade.' },
   'carrinho-remover': { padrao: 'Não foi possível remover o item do carrinho.' },
   'carrinho-esvaziar': { padrao: 'Não foi possível esvaziar o carrinho.' },
   'cupom-buscar': {

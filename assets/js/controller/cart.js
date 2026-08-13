@@ -1,6 +1,3 @@
-// Quantidade soma via POST repetido (o backend soma dentro da mesma
-// transação); não existe endpoint pra diminuir, só remover a linha toda.
-
 import { ROTAS, METODOS_PAGAMENTO } from '../config.js';
 import { carrinho, cupons, frete, pedidos, pagamentos } from '../model/store.js';
 import { linhaCarrinho, preencher } from '../view/templates.js';
@@ -112,17 +109,10 @@ corpo?.addEventListener('change', async (evento) => {
     return;
   }
 
-  if (nova < atual) {
-    input.value = String(atual);
-    avisar('Pra diminuir, remova o item e adicione de novo.', 'info');
-    return;
-  }
-
-  const diferenca = nova - atual;
   input.disabled = true;
 
   try {
-    await carrinho.adicionar(Array(diferenca).fill(vinylId));
+    await carrinho.atualizar(vinylId, nova);
     await carregar();
     avisar('Quantidade atualizada.');
   } catch (erro) {
