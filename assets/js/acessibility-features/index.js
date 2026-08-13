@@ -5,14 +5,13 @@ import { acessibilidade } from '../model/store.js';
 import { estaLogado } from '../model/session.js';
 import { escolherVarios, avisar } from '../view/ui.js';
 
-import HighContrast from './HighContrast.js';
 import IncreasedText from './IncreasedText.js';
 import CursorHighlight from './CursorHighlight.js';
 import Speaker, { falar } from './Speaker.js';
 import KeyboardNavigation from './KeyboardNavigation.js';
 import DyslexiaFont from './DyslexiaFont.js';
 
-const RECURSOS = [HighContrast, IncreasedText, CursorHighlight, Speaker, DyslexiaFont];
+const RECURSOS = [IncreasedText, CursorHighlight, Speaker, DyslexiaFont];
 
 // Não é preferência: sem ela, quem só usa teclado não tem como chegar em
 // lugar nenhum. Fica sempre ligada, fora da lista de toggle.
