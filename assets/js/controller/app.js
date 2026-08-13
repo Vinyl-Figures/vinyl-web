@@ -92,5 +92,5 @@ export function exigirLogin() {
 export function destinoAposLogin() {
   const salvo = sessionStorage.getItem('vinyl.voltarPara');
   sessionStorage.removeItem('vinyl.voltarPara');
-  return salvo || ROTAS.conta;
+  return salvo || ROTAS.catalogo;
 }

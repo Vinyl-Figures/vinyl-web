@@ -112,7 +112,7 @@ if (formCadastro) {
       // O cadastro não devolve token: precisa logar em seguida.
       try {
         await auth.entrar(email, senha);
-        location.href = ROTAS.conta;
+        location.href = destinoAposLogin();
       } catch {
         location.href = ROTAS.entrar;
       }

@@ -3,15 +3,20 @@
 
 import { acessibilidade } from '../model/store.js';
 import { estaLogado } from '../model/session.js';
-import { escolherVarios } from '../view/ui.js';
+import { escolherVarios, avisar } from '../view/ui.js';
 
 import HighContrast from './HighContrast.js';
 import IncreasedText from './IncreasedText.js';
 import CursorHighlight from './CursorHighlight.js';
 import Speaker, { falar } from './Speaker.js';
 import KeyboardNavigation from './KeyboardNavigation.js';
+import DyslexiaFont from './DyslexiaFont.js';
 
-const RECURSOS = [HighContrast, IncreasedText, CursorHighlight, Speaker, KeyboardNavigation];
+const RECURSOS = [HighContrast, IncreasedText, CursorHighlight, Speaker, DyslexiaFont];
+
+// Não é preferência: sem ela, quem só usa teclado não tem como chegar em
+// lugar nenhum. Fica sempre ligada, fora da lista de toggle.
+KeyboardNavigation.aplicar(true);
 
 const CHAVE_LOCAL = 'vinyl.acessibilidade';
 
@@ -107,6 +112,22 @@ export async function definir(slug, ativo) {
   else await acessibilidade.remover(id);
 }
 
+// Sem nenhuma interação prévia na página, o navegador (principalmente
+// Chrome) bloqueia speechSynthesis.speak() em silêncio. Tenta falar na
+// hora e, se a primeira tecla/clique vier depois, fala de novo — é o
+// máximo que dá pra garantir sem burlar a política do navegador.
+function falarAoAbrir(texto) {
+  falar(texto);
+
+  function tentarDeNovo() {
+    document.removeEventListener('keydown', tentarDeNovo);
+    document.removeEventListener('pointerdown', tentarDeNovo);
+    falar(texto);
+  }
+  document.addEventListener('keydown', tentarDeNovo);
+  document.addEventListener('pointerdown', tentarDeNovo);
+}
+
 const CHAVE_AVISO = 'vinyl.avisoAcessibilidade';
 
 // Sem sessão, ninguém chega na tela de Acessibilidade (fica atrás de login):
@@ -121,7 +142,7 @@ export async function oferecerAcessibilidade() {
   const emOrdem = [Speaker, ...RECURSOS.filter((r) => r !== Speaker)];
 
   const mensagem = 'Pressione Enter para ativar o leitor de voz, ou escolha outros recursos de acessibilidade.';
-  falar(mensagem);
+  falarAoAbrir(mensagem);
 
   const selecionados = await escolherVarios({
     titulo: 'Acessibilidade',
@@ -135,5 +156,14 @@ export async function oferecerAcessibilidade() {
   if (selecionados) {
     aplicar(selecionados);
     salvarLocais(selecionados);
+
+    // Nunca silencioso: sem isso, ativar sem querer (um Enter incidental,
+    // já que o Salvar vem focado) parece "sempre ligado" depois, sem
+    // explicação. Se o leitor ficou ativo, ele mesmo lê este aviso.
+    avisar(
+      selecionados.length
+        ? 'Preferências de acessibilidade salvas.'
+        : 'Nenhum recurso de acessibilidade ativado.'
+    );
   }
 }
