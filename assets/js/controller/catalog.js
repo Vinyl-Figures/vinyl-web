@@ -10,11 +10,11 @@ const POR_PAGINA = 8;
 
 // --- Elementos ---
 
-const listaProdutos = [...document.querySelectorAll('main ul')].find((ul) =>
-  ul.querySelector('li > article')
+// Achado pelo heading, não pelo conteúdo: a lista começa vazia, sem mock.
+const secaoResultados = [...document.querySelectorAll('main section')].find((secao) =>
+  secao.querySelector('h2')?.textContent.trim() === 'Todos os discos'
 );
-
-const secaoResultados = listaProdutos?.closest('section');
+const listaProdutos = secaoResultados?.querySelector('ul');
 const contador = secaoResultados?.querySelector('p');
 const navPaginacao = document.querySelector('nav[aria-label="Paginação"]');
 

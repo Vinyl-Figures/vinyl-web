@@ -3,11 +3,12 @@
 
 import { acessibilidade } from '../model/store.js';
 import { estaLogado } from '../model/session.js';
+import { escolherVarios } from '../view/ui.js';
 
 import HighContrast from './HighContrast.js';
 import IncreasedText from './IncreasedText.js';
 import CursorHighlight from './CursorHighlight.js';
-import Speaker from './Speaker.js';
+import Speaker, { falar } from './Speaker.js';
 import KeyboardNavigation from './KeyboardNavigation.js';
 
 const RECURSOS = [HighContrast, IncreasedText, CursorHighlight, Speaker, KeyboardNavigation];
@@ -104,4 +105,35 @@ export async function definir(slug, ativo) {
 
   if (ativo) await acessibilidade.selecionar(id);
   else await acessibilidade.remover(id);
+}
+
+const CHAVE_AVISO = 'vinyl.avisoAcessibilidade';
+
+// Sem sessão, ninguém chega na tela de Acessibilidade (fica atrás de login):
+// oferece todos os recursos num popup falado, uma vez por aba. Leitor de
+// tela já vem marcado e o botão "Salvar" já vem focado — quem não vê a tela
+// só aperta Enter; quem vê pode navegar e marcar mais recursos antes.
+export async function oferecerAcessibilidade() {
+  if (preferenciasLocais().includes(Speaker.slug)) return;
+  if (sessionStorage.getItem(CHAVE_AVISO)) return;
+  sessionStorage.setItem(CHAVE_AVISO, '1');
+
+  const emOrdem = [Speaker, ...RECURSOS.filter((r) => r !== Speaker)];
+
+  const mensagem = 'Pressione Enter para ativar o leitor de voz, ou escolha outros recursos de acessibilidade.';
+  falar(mensagem);
+
+  const selecionados = await escolherVarios({
+    titulo: 'Acessibilidade',
+    mensagem,
+    opcoes: emOrdem.map(({ slug, rotulo }) => ({ valor: slug, rotulo })),
+    selecionados: [Speaker.slug],
+    textoConfirmar: 'Salvar',
+    focarConfirmar: true,
+  });
+
+  if (selecionados) {
+    aplicar(selecionados);
+    salvarLocais(selecionados);
+  }
 }

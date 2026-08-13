@@ -88,8 +88,28 @@ export function alternar(elemento, visivel) {
   if (elemento) elemento.hidden = !visivel;
 }
 
+// <progress> sem "value" é indeterminado: todo navegador já anima sozinho,
+// sem precisar de CSS. Fica antes do elemento (irmão, não filho) porque
+// alguns dos elementos marcados como ocupados são <table>, que não aceita
+// filho arbitrário.
 export function ocupado(elemento, carregando) {
-  if (elemento) elemento.setAttribute('aria-busy', String(Boolean(carregando)));
+  if (!elemento) return;
+
+  elemento.setAttribute('aria-busy', String(Boolean(carregando)));
+
+  const anterior = elemento.previousElementSibling;
+  const spinner = anterior?.matches(`progress[data-${PREFIXO}="spinner"]`) ? anterior : null;
+
+  if (carregando) {
+    if (!spinner) {
+      const novo = document.createElement('progress');
+      novo.setAttribute('data-' + PREFIXO, 'spinner');
+      novo.setAttribute('aria-label', 'Carregando…');
+      elemento.before(novo);
+    }
+  } else {
+    spinner?.remove();
+  }
 }
 
 export function travarBotao(botao, travado, textoOcupado = 'Aguarde…') {
@@ -166,6 +186,7 @@ export function confirmar({
   mensagem = '',
   textoConfirmar = 'Confirmar',
   textoCancelar = 'Cancelar',
+  focarConfirmar = false,
 }) {
   const dialogo = criarDialogo();
 
@@ -192,7 +213,7 @@ export function confirmar({
       resolver(resposta);
     });
     dialogo.showModal();
-    cancelar.focus();
+    (focarConfirmar ? confirmarBotao : cancelar).focus();
   });
 }
 
@@ -235,6 +256,62 @@ export function escolher({ titulo, mensagem = '', opcoes, rotuloCampo = 'Opção
     });
     dialogo.showModal();
     select.focus();
+  });
+}
+
+// Como <dialog> só devolve string em close(), o valor de cada checkbox é
+// lido do DOM na hora do 'close', não carregado no returnValue.
+export function escolherVarios({
+  titulo,
+  mensagem = '',
+  opcoes,
+  selecionados = [],
+  textoConfirmar = 'Salvar',
+  textoCancelar = 'Cancelar',
+  focarConfirmar = false,
+}) {
+  const dialogo = criarDialogo();
+  const ativos = new Set(selecionados);
+
+  const fieldset = document.createElement('fieldset');
+  fieldset.append(criar('legend', 'Recursos'));
+
+  const checkboxes = opcoes.map((opcao) => {
+    const label = criar('label');
+    const input = document.createElement('input');
+    input.type = 'checkbox';
+    input.value = opcao.valor;
+    input.checked = ativos.has(opcao.valor);
+    label.append(input, document.createTextNode(' ' + opcao.rotulo));
+    fieldset.append(label);
+    return input;
+  });
+
+  const cancelar = criar('button', textoCancelar);
+  cancelar.type = 'button';
+  cancelar.addEventListener('click', () => dialogo.close('nao'));
+
+  const confirmarBotao = criar('button', textoConfirmar);
+  confirmarBotao.type = 'button';
+  confirmarBotao.addEventListener('click', () => dialogo.close('sim'));
+
+  const acoes = criarAcoes();
+  acoes.append(cancelar, confirmarBotao);
+
+  dialogo.append(criar('h2', titulo));
+  if (mensagem) dialogo.append(listaDeMensagens([mensagem]));
+  dialogo.append(fieldset, acoes);
+  document.body.append(dialogo);
+
+  return new Promise((resolver) => {
+    dialogo.addEventListener('close', () => {
+      const confirmado = dialogo.returnValue === 'sim';
+      const valor = confirmado ? checkboxes.filter((c) => c.checked).map((c) => c.value) : null;
+      dialogo.remove();
+      resolver(valor);
+    });
+    dialogo.showModal();
+    (focarConfirmar ? confirmarBotao : checkboxes[0])?.focus();
   });
 }
 

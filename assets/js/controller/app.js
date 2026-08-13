@@ -4,9 +4,11 @@ import { ROTAS } from '../config.js';
 import { estaLogado } from '../model/session.js';
 import { auth } from '../model/store.js';
 import { avisar, mostrarErro, alternar } from '../view/ui.js';
-import { aplicarSalvas, sincronizar } from '../acessibility-features/index.js';
+import { aplicarSalvas, sincronizar, oferecerAcessibilidade } from '../acessibility-features/index.js';
+import { aplicarSalvo, temaAtual, alternarTema } from '../view/tema.js';
 
 aplicarSalvas();
+aplicarSalvo();
 
 const logado = estaLogado();
 
@@ -22,6 +24,19 @@ if (linkConta && !logado) {
 
 alternar(document.querySelector(`footer nav a[href="${ROTAS.conta}"]`)?.closest('li'), logado);
 alternar(document.querySelector(`footer nav a[href="${ROTAS.entrar}"]`)?.closest('li'), !logado);
+
+// Sem CSS ainda: o botão só troca o atributo no <html> e o próprio rótulo.
+function rotuloTema(tema) {
+  return tema === 'escuro' ? 'Modo claro' : 'Modo escuro';
+}
+
+const botaoTema = document.querySelector('[data-acao="alternar-tema"]');
+if (botaoTema) {
+  botaoTema.textContent = rotuloTema(temaAtual());
+  botaoTema.addEventListener('click', () => {
+    botaoTema.textContent = rotuloTema(alternarTema());
+  });
+}
 
 let avisouDemora = false;
 document.addEventListener('api:demorando', () => {
@@ -49,6 +64,10 @@ if (linkSair) {
 // Falhar aqui não pode quebrar a página: o localStorage já valeu.
 if (logado) {
   sincronizar().catch(() => {});
+} else {
+  // Sem sessão não existe como chegar na tela de Acessibilidade: oferece
+  // os recursos direto, falado, pra quem não enxerga a página.
+  oferecerAcessibilidade().catch(() => {});
 }
 
 let saindoPorSessao = false;

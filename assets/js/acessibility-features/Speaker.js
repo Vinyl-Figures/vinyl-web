@@ -22,8 +22,8 @@ function textoDoElemento(elemento) {
   return (elemento.textContent || '').trim();
 }
 
-function falar(texto) {
-  if (!texto) return;
+export function falar(texto) {
+  if (!texto || !sintetizador) return;
 
   sintetizador.cancel();
 
