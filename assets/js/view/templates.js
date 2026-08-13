@@ -8,10 +8,13 @@ function criar(tag, texto) {
   return elemento;
 }
 
-// imageUrl guarda o PNG em base64, sem o prefixo data:. Sem imagem, null.
+// imageUrl guarda JPEG em base64, sem o prefixo data: — mas às vezes já
+// vem com o prefixo completo, daí é só usar direto. Sem imagem, null.
 export function fonteDaImagem(valor) {
   const base64 = String(valor || '').trim();
-  return base64 ? `data:image/png;base64,${base64}` : null;
+  if (!base64) return null;
+  if (base64.startsWith('data:image/')) return base64;
+  return `data:image/jpeg;base64,${base64}`;
 }
 
 // <li><article><img?><h3><p><button>, igual ao catalogo.html
@@ -35,11 +38,43 @@ export function cardVinil(vinil) {
 
   if (vinil.description) artigo.append(criar('p', vinil.description));
 
+  // Stepper (−/input/+) e "Adicionar ao carrinho" lado a lado. O input
+  // não tem <label> visível (cada card já mostra o título; um rótulo por
+  // card no grid ficaria repetitivo) — leva aria-label direto.
+  const linha = document.createElement('div');
+  linha.className = 'linha-acao-catalogo';
+
+  const stepper = document.createElement('div');
+  stepper.className = 'stepper-qtd';
+
+  const menos = criar('button', '−');
+  menos.type = 'button';
+  menos.dataset.acao = 'qtd-catalogo-menos';
+  menos.dataset.vinilId = vinil.id;
+  menos.setAttribute('aria-label', `Diminuir quantidade de ${vinil.title}`);
+
+  const qtdInput = document.createElement('input');
+  qtdInput.type = 'number';
+  qtdInput.min = '1';
+  qtdInput.value = '1';
+  qtdInput.dataset.qtdVinil = vinil.id;
+  qtdInput.setAttribute('aria-label', `Quantidade de ${vinil.title}`);
+
+  const mais = criar('button', '+');
+  mais.type = 'button';
+  mais.dataset.acao = 'qtd-catalogo-mais';
+  mais.dataset.vinilId = vinil.id;
+  mais.setAttribute('aria-label', `Aumentar quantidade de ${vinil.title}`);
+
+  stepper.append(menos, qtdInput, mais);
+
   const botao = criar('button', 'Adicionar ao carrinho');
   botao.type = 'button';
   botao.dataset.acao = 'adicionar-carrinho';
   botao.dataset.vinilId = vinil.id;
-  artigo.append(botao);
+
+  linha.append(stepper, botao);
+  artigo.append(linha);
 
   item.append(artigo);
   return item;

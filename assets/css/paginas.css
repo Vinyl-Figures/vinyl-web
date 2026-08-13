@@ -1,0 +1,416 @@
+/* entrar, cadastro, conta, carrinho — header/footer/breadcrumb ficam em
+   base.css. Mesmo vocabulário visual do catalogo.css (pílula preta,
+   cards arredondados, fundo #f9f9f9 nos formulários). */
+
+main {
+  flex: 1;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 50px 40px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+main > h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  color: #000000;
+}
+
+main > p {
+  font-size: 0.95rem;
+  color: #555555;
+}
+
+main > p a {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+/* Nav de seções da conta (#dados, #enderecos...) */
+main > nav[aria-label="Seções da conta"] ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+main > nav[aria-label="Seções da conta"] a {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 30px;
+  border: 1px solid #e0e0e0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+main > nav[aria-label="Seções da conta"] a:hover {
+  background-color: #105682;
+  color: #ffffff;
+  border-color: #105682;
+}
+
+/* Formulário solto (entrar/cadastro) ou dentro de <section> (conta) */
+main > form,
+main section {
+  background-color: #f9f9f9;
+  border: 1px solid #e5e5e5;
+  border-radius: 16px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+main section h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+main section form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+main form label,
+main section > label {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+main form label:has(input[type="checkbox"]) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+main input[type="text"],
+main input[type="email"],
+main input[type="password"],
+main input[type="tel"],
+main input[type="number"] {
+  padding: 12px 18px;
+  border-radius: 30px;
+  border: 1px solid #dcdcdc;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.9rem;
+  background-color: #ffffff;
+  outline: none;
+  transition: border-color 0.3s ease;
+  width: 100%;
+}
+
+main input:focus {
+  border-color: #105682;
+}
+
+/* Mostrar/ocultar senha: ícone dentro do campo, à direita */
+.campo-senha {
+  position: relative;
+  width: 100%;
+}
+
+.campo-senha input {
+  padding-right: 48px;
+}
+
+.campo-senha [data-acao="mostrar-senha"] {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  padding: 0;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.campo-senha [data-acao="mostrar-senha"]:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+:root[data-tema="escuro"] .campo-senha [data-acao="mostrar-senha"]:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Ícone é SVG de cor fixa (quase preto) — no tema escuro, o campo fica
+   escuro também e o ícone sumiria sem isso. */
+:root[data-tema="escuro"] .campo-senha [data-acao="mostrar-senha"] img {
+  filter: invert(1);
+}
+
+main button[type="submit"],
+main button[type="reset"],
+main > form + a,
+main button[data-acao] {
+  align-self: flex-start;
+  background-color: #105682;
+  color: #ffffff;
+  padding: 14px 32px;
+  border-radius: 30px;
+  border: none;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+main button[type="submit"]:hover,
+main button[data-acao]:hover {
+  background-color: #0c4160;
+}
+
+main button[type="reset"] {
+  background-color: #e0e0e0;
+  color: #000000;
+}
+
+main button[type="reset"]:hover {
+  background-color: #cccccc;
+}
+
+main > form > a {
+  align-self: flex-start;
+  padding: 14px 0;
+  font-weight: 700;
+  text-decoration: underline;
+  background: none;
+}
+
+fieldset {
+  border: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+fieldset legend {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+
+fieldset label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+/* Checkbox de verdade, não a caixinha crua do navegador — acessibilidade
+   (conta), "Continuar conectado" (entrar), "Novidades" (cadastro). */
+main input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  border: 2px solid #dcdcdc;
+  border-radius: 6px;
+  background-color: #ffffff;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+main input[type="checkbox"]:hover {
+  border-color: #105682;
+}
+
+main input[type="checkbox"]:checked {
+  background-color: #105682;
+  border-color: #105682;
+}
+
+main input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid #ffffff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+main input[type="checkbox"]:focus-visible {
+  outline: 2px solid #105682;
+  outline-offset: 2px;
+}
+
+:root[data-tema="escuro"] main input[type="checkbox"] {
+  background-color: #1c1c1c;
+  border-color: #333333;
+}
+
+:root[data-tema="escuro"] main input[type="checkbox"]:checked {
+  background-color: #105682;
+  border-color: #105682;
+}
+
+/* Endereços */
+#enderecos ul {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#enderecos li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #eaeaea;
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+
+#enderecos address {
+  font-style: normal;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Tabelas: pedidos (conta) e itens (carrinho) */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+caption {
+  text-align: left;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+th, td {
+  text-align: left;
+  padding: 14px 16px;
+  border-bottom: 1px solid #eaeaea;
+  font-size: 0.9rem;
+}
+
+thead th {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #777777;
+}
+
+tfoot th, tfoot td {
+  font-weight: 700;
+  border-bottom: none;
+  border-top: 2px solid #000000;
+}
+
+table button {
+  background-color: #105682;
+  color: #ffffff;
+  padding: 8px 18px;
+  border-radius: 30px;
+  border: none;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+table button:hover {
+  background-color: #0c4160;
+}
+
+table input[type="number"] {
+  width: 70px;
+  padding: 8px 12px;
+}
+
+/* Resumo (carrinho) */
+main section dl {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 16px;
+}
+
+main section dt {
+  color: #666666;
+  font-size: 0.9rem;
+}
+
+main section dd {
+  text-align: right;
+  font-weight: 600;
+}
+
+main section dl dt:last-of-type,
+main section dl dd:last-of-type {
+  font-size: 1.1rem;
+  font-weight: 800;
+  border-top: 1px solid #eaeaea;
+  padding-top: 8px;
+}
+
+:root[data-tema="escuro"] main > h1,
+:root[data-tema="escuro"] main > p {
+  color: #ffffff;
+}
+
+:root[data-tema="escuro"] main > form,
+:root[data-tema="escuro"] main section,
+:root[data-tema="escuro"] #enderecos li,
+:root[data-tema="escuro"] table {
+  background-color: #262626;
+  border-color: #2a2a2a;
+  color: #f5f5f5;
+}
+
+:root[data-tema="escuro"] main input {
+  background-color: #1c1c1c;
+  color: #f5f5f5;
+  border-color: #333333;
+}
+
+:root[data-tema="escuro"] th,
+:root[data-tema="escuro"] td {
+  border-color: #2a2a2a;
+}
+
+:root[data-tema="escuro"] thead th {
+  color: #999999;
+}
+
+:root[data-tema="escuro"] tfoot th,
+:root[data-tema="escuro"] tfoot td {
+  border-top-color: #f5f5f5;
+}
+
+:root[data-tema="escuro"] main section dt {
+  color: #999999;
+}
+
+:root[data-tema="escuro"] main section dl dt:last-of-type,
+:root[data-tema="escuro"] main section dl dd:last-of-type {
+  border-top-color: #3a3a3a;
+}

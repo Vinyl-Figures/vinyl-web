@@ -223,22 +223,37 @@ campoOrdenar?.addEventListener('change', () => {
   renderizar();
 });
 
+// Stepper de quantidade: só ajusta o número no input, nada de rede
+// ainda — a quantidade só é enviada quando "Adicionar ao carrinho" é
+// clicado (lá embaixo).
+listaProdutos?.addEventListener('click', (evento) => {
+  const botao = evento.target.closest('[data-acao="qtd-catalogo-menos"], [data-acao="qtd-catalogo-mais"]');
+  if (!botao) return;
+
+  const campoQtd = botao.closest('.stepper-qtd')?.querySelector('input');
+  if (!campoQtd) return;
+
+  const atual = Number(campoQtd.value) || 1;
+  const diferenca = botao.dataset.acao === 'qtd-catalogo-mais' ? 1 : -1;
+  campoQtd.value = String(Math.max(1, atual + diferenca));
+});
+
 listaProdutos?.addEventListener('click', async (evento) => {
   const botao = evento.target.closest('[data-acao="adicionar-carrinho"]');
   if (!botao) return;
 
   const vinylId = Number(botao.dataset.vinilId);
+  const campoQtd = botao.closest('article')?.querySelector(`[data-qtd-vinil="${vinylId}"]`);
+  const quantidade = Math.max(1, Number(campoQtd?.value) || 1);
+
   travarBotao(botao, true, 'Adicionando…');
 
   try {
-    const resposta = await carrinho.adicionar([vinylId]);
-
-    // skipped traz o que não entrou; o caso comum é já estar no carrinho.
-    if (resposta?.skipped?.[vinylId]) {
-      avisar('Este disco já está no seu carrinho.', 'info');
-    } else {
-      avisar('Adicionado ao carrinho.');
-    }
+    // Sem endpoint de quantidade: manda o mesmo vinylId repetido num só
+    // bulk — o backend soma dentro da mesma transação.
+    await carrinho.adicionar(Array(quantidade).fill(vinylId));
+    avisar(quantidade > 1 ? `${quantidade} unidades adicionadas ao carrinho.` : 'Adicionado ao carrinho.');
+    if (campoQtd) campoQtd.value = '1';
   } catch (erro) {
     mostrarErro(erro);
   } finally {

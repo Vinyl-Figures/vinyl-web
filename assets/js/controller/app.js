@@ -25,6 +25,16 @@ if (linkConta && !logado) {
 alternar(document.querySelector(`footer nav a[href="${ROTAS.conta}"]`)?.closest('li'), logado);
 alternar(document.querySelector(`footer nav a[href="${ROTAS.entrar}"]`)?.closest('li'), !logado);
 
+// Logado, o catálogo é o destino padrão (destinoAposLogin já reflete
+// isso) — o rastro de pão troca "Início" por "Catálogo", exceto na
+// própria página do catálogo (senão viraria "Catálogo > Catálogo").
+const primeiroCrumb = document.querySelector('main > nav[aria-label="Você está aqui"] ol li:first-child a');
+const crumbAtual = document.querySelector('main > nav[aria-label="Você está aqui"] ol li[aria-current="page"]');
+if (logado && primeiroCrumb && crumbAtual?.textContent.trim() !== 'Catálogo') {
+  primeiroCrumb.textContent = 'Catálogo';
+  primeiroCrumb.href = ROTAS.catalogo;
+}
+
 // Sem CSS ainda: o botão só troca o atributo no <html> e o próprio rótulo.
 function rotuloTema(tema) {
   return tema === 'escuro' ? 'Modo claro' : 'Modo escuro';

@@ -1,0 +1,140 @@
+/* Só o hero da index.html — header/footer/reset ficam em base.css. */
+
+main {
+  flex: 1;
+  width: 100%;
+  margin: 0;
+  padding: 60px 40px 60px 80px;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  gap: 20px;
+}
+
+main section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  z-index: 2;
+}
+
+main h1 {
+  font-size: 4.8rem;
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -2.5px;
+  margin-bottom: 20px;
+  color: #000000;
+}
+
+main p:first-of-type {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #555555;
+  margin-bottom: 35px;
+}
+
+main section > a:nth-of-type(1) {
+  background-color: #f5f5f5;
+  color: #000000;
+  padding: 16px 32px;
+  border-radius: 40px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+  border: 1px solid #e5e5e5;
+}
+
+main section > a:nth-of-type(1) span {
+  background-color: #105682;
+  color: #ffffff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+}
+
+main section > a:nth-of-type(1):hover {
+  background-color: #105682;
+  color: #ffffff;
+}
+
+main section > a:nth-of-type(1):hover span {
+  background-color: #ffffff;
+  color: #105682;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.vinyl-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  position: absolute;
+  right: -290px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+main img {
+  width: 980px;
+  max-width: none;
+  height: auto;
+  border-radius: 50%;
+  animation: spin 12s linear infinite;
+}
+
+:root[data-tema="escuro"] main h1 {
+  color: #ffffff;
+}
+
+:root[data-tema="escuro"] main p:first-of-type {
+  color: #bbbbbb;
+}
+
+:root[data-tema="escuro"] main section > a:nth-of-type(1) {
+  background-color: #262626;
+  color: #ffffff;
+  border-color: #2a2a2a;
+}
+
+@media (max-width: 992px) {
+  main {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 50px;
+    padding: 40px 20px;
+  }
+
+  main section {
+    align-items: center;
+  }
+
+  main h1 {
+    font-size: 2.8rem;
+  }
+
+  .vinyl-container {
+    position: relative;
+    right: auto;
+    top: auto;
+    transform: none;
+    justify-content: center;
+  }
+
+  main img {
+    width: 400px;
+  }
+}

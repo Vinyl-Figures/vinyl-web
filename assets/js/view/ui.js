@@ -1,72 +1,9 @@
-// Único arquivo que escreve CSS, e só para os popups.
+// Popups usam os atributos data-vinyl-ui="..." — o CSS deles fica em
+// assets/css/base.css, carregado em toda página.
 
 import { mensagemDoErro } from './erros.js';
 
 const PREFIXO = 'vinyl-ui';
-
-let estilosInjetados = false;
-
-function injetarEstilos() {
-  if (estilosInjetados) return;
-  estilosInjetados = true;
-
-  const estilo = document.createElement('style');
-  estilo.dataset.origem = PREFIXO;
-  estilo.textContent = `
-    [data-${PREFIXO}="dialogo"] {
-      color-scheme: light dark;
-      border: 1px solid CanvasText;
-      border-radius: 8px;
-      padding: 1.25rem 1.5rem;
-      max-width: 28rem;
-      background: Canvas;
-      color: CanvasText;
-    }
-    [data-${PREFIXO}="dialogo"]::backdrop {
-      background: rgb(0 0 0 / 0.5);
-    }
-    [data-${PREFIXO}="dialogo"] h2 {
-      margin: 0 0 0.5rem;
-      font-size: 1.1rem;
-    }
-    [data-${PREFIXO}="dialogo"] ul {
-      margin: 0 0 1rem;
-      padding-left: 1.25rem;
-    }
-    [data-${PREFIXO}="dialogo"] p {
-      margin: 0 0 1rem;
-    }
-    [data-${PREFIXO}="acoes"] {
-      display: flex;
-      gap: 0.5rem;
-      justify-content: flex-end;
-    }
-    [data-${PREFIXO}="avisos"] {
-      position: fixed;
-      top: 1rem;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      pointer-events: none;
-    }
-    [data-${PREFIXO}="aviso"] {
-      color-scheme: light dark;
-      background: Canvas;
-      color: CanvasText;
-      border: 1px solid CanvasText;
-      border-radius: 6px;
-      padding: 0.6rem 1rem;
-      max-width: 90vw;
-    }
-    [data-${PREFIXO}-tipo="erro"] {
-      border-width: 2px;
-    }
-  `;
-  document.head.append(estilo);
-}
 
 // --- Formatação ---
 
@@ -133,7 +70,6 @@ function criar(tag, texto) {
 }
 
 function criarDialogo() {
-  injetarEstilos();
   const dialogo = document.createElement('dialog');
   dialogo.setAttribute('data-' + PREFIXO, 'dialogo');
   return dialogo;
@@ -316,8 +252,6 @@ export function escolherVarios({
 }
 
 export function avisar(mensagem, tipo = 'sucesso') {
-  injetarEstilos();
-
   let area = document.querySelector(`[data-${PREFIXO}="avisos"]`);
   if (!area) {
     area = document.createElement('div');
