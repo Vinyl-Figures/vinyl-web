@@ -240,7 +240,7 @@ formCarrinho?.addEventListener('submit', async (evento) => {
       ],
     });
 
-    location.href = ROTAS.conta;
+    location.href = ROTAS.catalogo;
   } catch (erro) {
     travarBotao(botaoFinalizar, false);
     mostrarErro(erro);

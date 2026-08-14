@@ -81,6 +81,7 @@ const POR_OPERACAO = {
   // Pedidos
   checkout: {
     400: 'Seu carrinho está vazio ou tem itens indisponíveis.',
+    409: 'Você já usou esse cupom antes.',
     padrao: 'Não foi possível finalizar a compra.',
   },
   'pedidos-listar': { padrao: 'Não foi possível carregar seus pedidos.' },

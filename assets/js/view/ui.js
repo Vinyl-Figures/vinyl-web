@@ -52,11 +52,19 @@ export function ocupado(elemento, carregando) {
 export function travarBotao(botao, travado, textoOcupado = 'Aguarde…') {
   if (!botao) return;
   if (travado) {
-    botao.dataset.textoOriginal = botao.textContent;
-    botao.textContent = textoOcupado;
+    if (botao.dataset.textoOriginal === undefined) botao.dataset.textoOriginal = botao.textContent;
+
+    const spinner = document.createElement('span');
+    spinner.setAttribute('data-' + PREFIXO, 'spinner');
+    spinner.setAttribute('aria-hidden', 'true');
+
+    botao.replaceChildren(spinner, document.createTextNode(' ' + textoOcupado));
     botao.disabled = true;
   } else {
-    if (botao.dataset.textoOriginal) botao.textContent = botao.dataset.textoOriginal;
+    if (botao.dataset.textoOriginal !== undefined) {
+      botao.textContent = botao.dataset.textoOriginal;
+      delete botao.dataset.textoOriginal;
+    }
     botao.disabled = false;
   }
 }

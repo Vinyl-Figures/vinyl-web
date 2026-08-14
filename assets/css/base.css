@@ -9,6 +9,14 @@
   box-sizing: border-box;
 }
 
+/* Regra de UA pro atributo hidden é de baixa prioridade: display:flex/grid
+   de qualquer seletor de autor (catalogo.css, paginas.css...) já vence,
+   hidden ou não. !important aqui é o jeito correto e padrão de garantir
+   isso — não dá pra resolver só com especificidade. */
+[hidden] {
+  display: none !important;
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400..800&display=swap');
 
 body {
@@ -391,4 +399,25 @@ progress {
 
 :root[data-tema="escuro"] progress {
   accent-color: #ffffff;
+}
+
+/* Spinner circular pro texto de botão ocupado (view/ui.js:travarBotao) —
+   herda a cor do texto do botão via currentColor, então funciona nos
+   botões azuis (texto branco) e no botão reset (texto preto) sem regra
+   extra por tema. */
+span[data-vinyl-ui="spinner"] {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  vertical-align: -1px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: vinyl-girar 0.6s linear infinite;
+}
+
+@keyframes vinyl-girar {
+  to {
+    transform: rotate(360deg);
+  }
 }

@@ -1,6 +1,7 @@
 // Sempre createElement + textContent, nunca innerHTML: o conteúdo vem do servidor.
 
 import { formatarBRL, formatarData } from './ui.js';
+import { ROTAS } from '../config.js';
 
 function criar(tag, texto) {
   const elemento = document.createElement(tag);
@@ -8,13 +9,24 @@ function criar(tag, texto) {
   return elemento;
 }
 
-// imageUrl guarda JPEG em base64, sem o prefixo data: — mas às vezes já
-// vem com o prefixo completo, daí é só usar direto. Sem imagem, null.
+// imageUrl guarda base64 puro, sem o prefixo data: — mas às vezes já vem
+// com o prefixo completo, daí é só usar direto. A API real manda JPEG,
+// mas o dataload local usa PNG (assinatura diferente) — em vez de fixar
+// um MIME e torcer pro navegador ignorar (data: URI não tem sniffing
+// garantido como recurso buscado por HTTP), lê os primeiros bytes.
+function mimeDoBase64(base64) {
+  if (base64.startsWith('iVBORw0KGgo')) return 'image/png';
+  if (base64.startsWith('/9j/')) return 'image/jpeg';
+  if (base64.startsWith('R0lGOD')) return 'image/gif';
+  if (base64.startsWith('UklGR')) return 'image/webp';
+  return 'image/jpeg';
+}
+
 export function fonteDaImagem(valor) {
   const base64 = String(valor || '').trim();
   if (!base64) return null;
   if (base64.startsWith('data:image/')) return base64;
-  return `data:image/jpeg;base64,${base64}`;
+  return `data:${mimeDoBase64(base64)};base64,${base64}`;
 }
 
 // <li><article><img?><h3><p><button>, igual ao catalogo.html
@@ -23,6 +35,12 @@ export function cardVinil(vinil) {
   const artigo = criar('article');
   artigo.dataset.vinilId = vinil.id;
 
+  // Imagem + título levam pra tela de detalhes — <a> de verdade, não
+  // clique no card inteiro, senão conflita com o stepper e o botão
+  // "Adicionar ao carrinho" que também moram no card.
+  const link = criar('a');
+  link.href = `${ROTAS.disco}?id=${vinil.id}`;
+
   const src = fonteDaImagem(vinil.imageUrl);
   if (src) {
     const imagem = criar('img');
@@ -30,10 +48,11 @@ export function cardVinil(vinil) {
     imagem.alt = `Capa do álbum ${vinil.title}`;
     imagem.loading = 'lazy';
     imagem.addEventListener('error', () => imagem.remove(), { once: true });
-    artigo.append(imagem);
+    link.append(imagem);
   }
 
-  artigo.append(criar('h3', vinil.title));
+  link.append(criar('h3', vinil.title));
+  artigo.append(link);
   artigo.append(criar('p', formatarBRL(vinil.price)));
 
   if (vinil.description) artigo.append(criar('p', vinil.description));
@@ -133,6 +152,7 @@ export function linhaPedido(pedido, statusPagamento = '—') {
     identificador,
     criar('td', formatarData(pedido.createdAt)),
     criar('td', statusPagamento),
+    criar('td', formatarBRL(pedido.shippingPrice || 0)),
     criar('td', formatarBRL(pedido.totalPrice))
   );
   return linha;

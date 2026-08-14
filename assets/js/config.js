@@ -9,6 +9,7 @@ const pages = dentroDePages ? '' : 'assets/pages/';
 export const ROTAS = {
   inicio: raiz + 'index.html',
   catalogo: pages + 'catalogo.html',
+  disco: pages + 'disco.html',
   carrinho: pages + 'carrinho.html',
   conta: pages + 'conta.html',
   entrar: pages + 'entrar.html',
