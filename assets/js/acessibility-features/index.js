@@ -140,7 +140,12 @@ export async function oferecerAcessibilidade() {
 
   const emOrdem = [Speaker, ...RECURSOS.filter((r) => r !== Speaker)];
 
-  const mensagem = 'Pressione Enter para ativar o leitor de voz, ou escolha outros recursos de acessibilidade.';
+  const mensagem =
+    'Pressione Enter para ativar o leitor de voz, ou escolha outros recursos de acessibilidade. ' +
+    'Dica de navegação por teclado: use Tab para avançar e Shift mais Tab para voltar entre os ' +
+    'elementos da página, Enter ou Espaço para ativar o que estiver focado, e Esc para fechar ' +
+    'janelas como esta. Atalhos rápidos: Alt mais 1 vai para o início, Alt mais 2 para o catálogo, ' +
+    'Alt mais 3 para o carrinho, e Alt mais 4 para a conta.';
   falarAoAbrir(mensagem);
 
   const selecionados = await escolherVarios({

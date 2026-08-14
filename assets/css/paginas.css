@@ -96,7 +96,8 @@ main input[type="text"],
 main input[type="email"],
 main input[type="password"],
 main input[type="tel"],
-main input[type="number"] {
+main input[type="number"],
+main select {
   padding: 12px 18px;
   border-radius: 30px;
   border: 1px solid #dcdcdc;
@@ -108,8 +109,28 @@ main input[type="number"] {
   width: 100%;
 }
 
-main input:focus {
+main input:focus,
+main select:focus {
   border-color: #105682;
+}
+
+main input[type="text"]:focus-visible,
+main input[type="email"]:focus-visible,
+main input[type="password"]:focus-visible,
+main input[type="tel"]:focus-visible,
+main input[type="number"]:focus-visible,
+main select:focus-visible {
+  outline: 2px solid #105682;
+  outline-offset: 2px;
+}
+
+:root[data-tema="escuro"] main input[type="text"]:focus-visible,
+:root[data-tema="escuro"] main input[type="email"]:focus-visible,
+:root[data-tema="escuro"] main input[type="password"]:focus-visible,
+:root[data-tema="escuro"] main input[type="tel"]:focus-visible,
+:root[data-tema="escuro"] main input[type="number"]:focus-visible,
+:root[data-tema="escuro"] main select:focus-visible {
+  outline-color: #ffffff;
 }
 
 /* Mostrar/ocultar senha: ícone dentro do campo, à direita */
@@ -257,6 +278,12 @@ main input[type="checkbox"]:focus-visible {
   outline-offset: 2px;
 }
 
+/* #105682 contra o fundo escuro (#1c1c1c) fica ~2:1 — abaixo do 3:1 que
+   WCAG pede pra indicador de foco. Branco resolve sem introduzir cor nova. */
+:root[data-tema="escuro"] main input[type="checkbox"]:focus-visible {
+  outline-color: #ffffff;
+}
+
 :root[data-tema="escuro"] main input[type="checkbox"] {
   background-color: #1c1c1c;
   border-color: #333333;
@@ -347,6 +374,13 @@ table input[type="number"] {
   padding: 8px 12px;
 }
 
+/* table tem overflow:hidden (pros cantos arredondados) — o anel de foco
+   com offset positivo do input[type=number] geral seria cortado perto das
+   bordas da tabela, então aqui o anel precisa desenhar pra dentro. */
+table input[type="number"]:focus-visible {
+  outline-offset: -2px;
+}
+
 /* Resumo (carrinho) */
 main section dl {
   display: grid;
@@ -386,7 +420,8 @@ main section dl dd:last-of-type {
   color: #f5f5f5;
 }
 
-:root[data-tema="escuro"] main input {
+:root[data-tema="escuro"] main input,
+:root[data-tema="escuro"] main select {
   background-color: #1c1c1c;
   color: #f5f5f5;
   border-color: #333333;

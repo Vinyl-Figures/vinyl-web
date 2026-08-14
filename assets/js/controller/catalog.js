@@ -196,6 +196,9 @@ navPaginacao?.addEventListener('click', (evento) => {
   pagina = Number(link.dataset.pagina);
   renderizar();
   secaoResultados?.scrollIntoView({ behavior: 'smooth' });
+  // renderizar() reconstrói a paginação inteira — o link clicado não existe
+  // mais, então sem isso quem navega por teclado perde o foco e cai no topo.
+  navPaginacao.querySelector('a[aria-current="page"]')?.focus();
 });
 
 formBusca?.addEventListener('submit', (evento) => {

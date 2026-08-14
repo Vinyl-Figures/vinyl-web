@@ -63,6 +63,19 @@ main section form select:focus {
   border-color: #105682;
 }
 
+main section form input[type="search"]:focus-visible,
+main section form input[type="number"]:focus-visible,
+main section form select:focus-visible {
+  outline: 2px solid #105682;
+  outline-offset: 2px;
+}
+
+:root[data-tema="escuro"] main section form input[type="search"]:focus-visible,
+:root[data-tema="escuro"] main section form input[type="number"]:focus-visible,
+:root[data-tema="escuro"] main section form select:focus-visible {
+  outline-color: #ffffff;
+}
+
 main section form button[type="submit"],
 main section form button[type="reset"],
 main section form button[type="button"] {
@@ -251,6 +264,17 @@ main section ul li article p {
 
 .stepper-qtd input[type="number"] {
   -moz-appearance: textfield;
+}
+
+/* outline-offset negativo: .stepper-qtd tem overflow:hidden pra recortar
+   os cantos em pílula, e um anel de foco normal (pra fora) seria cortado. */
+.stepper-qtd input[type="number"]:focus-visible {
+  outline: 2px solid #105682;
+  outline-offset: -2px;
+}
+
+:root[data-tema="escuro"] .stepper-qtd input[type="number"]:focus-visible {
+  outline-color: #ffffff;
 }
 
 .linha-acao-catalogo > button {

@@ -35,6 +35,23 @@ a {
   color: inherit;
 }
 
+/* Foco visível pra todo link/botão do site — sem isso, quem navega por
+   teclado só via onde está em campos de formulário (paginas.css/
+   catalogo.css já cuidam desses). outline-offset negativo desenha o anel
+   pra dentro do próprio elemento, então containers com overflow:hidden
+   (.stepper-qtd, table) nunca cortam o anel — não dá pra resolver isso só
+   trocando a cor/especificidade. */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid #105682;
+  outline-offset: -2px;
+}
+
+:root[data-tema="escuro"] a:focus-visible,
+:root[data-tema="escuro"] button:focus-visible {
+  outline-color: #ffffff;
+}
+
 ul, ol {
   list-style: none;
 }
@@ -230,6 +247,32 @@ main > nav[aria-label="Você está aqui"] ol li a:hover {
   color: #000000;
 }
 
+/* Campo de formulário genérico (pedirCampos) — label em cima do input,
+   diferente de [data-vinyl-ui="dialogo"] label acima (que é a linha
+   horizontal do checkbox em escolherVarios). */
+[data-vinyl-ui="dialogo"] [data-vinyl-ui="campo"] {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+[data-vinyl-ui="dialogo"] [data-vinyl-ui="campo"] label {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+[data-vinyl-ui="dialogo"] input[type="text"] {
+  padding: 10px 16px;
+  border-radius: 30px;
+  border: 1px solid #dcdcdc;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.9rem;
+  width: 100%;
+  background: #ffffff;
+  color: #000000;
+}
+
 [data-vinyl-ui="acoes"] {
   display: flex;
   gap: 10px;
@@ -355,7 +398,8 @@ main > nav[aria-label="Você está aqui"] ol li a:hover {
   color: #cccccc;
 }
 
-:root[data-tema="escuro"] [data-vinyl-ui="dialogo"] select {
+:root[data-tema="escuro"] [data-vinyl-ui="dialogo"] select,
+:root[data-tema="escuro"] [data-vinyl-ui="dialogo"] input[type="text"] {
   background: #1c1c1c;
   color: #f5f5f5;
   border-color: #333333;

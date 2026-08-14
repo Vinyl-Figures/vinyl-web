@@ -80,9 +80,13 @@
 
       <section>
         <h2>Frete</h2>
-        <label for="cep">CEP</label>
-        <input type="text" id="cep" name="cep" inputmode="numeric" maxlength="9">
-        <button type="button" data-acao="calcular-frete">Calcular frete</button>
+
+        <label for="endereco-salvo">Endereço de entrega</label>
+        <select id="endereco-salvo">
+          <option value="">Selecione um endereço</option>
+        </select>
+
+        <button type="button" data-acao="cadastrar-endereco">Cadastrar novo endereço</button>
       </section>
 
       <section>

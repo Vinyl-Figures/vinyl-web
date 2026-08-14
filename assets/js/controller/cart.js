@@ -1,18 +1,20 @@
 import { ROTAS, METODOS_PAGAMENTO } from '../config.js';
-import { carrinho, cupons, frete, pedidos, pagamentos } from '../model/store.js';
+import { carrinho, cupons, enderecos, frete, pedidos, pagamentos } from '../model/store.js';
+import { getUserId } from '../model/session.js';
 import { linhaCarrinho, preencher } from '../view/templates.js';
 import {
   alertar,
   avisar,
   confirmar,
   escolher,
+  pedirCampos,
   formatarBRL,
   mostrarErro,
   alternar,
   ocupado,
   travarBotao,
 } from '../view/ui.js';
-import { aplicarMascara, mascararCep } from '../view/mascaras.js';
+import { apenasDigitos, mascararCep } from '../view/mascaras.js';
 import { exigirLogin } from './app.js';
 
 // --- Elementos ---
@@ -30,10 +32,10 @@ function secaoPorTitulo(inicio) {
 
 const secaoVazia = secaoPorTitulo('Carrinho vazio');
 const secaoResumo = secaoPorTitulo('Resumo');
+const secaoFrete = secaoPorTitulo('Frete');
 
 const campoCupom = document.querySelector('#cupom');
-const campoCep = document.querySelector('#cep');
-aplicarMascara(campoCep, mascararCep);
+const campoEnderecoSalvo = document.querySelector('#endereco-salvo');
 
 const botaoFinalizar = formCarrinho?.querySelector('button[type="submit"]');
 
@@ -114,6 +116,9 @@ corpo?.addEventListener('change', async (evento) => {
   try {
     await carrinho.atualizar(vinylId, nova);
     await carregar();
+    // carregar() reconstrói a tabela inteira — o input que tinha foco não
+    // existe mais; sem isso, quem navega por teclado cai fora da tabela.
+    corpo.querySelector(`[data-acao="atualizar-quantidade"][data-vinil-id="${vinylId}"]`)?.focus();
     avisar('Quantidade atualizada.');
   } catch (erro) {
     input.value = String(atual);
@@ -163,15 +168,68 @@ document.querySelector('[data-acao="aplicar-cupom"]')?.addEventListener('click',
 
 // --- Frete ---
 
-document.querySelector('[data-acao="calcular-frete"]')?.addEventListener('click', async (evento) => {
-  const botao = evento.target;
-  const cep = campoCep?.value.replace(/\D/g, '');
-  if (!cep || cep.length !== 8) {
-    avisar('O CEP precisa ter 8 dígitos.', 'erro');
-    return;
-  }
+async function carregarEnderecosSalvos() {
+  if (!campoEnderecoSalvo) return;
 
-  travarBotao(botao, true, 'Calculando…');
+  const opcaoPadrao = campoEnderecoSalvo.querySelector('option');
+  // Reseta pro só-placeholder antes de recarregar — a função é chamada de
+  // novo depois de cadastrar um endereço, senão as opções duplicariam.
+  campoEnderecoSalvo.replaceChildren(opcaoPadrao);
+
+  try {
+    const lista = await enderecos.listar(getUserId());
+
+    if (lista.length === 0) {
+      opcaoPadrao.textContent = 'Nenhum endereço registrado, registre um.';
+      return;
+    }
+
+    opcaoPadrao.textContent = 'Selecione um endereço';
+    const opcoes = lista.map((endereco) => {
+      const opcao = document.createElement('option');
+      opcao.value = endereco.zipCode;
+      opcao.textContent = `Nº ${endereco.number} — ${mascararCep(endereco.zipCode)}`;
+      return opcao;
+    });
+    campoEnderecoSalvo.append(...opcoes);
+  } catch {
+    opcaoPadrao.textContent = 'Nenhum endereço registrado, registre um.';
+  }
+}
+
+// Modal de cadastro em vez de mandar pra tela de conta — quem tá no
+// checkout não perde o carrinho pra ir cadastrar endereço em outra página.
+document.querySelector('[data-acao="cadastrar-endereco"]')?.addEventListener('click', async () => {
+  const valores = await pedirCampos({
+    titulo: 'Cadastrar endereço',
+    campos: [
+      { id: 'numero', rotulo: 'Número', obrigatorio: true, maxlength: 12 },
+      { id: 'complemento', rotulo: 'Complemento' },
+      { id: 'cep', rotulo: 'CEP', obrigatorio: true, inputmode: 'numeric', maxlength: 9, mascara: mascararCep },
+    ],
+    textoConfirmar: 'Salvar',
+  });
+
+  if (!valores) return;
+
+  try {
+    await enderecos.criar(getUserId(), {
+      number: valores.numero,
+      complement: valores.complemento,
+      zipCode: apenasDigitos(valores.cep),
+    });
+    avisar('Endereço cadastrado.');
+    await carregarEnderecosSalvos();
+  } catch (erro) {
+    mostrarErro(erro);
+  }
+});
+
+async function calcularFreteComCep(cep) {
+  if (!cep || cep.length !== 8) return;
+
+  if (campoEnderecoSalvo) campoEnderecoSalvo.disabled = true;
+  ocupado(secaoFrete, true, 'Calculando frete…');
 
   try {
     const resultado = await frete.calcular(cep);
@@ -181,8 +239,15 @@ document.querySelector('[data-acao="calcular-frete"]')?.addEventListener('click'
   } catch (erro) {
     mostrarErro(erro);
   } finally {
-    travarBotao(botao, false);
+    if (campoEnderecoSalvo) campoEnderecoSalvo.disabled = false;
+    ocupado(secaoFrete, false);
   }
+}
+
+// Selecionar o endereço já calcula o frete na hora — não tem mais campo de
+// CEP solto, o endereço vem só da lista (ou do cadastro pelo modal).
+campoEnderecoSalvo?.addEventListener('change', () => {
+  calcularFreteComCep(campoEnderecoSalvo.value);
 });
 
 // --- Checkout ---
@@ -269,4 +334,7 @@ document.querySelector('[data-acao="esvaziar-carrinho"]')?.addEventListener('cli
   }
 });
 
-if (exigirLogin()) carregar();
+if (exigirLogin()) {
+  carregar();
+  carregarEnderecosSalvos();
+}

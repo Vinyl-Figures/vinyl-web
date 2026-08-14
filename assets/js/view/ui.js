@@ -2,6 +2,7 @@
 // assets/css/base.css, carregado em toda página.
 
 import { mensagemDoErro } from './erros.js';
+import { aplicarMascara } from './mascaras.js';
 
 const PREFIXO = 'vinyl-ui';
 
@@ -29,7 +30,7 @@ export function alternar(elemento, visivel) {
 // sem precisar de CSS. Fica antes do elemento (irmão, não filho) porque
 // alguns dos elementos marcados como ocupados são <table>, que não aceita
 // filho arbitrário.
-export function ocupado(elemento, carregando) {
+export function ocupado(elemento, carregando, rotulo = 'Carregando…') {
   if (!elemento) return;
 
   elemento.setAttribute('aria-busy', String(Boolean(carregando)));
@@ -41,7 +42,7 @@ export function ocupado(elemento, carregando) {
     if (!spinner) {
       const novo = document.createElement('progress');
       novo.setAttribute('data-' + PREFIXO, 'spinner');
-      novo.setAttribute('aria-label', 'Carregando…');
+      novo.setAttribute('aria-label', rotulo);
       elemento.before(novo);
     }
   } else {
@@ -99,6 +100,7 @@ function listaDeMensagens(mensagens) {
 
 export function alertar({ titulo, mensagem = '', tipo = 'sucesso', textoBotao = 'OK' }) {
   const mensagens = Array.isArray(mensagem) ? mensagem : mensagem ? [mensagem] : [];
+  const invocador = document.activeElement;
 
   const dialogo = criarDialogo();
   dialogo.setAttribute('data-' + PREFIXO + '-tipo', tipo);
@@ -118,6 +120,9 @@ export function alertar({ titulo, mensagem = '', tipo = 'sucesso', textoBotao = 
   return new Promise((resolver) => {
     dialogo.addEventListener('close', () => {
       dialogo.remove();
+      // showModal() move o foco pro dialog; fechar não devolve sozinho —
+      // sem isso, quem navega por teclado perde o lugar e cai no <body>.
+      invocador?.focus?.();
       resolver();
     });
     dialogo.showModal();
@@ -133,6 +138,7 @@ export function confirmar({
   focarConfirmar = false,
 }) {
   const dialogo = criarDialogo();
+  const invocador = document.activeElement;
 
   const cancelar = criar('button', textoCancelar);
   cancelar.type = 'button';
@@ -154,6 +160,7 @@ export function confirmar({
     dialogo.addEventListener('close', () => {
       const resposta = dialogo.returnValue === 'sim';
       dialogo.remove();
+      invocador?.focus?.();
       resolver(resposta);
     });
     dialogo.showModal();
@@ -163,6 +170,7 @@ export function confirmar({
 
 export function escolher({ titulo, mensagem = '', opcoes, rotuloCampo = 'Opção' }) {
   const dialogo = criarDialogo();
+  const invocador = document.activeElement;
 
   const campoId = 'vinyl-ui-escolha';
   const rotulo = criar('label', rotuloCampo);
@@ -196,6 +204,7 @@ export function escolher({ titulo, mensagem = '', opcoes, rotuloCampo = 'Opção
     dialogo.addEventListener('close', () => {
       const valor = dialogo.returnValue || null;
       dialogo.remove();
+      invocador?.focus?.();
       resolver(valor);
     });
     dialogo.showModal();
@@ -215,6 +224,7 @@ export function escolherVarios({
   focarConfirmar = false,
 }) {
   const dialogo = criarDialogo();
+  const invocador = document.activeElement;
   const ativos = new Set(selecionados);
 
   const fieldset = document.createElement('fieldset');
@@ -252,10 +262,78 @@ export function escolherVarios({
       const confirmado = dialogo.returnValue === 'sim';
       const valor = confirmado ? checkboxes.filter((c) => c.checked).map((c) => c.value) : null;
       dialogo.remove();
+      invocador?.focus?.();
       resolver(valor);
     });
     dialogo.showModal();
     (focarConfirmar ? confirmarBotao : checkboxes[0])?.focus();
+  });
+}
+
+// Formulário genérico dentro de um <dialog> — campos = [{ id, rotulo,
+// obrigatorio, maxlength, inputmode, mascara }]. Confirmar só fecha se os
+// campos obrigatórios passarem em reportValidity(), igual um <form> normal
+// validaria no submit — não tem <form> aqui porque o botão já fecha o
+// <dialog> sozinho, sem precisar de submit de verdade.
+export function pedirCampos({ titulo, mensagem = '', campos, textoConfirmar = 'Salvar', textoCancelar = 'Cancelar' }) {
+  const dialogo = criarDialogo();
+  const invocador = document.activeElement;
+
+  const inputs = campos.map((campo) => {
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.id = `vinyl-ui-campo-${campo.id}`;
+    if (campo.obrigatorio) input.required = true;
+    if (campo.maxlength) input.maxLength = campo.maxlength;
+    if (campo.inputmode) input.inputMode = campo.inputmode;
+    if (campo.mascara) aplicarMascara(input, campo.mascara);
+    input.dataset.campoId = campo.id;
+    return input;
+  });
+
+  const linhas = campos.map((campo, indice) => {
+    const rotulo = criar('label', campo.rotulo);
+    rotulo.htmlFor = inputs[indice].id;
+
+    const linha = document.createElement('div');
+    linha.setAttribute('data-' + PREFIXO, 'campo');
+    linha.append(rotulo, inputs[indice]);
+    return linha;
+  });
+
+  const cancelar = criar('button', textoCancelar);
+  cancelar.type = 'button';
+  cancelar.addEventListener('click', () => dialogo.close('nao'));
+
+  const confirmarBotao = criar('button', textoConfirmar);
+  confirmarBotao.type = 'button';
+  confirmarBotao.addEventListener('click', () => {
+    for (const input of inputs) {
+      if (!input.reportValidity()) return;
+    }
+    dialogo.close('sim');
+  });
+
+  const acoes = criarAcoes();
+  acoes.append(cancelar, confirmarBotao);
+
+  dialogo.append(criar('h2', titulo));
+  if (mensagem) dialogo.append(listaDeMensagens([mensagem]));
+  dialogo.append(...linhas, acoes);
+  document.body.append(dialogo);
+
+  return new Promise((resolver) => {
+    dialogo.addEventListener('close', () => {
+      const confirmado = dialogo.returnValue === 'sim';
+      const valores = confirmado
+        ? Object.fromEntries(inputs.map((input) => [input.dataset.campoId, input.value.trim()]))
+        : null;
+      dialogo.remove();
+      invocador?.focus?.();
+      resolver(valores);
+    });
+    dialogo.showModal();
+    inputs[0]?.focus();
   });
 }
 

@@ -71,6 +71,7 @@ const POR_OPERACAO = {
   'carrinho-esvaziar': { padrao: 'Não foi possível esvaziar o carrinho.' },
   'cupom-buscar': {
     404: 'Cupom não encontrado.',
+    409: 'Você já usou esse cupom antes.',
     padrao: 'Não foi possível aplicar o cupom.',
   },
   'frete-calcular': {
