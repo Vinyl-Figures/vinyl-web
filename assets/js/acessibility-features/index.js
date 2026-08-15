@@ -10,8 +10,9 @@ import CursorHighlight from './CursorHighlight.js';
 import Speaker, { falar } from './Speaker.js';
 import KeyboardNavigation from './KeyboardNavigation.js';
 import DyslexiaFont from './DyslexiaFont.js';
+import VLibras from "./VLibras.js";
 
-const RECURSOS = [IncreasedText, CursorHighlight, Speaker, DyslexiaFont];
+const RECURSOS = [IncreasedText, CursorHighlight, Speaker, DyslexiaFont, VLibras];
 
 // Não é preferência: sem ela, quem só usa teclado não tem como chegar em
 // lugar nenhum. Fica sempre ligada, fora da lista de toggle.

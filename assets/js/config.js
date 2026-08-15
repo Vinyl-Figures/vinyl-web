@@ -1,5 +1,7 @@
-export const API_BASE_URL = 'http://localhost:8080/api/v1';
+//export const API_BASE_URL = 'http://localhost:8080/api/v1';
 // Produção: 'https://api-production-0425.up.railway.app/api/v1'
+
+export const API_BASE_URL = 'https://api-production-0425.up.railway.app/api/v1'
 
 // Todo redirecionamento feito por JavaScript passa por ROTAS.
 const dentroDePages = location.pathname.includes('/assets/pages/');
