@@ -1,7 +1,133 @@
-/* Compartilhado por todas as páginas: reset, tipografia, header/footer,
-   popups (view/ui.js), tema escuro e recursos de acessibilidade. Layout
-   específico de cada página fica em style.css (index) ou paginas.css
-   (formulários) / catalogo.css. */
+/* Compartilhado por todas as páginas: tokens, reset, tipografia,
+   header/footer, popups (view/ui.js), tema escuro e recursos de
+   acessibilidade. Layout específico de cada página fica em style.css
+   (index), catalogo.css, paginas.css (formulários) ou disco.css.
+
+   O vocabulário visual está documentado em DESIGN.md, na raiz. */
+
+/* @import PRECISA vir antes de qualquer regra de estilo: o navegador
+   descarta um @import que apareça depois, e era exatamente isso que
+   acontecia aqui — a Syne nunca carregava e tudo caía no sans-serif do
+   sistema. */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400..800&display=swap');
+
+:root {
+  /* ===== Cor: base ===== */
+  --cor-fundo: #ffffff;
+  --cor-texto: #000000;
+  --cor-texto-suave: #555555;
+  --cor-texto-meta: #6b6b6b;
+  --cor-superficie: #f9f9f9;
+  --cor-superficie-alta: #ffffff;
+  --cor-borda: #e5e5e5;
+  --cor-borda-suave: #eaeaea;
+  --cor-divisor: #cccccc;
+  --cor-campo: #ffffff;
+  --cor-campo-borda: #dcdcdc;
+  --cor-controle: #e0e0e0;
+  --cor-controle-hover: #cccccc;
+  --cor-sobre-controle: #000000;
+  --cor-barra: #000000;
+  --cor-barra-pe: #0c0c0c;
+  --cor-barra-texto: #ffffff;
+
+  /* ===== Cor: destaque ===== */
+  --cor-destaque: #105682;
+  --cor-destaque-hover: #0c4160;
+  --cor-destaque-suave: rgba(16, 86, 130, 0.08);
+  --cor-sobre-destaque: #ffffff;
+  --cor-foco: #105682;
+
+  /* ===== Cor: semântica ===== */
+  --cor-erro: #c0392b;
+  --cor-info: #2d6cdf;
+  --cor-realce-cursor: #ff5a00;
+
+  /* ===== Tipografia ===== */
+  --fonte: 'Syne', sans-serif;
+
+  /* clamp() no lugar de trocar o tamanho no media query: escala contínua,
+     sem o degrau que existia em 992px. */
+  --texto-hero: clamp(2.5rem, 7vw, 4.5rem);
+  --texto-1: clamp(2.25rem, 5vw, 3.25rem);
+  --texto-2: clamp(1.75rem, 4vw, 2.5rem);
+  --texto-3: 1.75rem;
+  --texto-4: 1.25rem;
+  --texto-5: 1.0625rem;
+  --texto-corpo: 0.9375rem;
+  --texto-ui: 0.875rem;
+  --texto-meta: 0.8125rem;
+
+  --altura-display: 1.05;
+  --altura-titulo: 1.25;
+  --altura-corpo: 1.55;
+
+  /* Tracking em em, não px: acompanha o font-size — inclusive quando o
+     recurso "texto aumentado" leva a raiz pra 120%. */
+  --tracking-hero: -0.035em;
+  --tracking-titulo: -0.025em;
+  --tracking-caixa-alta: 0.06em;
+
+  /* ===== Espaçamento (escala de 4px) ===== */
+  --espaco-1: 4px;
+  --espaco-2: 8px;
+  --espaco-3: 12px;
+  --espaco-4: 16px;
+  --espaco-5: 20px;
+  --espaco-6: 24px;
+  --espaco-7: 32px;
+  --espaco-8: 40px;
+  --espaco-9: 48px;
+  --espaco-10: 64px;
+  --espaco-11: 80px;
+
+  /* ===== Forma ===== */
+  --raio-pilula: 30px;
+  --raio-card: 16px;
+  --raio-card-interno: 12px;
+  --raio-imagem: 10px;
+  --raio-caixa: 6px;
+
+  /* ===== Elevação ===== */
+  --sombra-card: 0 10px 25px rgba(0, 0, 0, 0.08);
+  --sombra-flutuante: 0 15px 35px rgba(0, 0, 0, 0.18);
+  --sombra-modal: 0 20px 50px rgba(0, 0, 0, 0.25);
+
+  /* ===== Movimento ===== */
+  --transicao-rapida: 0.15s ease;
+  --transicao: 0.25s ease;
+}
+
+/* Tema escuro: só os tokens mudam. As regras de componente lá embaixo
+   são as mesmas dos dois temas — antes cada uma tinha um bloco duplicado
+   só pra trocar cor. */
+:root[data-tema="escuro"] {
+  --cor-fundo: #1c1c1c;
+  --cor-texto: #f5f5f5;
+  --cor-texto-suave: #c4c4c4;
+  --cor-texto-meta: #a0a0a0;
+  --cor-superficie: #262626;
+  /* Um degrau acima da superfície: no claro é branco sobre cinza; no
+     escuro, sem isso, tabela e card de endereço somem dentro da seção. */
+  --cor-superficie-alta: #2f2f2f;
+  --cor-borda: #2a2a2a;
+  --cor-borda-suave: #333333;
+  --cor-divisor: #444444;
+  --cor-campo: #1c1c1c;
+  --cor-campo-borda: #333333;
+  --cor-controle: #3a3a3a;
+  --cor-controle-hover: #4a4a4a;
+  --cor-sobre-controle: #f5f5f5;
+
+  --cor-erro: #e74c3c;
+  --cor-info: #5b9bf5;
+
+  /* #105682 sobre #1c1c1c dá ~2:1 — abaixo do 3:1 que a WCAG pede pra
+     indicador de foco. Branco resolve sem introduzir cor nova. */
+  --cor-foco: #ffffff;
+
+  --sombra-card: 0 10px 25px rgba(0, 0, 0, 0.45);
+}
 
 * {
   margin: 0;
@@ -17,12 +143,12 @@
   display: none !important;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400..800&display=swap');
-
 body {
-  background-color: #ffffff;
-  color: #000000;
-  font-family: 'Syne', sans-serif;
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
+  font-family: var(--fonte);
+  font-size: 1rem;
+  line-height: var(--altura-corpo);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -30,38 +156,57 @@ body {
   overflow-x: hidden;
 }
 
+h1, h2, h3 {
+  line-height: var(--altura-titulo);
+}
+
 a {
   text-decoration: none;
   color: inherit;
-}
-
-/* Foco visível pra todo link/botão do site — sem isso, quem navega por
-   teclado só via onde está em campos de formulário (paginas.css/
-   catalogo.css já cuidam desses). outline-offset negativo desenha o anel
-   pra dentro do próprio elemento, então containers com overflow:hidden
-   (.stepper-qtd, table) nunca cortam o anel — não dá pra resolver isso só
-   trocando a cor/especificidade. */
-a:focus-visible,
-button:focus-visible {
-  outline: 2px solid #105682;
-  outline-offset: -2px;
-}
-
-:root[data-tema="escuro"] a:focus-visible,
-:root[data-tema="escuro"] button:focus-visible {
-  outline-color: #ffffff;
 }
 
 ul, ol {
   list-style: none;
 }
 
+img {
+  max-width: 100%;
+}
+
+/* Foco visível pra todo link/botão do site — sem isso, quem navega por
+   teclado só via onde está em campos de formulário. outline-offset
+   negativo desenha o anel pra dentro do próprio elemento, então
+   containers com overflow:hidden (.stepper-qtd, table) nunca cortam o
+   anel — não dá pra resolver isso só trocando a cor/especificidade. */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--cor-foco);
+  outline-offset: -2px;
+}
+
+/* O JS desabilita de verdade (view/ui.js:travarBotao, o <select> de
+   endereço enquanto o frete calcula). Sem isto, elemento travado fica
+   com cara de clicável. */
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Resposta ao clique: o projeto tinha hover e foco, mas nada acontecia
+   entre apertar e soltar. */
+button:not(:disabled):active {
+  transform: translateY(1px);
+}
+
 /* ===== HEADER ===== */
 header {
   width: 100%;
-  background-color: #000000;
-  color: #ffffff;
-  padding: 22px 60px;
+  background-color: var(--cor-barra);
+  color: var(--cor-barra-texto);
+  padding: var(--espaco-5) var(--espaco-10);
 }
 
 header nav {
@@ -70,27 +215,27 @@ header nav {
   align-items: center;
   width: 100%;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: var(--espaco-4);
 }
 
 header nav > a:first-child {
-  font-size: 1.15rem;
+  font-size: var(--texto-4);
   font-weight: 700;
-  letter-spacing: -0.5px;
+  letter-spacing: var(--tracking-titulo);
 }
 
 header ul {
   display: flex;
   align-items: center;
-  gap: 40px;
+  gap: var(--espaco-8);
   flex-wrap: wrap;
 }
 
 header ul li a {
-  font-size: 0.9rem;
+  font-size: var(--texto-ui);
   font-weight: 500;
   opacity: 0.85;
-  transition: opacity 0.3s ease;
+  transition: opacity var(--transicao);
 }
 
 header ul li a:hover {
@@ -99,46 +244,54 @@ header ul li a:hover {
 
 header ul li button {
   background: transparent;
-  border: 1px solid #ffffff;
-  color: #ffffff;
-  padding: 8px 18px;
-  border-radius: 30px;
-  font-family: 'Syne', sans-serif;
-  font-size: 0.8rem;
+  border: 1px solid var(--cor-barra-texto);
+  color: var(--cor-barra-texto);
+  padding: var(--espaco-2) var(--espaco-5);
+  border-radius: var(--raio-pilula);
+  font-family: var(--fonte);
+  font-size: var(--texto-meta);
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color var(--transicao), color var(--transicao);
 }
 
 header ul li button:hover {
-  background-color: #ffffff;
-  color: #000000;
+  background-color: var(--cor-barra-texto);
+  color: var(--cor-barra);
+}
+
+/* No header o fundo é sempre preto, nos dois temas: o anel azul/branco
+   padrão some ou briga com a barra. */
+header a:focus-visible,
+header button:focus-visible {
+  outline-color: var(--cor-barra-texto);
+  outline-offset: 2px;
 }
 
 /* ===== FOOTER ===== */
 footer {
   width: 100%;
-  background-color: #0c0c0c;
-  color: #ffffff;
-  padding: 35px 40px;
+  background-color: var(--cor-barra-pe);
+  color: var(--cor-barra-texto);
+  padding: var(--espaco-7) var(--espaco-8);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
-  font-size: 0.85rem;
+  gap: var(--espaco-4);
+  font-size: var(--texto-ui);
 }
 
 footer nav ul {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 35px;
+  gap: var(--espaco-7);
 }
 
 footer nav ul li a {
   opacity: 0.8;
   font-weight: 500;
-  transition: opacity 0.3s ease;
+  transition: opacity var(--transicao);
 }
 
 footer nav ul li a:hover {
@@ -146,35 +299,38 @@ footer nav ul li a:hover {
 }
 
 footer p {
-  font-size: 0.75rem;
-  opacity: 0.5;
+  font-size: var(--texto-meta);
+  opacity: 0.55;
+}
+
+footer a:focus-visible {
+  outline-color: var(--cor-barra-texto);
+  outline-offset: 2px;
 }
 
 /* ===== BREADCRUMB (usado em toda página que não é a home) ===== */
 main > nav[aria-label="Você está aqui"] ol {
   display: flex;
-  gap: 10px;
-  font-size: 0.85rem;
-  color: #666666;
-  padding: 30px 40px 0;
+  flex-wrap: wrap;
+  gap: var(--espaco-2);
+  font-size: var(--texto-ui);
+  color: var(--cor-texto-meta);
+  padding: var(--espaco-7) var(--espaco-8) 0;
 }
 
 main > nav[aria-label="Você está aqui"] ol li + li::before {
   content: "/";
-  margin-right: 10px;
-  color: #cccccc;
+  margin-right: var(--espaco-2);
+  color: var(--cor-divisor);
 }
 
 main > nav[aria-label="Você está aqui"] ol li a:hover {
   text-decoration: underline;
 }
 
-:root[data-tema="escuro"] main > nav[aria-label="Você está aqui"] ol {
-  color: #999999;
-}
-
-:root[data-tema="escuro"] main > nav[aria-label="Você está aqui"] ol li + li::before {
-  color: #444444;
+main > nav[aria-label="Você está aqui"] ol li[aria-current="page"] {
+  color: var(--cor-texto);
+  font-weight: 600;
 }
 
 /* ===== POPUPS (view/ui.js) =====
@@ -187,14 +343,15 @@ main > nav[aria-label="Você está aqui"] ol li a:hover {
   margin: auto;
   color-scheme: light dark;
   border: none;
-  border-radius: 16px;
-  padding: 28px 32px;
+  border-radius: var(--raio-card);
+  padding: var(--espaco-7);
   max-width: 28rem;
   width: 90vw;
-  background: #ffffff;
-  color: #000000;
-  font-family: 'Syne', sans-serif;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  background: var(--cor-superficie-alta);
+  color: var(--cor-texto);
+  font-family: var(--fonte);
+  line-height: var(--altura-corpo);
+  box-shadow: var(--sombra-modal);
 }
 
 [data-vinyl-ui="dialogo"]::backdrop {
@@ -202,49 +359,68 @@ main > nav[aria-label="Você está aqui"] ol li a:hover {
 }
 
 [data-vinyl-ui="dialogo"] h2 {
-  margin: 0 0 12px;
-  font-size: 1.25rem;
+  margin: 0 0 var(--espaco-3);
+  font-size: var(--texto-4);
   font-weight: 800;
-  letter-spacing: -0.5px;
+  letter-spacing: var(--tracking-titulo);
 }
 
 [data-vinyl-ui="dialogo"] ul {
-  margin: 0 0 16px;
+  margin: 0 0 var(--espaco-4);
   padding-left: 0;
 }
 
 [data-vinyl-ui="dialogo"] li {
-  padding: 4px 0;
+  padding: var(--espaco-1) 0;
 }
 
 [data-vinyl-ui="dialogo"] p {
-  margin: 0 0 16px;
-  color: #444444;
+  margin: 0 0 var(--espaco-4);
+  color: var(--cor-texto-suave);
+  font-size: var(--texto-corpo);
 }
 
 [data-vinyl-ui="dialogo"] fieldset {
   border: none;
-  margin: 0 0 16px;
+  margin: 0 0 var(--espaco-4);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--espaco-3);
 }
 
 [data-vinyl-ui="dialogo"] label {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.9rem;
+  gap: var(--espaco-2);
+  font-size: var(--texto-corpo);
+}
+
+[data-vinyl-ui="dialogo"] select,
+[data-vinyl-ui="dialogo"] input[type="text"] {
+  padding: var(--espaco-3) var(--espaco-4);
+  border-radius: var(--raio-pilula);
+  border: 1px solid var(--cor-campo-borda);
+  font-family: var(--fonte);
+  font-size: var(--texto-corpo);
+  width: 100%;
+  background: var(--cor-campo);
+  color: var(--cor-texto);
+  transition: border-color var(--transicao-rapida);
 }
 
 [data-vinyl-ui="dialogo"] select {
-  padding: 10px 16px;
-  border-radius: 30px;
-  border: 1px solid #dcdcdc;
-  font-family: 'Syne', sans-serif;
-  margin-bottom: 16px;
-  background: #ffffff;
-  color: #000000;
+  margin-bottom: var(--espaco-4);
+}
+
+[data-vinyl-ui="dialogo"] select:focus,
+[data-vinyl-ui="dialogo"] input[type="text"]:focus {
+  border-color: var(--cor-destaque);
+}
+
+[data-vinyl-ui="dialogo"] select:focus-visible,
+[data-vinyl-ui="dialogo"] input[type="text"]:focus-visible {
+  outline: 2px solid var(--cor-foco);
+  outline-offset: 2px;
 }
 
 /* Campo de formulário genérico (pedirCampos) — label em cima do input,
@@ -253,83 +429,82 @@ main > nav[aria-label="Você está aqui"] ol li a:hover {
 [data-vinyl-ui="dialogo"] [data-vinyl-ui="campo"] {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-bottom: 16px;
+  gap: var(--espaco-2);
+  margin-bottom: var(--espaco-4);
 }
 
 [data-vinyl-ui="dialogo"] [data-vinyl-ui="campo"] label {
-  font-size: 0.85rem;
+  font-size: var(--texto-ui);
   font-weight: 600;
-}
-
-[data-vinyl-ui="dialogo"] input[type="text"] {
-  padding: 10px 16px;
-  border-radius: 30px;
-  border: 1px solid #dcdcdc;
-  font-family: 'Syne', sans-serif;
-  font-size: 0.9rem;
-  width: 100%;
-  background: #ffffff;
-  color: #000000;
 }
 
 [data-vinyl-ui="acoes"] {
   display: flex;
-  gap: 10px;
+  gap: var(--espaco-3);
   justify-content: flex-end;
+  flex-wrap: wrap;
 }
 
 [data-vinyl-ui="acoes"] button {
-  font-family: 'Syne', sans-serif;
-  font-size: 0.85rem;
+  font-family: var(--fonte);
+  font-size: var(--texto-ui);
   font-weight: 600;
-  padding: 10px 24px;
-  border-radius: 30px;
-  border: 1px solid #000000;
-  background: #ffffff;
-  color: #000000;
+  padding: var(--espaco-3) var(--espaco-6);
+  border-radius: var(--raio-pilula);
+  border: 1px solid var(--cor-texto);
+  background: transparent;
+  color: var(--cor-texto);
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color var(--transicao), color var(--transicao);
+}
+
+/* Mesma linguagem de hover do resto do site (troca de fundo), no lugar
+   do opacity que destoava. */
+[data-vinyl-ui="acoes"] button:hover:not(:disabled) {
+  background: var(--cor-texto);
+  color: var(--cor-fundo);
 }
 
 [data-vinyl-ui="acoes"] button:last-child {
-  background: #105682;
-  border-color: #105682;
-  color: #ffffff;
+  background: var(--cor-destaque);
+  border-color: var(--cor-destaque);
+  color: var(--cor-sobre-destaque);
 }
 
-[data-vinyl-ui="acoes"] button:hover {
-  opacity: 0.8;
+[data-vinyl-ui="acoes"] button:last-child:hover:not(:disabled) {
+  background: var(--cor-destaque-hover);
+  border-color: var(--cor-destaque-hover);
+  color: var(--cor-sobre-destaque);
 }
 
 [data-vinyl-ui="avisos"] {
   position: fixed;
-  top: 24px;
+  top: var(--espaco-6);
   left: 50%;
   transform: translateX(-50%);
   z-index: 9999;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: var(--espaco-3);
   width: 100%;
-  padding: 0 20px;
+  padding: 0 var(--espaco-5);
   pointer-events: none;
 }
 
 [data-vinyl-ui="aviso"] {
   color-scheme: light dark;
-  background: #ffffff;
-  color: #000000;
-  border-left: 4px solid #000000;
-  border-radius: 14px;
-  padding: 14px 20px;
+  background: var(--cor-superficie-alta);
+  color: var(--cor-texto);
+  border-left: 4px solid var(--cor-texto);
+  border-radius: var(--raio-card-interno);
+  padding: var(--espaco-4) var(--espaco-5);
   max-width: 420px;
-  font-size: 0.85rem;
+  font-size: var(--texto-ui);
   font-weight: 600;
-  line-height: 1.4;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.18);
-  animation: vinyl-aviso-entrada 0.25s ease;
+  line-height: 1.45;
+  box-shadow: var(--sombra-flutuante);
+  animation: vinyl-aviso-entrada var(--transicao);
 }
 
 @keyframes vinyl-aviso-entrada {
@@ -343,78 +518,14 @@ main > nav[aria-label="Você está aqui"] ol li a:hover {
   }
 }
 
-/* sucesso é o padrão (borda preta acima); erro e info só trocam o acento */
+/* sucesso é o padrão (borda preta/branca acima); erro e info só trocam
+   o acento */
 [data-vinyl-ui-tipo="erro"] {
-  border-left-color: #c0392b;
+  border-left-color: var(--cor-erro);
 }
 
 [data-vinyl-ui-tipo="info"] {
-  border-left-color: #2d6cdf;
-}
-
-:root[data-tema="escuro"] [data-vinyl-ui="aviso"] {
-  background: #262626;
-  color: #f5f5f5;
-  border-left-color: #f5f5f5;
-}
-
-:root[data-tema="escuro"] [data-vinyl-ui-tipo="erro"] {
-  border-left-color: #e74c3c;
-}
-
-:root[data-tema="escuro"] [data-vinyl-ui-tipo="info"] {
-  border-left-color: #5b9bf5;
-}
-
-/* ===== TEMA ESCURO (assets/js/view/tema.js seta o atributo) ===== */
-:root[data-tema="escuro"] body {
-  background-color: #1c1c1c;
-  color: #f5f5f5;
-}
-
-:root[data-tema="escuro"] header {
-  background-color: #000000;
-}
-
-:root[data-tema="escuro"] main section form,
-:root[data-tema="escuro"] main section ul li article {
-  background-color: #262626;
-  border-color: #2a2a2a;
-}
-
-:root[data-tema="escuro"] main section form input,
-:root[data-tema="escuro"] main section form select {
-  background-color: #1c1c1c;
-  color: #f5f5f5;
-  border-color: #333333;
-}
-
-:root[data-tema="escuro"] [data-vinyl-ui="dialogo"] {
-  background: #262626;
-  color: #f5f5f5;
-}
-
-:root[data-tema="escuro"] [data-vinyl-ui="dialogo"] p {
-  color: #cccccc;
-}
-
-:root[data-tema="escuro"] [data-vinyl-ui="dialogo"] select,
-:root[data-tema="escuro"] [data-vinyl-ui="dialogo"] input[type="text"] {
-  background: #1c1c1c;
-  color: #f5f5f5;
-  border-color: #333333;
-}
-
-:root[data-tema="escuro"] [data-vinyl-ui="acoes"] button {
-  border-color: #f5f5f5;
-  background: #262626;
-  color: #f5f5f5;
-}
-
-:root[data-tema="escuro"] [data-vinyl-ui="acoes"] button:last-child {
-  background: #105682;
-  border-color: #105682;
-  color: #ffffff;
+  border-left-color: var(--cor-info);
 }
 
 /* ===== ACESSIBILIDADE (acessibility-features/*.js setam os atributos) ===== */
@@ -423,9 +534,9 @@ main > nav[aria-label="Você está aqui"] ol li a:hover {
 }
 
 :root[data-a11y-cursor="realce"] [data-a11y-sob-cursor] {
-  outline: 3px solid #ff5a00;
+  outline: 3px solid var(--cor-realce-cursor);
   outline-offset: 3px;
-  border-radius: 4px;
+  border-radius: var(--raio-caixa);
 }
 
 /* Spinner de view/ui.js:ocupado() — <progress> indeterminado nativo,
@@ -434,20 +545,16 @@ progress {
   display: block;
   width: 100%;
   height: 6px;
-  margin-bottom: 16px;
-  accent-color: #000000;
-  border-radius: 30px;
+  margin-bottom: var(--espaco-4);
+  accent-color: var(--cor-destaque);
+  border-radius: var(--raio-pilula);
   overflow: hidden;
   border: none;
 }
 
-:root[data-tema="escuro"] progress {
-  accent-color: #ffffff;
-}
-
 /* Spinner circular pro texto de botão ocupado (view/ui.js:travarBotao) —
    herda a cor do texto do botão via currentColor, então funciona nos
-   botões azuis (texto branco) e no botão reset (texto preto) sem regra
+   botões azuis (texto branco) e no botão reset (texto escuro) sem regra
    extra por tema. */
 span[data-vinyl-ui="spinner"] {
   display: inline-block;
@@ -463,5 +570,19 @@ span[data-vinyl-ui="spinner"] {
 @keyframes vinyl-girar {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Quem pede menos movimento no sistema não deveria ver o vinil girando
+   em laço infinito. !important aqui é o padrão da técnica: precisa vencer
+   qualquer animação declarada depois, em qualquer arquivo. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

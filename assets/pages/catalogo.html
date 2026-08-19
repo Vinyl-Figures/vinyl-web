@@ -35,19 +35,22 @@
 
     <h1>Catálogo</h1>
 
-    <!-- ===== SEARCH BAR (só existe nesta página) ===== -->
-    <section>
-      <h2>Buscar</h2>
+    <!-- ===== BUSCA E FILTROS =====
+         Um painel só: antes eram dois cards cinzas empilhados, um pra
+         busca e outro pros filtros. As duas <form> continuam separadas
+         (a busca filtra local, os filtros recarregam do servidor), só
+         que agora dividem o mesmo contêiner. -->
+    <section class="painel-catalogo">
+      <h2>Buscar e filtrar</h2>
+
       <form action="catalogo.html" method="get" role="search">
         <label for="busca">Buscar discos</label>
-        <input type="search" id="busca" name="q" placeholder="Buscar por artista ou álbum">
-        <button type="submit">Buscar</button>
+        <div class="linha-busca">
+          <input type="search" id="busca" name="q" placeholder="Buscar por artista ou álbum">
+          <button type="submit">Buscar</button>
+        </div>
       </form>
-    </section>
 
-    <!-- Filtros -->
-    <section>
-      <h2>Filtrar</h2>
       <form action="catalogo.html" method="get">
         <fieldset>
           <legend>Gênero</legend>
@@ -57,24 +60,37 @@
           <label><input type="checkbox" name="genero" value="eletronica"> Eletrônica</label>
         </fieldset>
 
-        <fieldset>
-          <legend>Preço</legend>
-          <label for="preco-min">Mínimo</label>
-          <input type="number" id="preco-min" name="preco_min" min="0" step="10">
-          <label for="preco-max">Máximo</label>
-          <input type="number" id="preco-max" name="preco_max" min="0" step="10">
-        </fieldset>
+        <div class="linha-filtros">
+          <fieldset class="filtro-preco">
+            <legend>Preço</legend>
+            <div class="faixa-preco">
+              <div>
+                <label for="preco-min">Mínimo</label>
+                <input type="number" id="preco-min" name="preco_min" min="0" step="10" placeholder="0">
+              </div>
+              <span aria-hidden="true">&ndash;</span>
+              <div>
+                <label for="preco-max">Máximo</label>
+                <input type="number" id="preco-max" name="preco_max" min="0" step="10" placeholder="500">
+              </div>
+            </div>
+          </fieldset>
 
-        <label for="ordenar">Ordenar por</label>
-        <select id="ordenar" name="ordenar">
-          <option value="recentes">Mais recentes</option>
-          <option value="menor-preco">Menor preço</option>
-          <option value="maior-preco">Maior preço</option>
-          <option value="az">A-Z</option>
-        </select>
+          <div class="filtro-ordenar">
+            <label for="ordenar">Ordenar por</label>
+            <select id="ordenar" name="ordenar">
+              <option value="recentes">Mais recentes</option>
+              <option value="menor-preco">Menor preço</option>
+              <option value="maior-preco">Maior preço</option>
+              <option value="az">A-Z</option>
+            </select>
+          </div>
 
-        <button type="submit">Aplicar filtros</button>
-        <button type="reset">Limpar</button>
+          <div class="acoes-filtro">
+            <button type="submit">Aplicar filtros</button>
+            <button type="reset">Limpar</button>
+          </div>
+        </div>
       </form>
     </section>
 
@@ -91,7 +107,7 @@
     </section>
 
     <!-- Estado sem resultados: use quando a busca não retornar discos -->
-    <section hidden>
+    <section class="estado-vazio" hidden>
       <h2>Nenhum disco encontrado</h2>
       <p>Não encontramos discos com esses filtros. Limpe os filtros ou tente outro artista.</p>
     </section>
