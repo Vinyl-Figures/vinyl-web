@@ -45,6 +45,7 @@
 
   /* ===== Tipografia ===== */
   --fonte: 'Syne', sans-serif;
+  --fonte-numeros: Arial, Helvetica, sans-serif;
 
   /* clamp() no lugar de trocar o tamanho no media query: escala contínua,
      sem o degrau que existia em 992px. */
@@ -154,6 +155,13 @@ body {
   flex-direction: column;
   justify-content: space-between;
   overflow-x: hidden;
+}
+
+/* A fonte de identidade é expressiva, mas não é a mais confortável para
+   comparar dígitos. Valores recebem uma fonte de sistema com largura fixa. */
+[data-numero] {
+  font-family: var(--fonte-numeros);
+  font-variant-numeric: lining-nums tabular-nums;
 }
 
 h1, h2, h3 {

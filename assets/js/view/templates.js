@@ -3,10 +3,27 @@
 import { formatarBRL, formatarData } from './ui.js';
 import { ROTAS } from '../config.js';
 
+const LIMITE_RESUMO_DESCRICAO = 140;
+
 function criar(tag, texto) {
   const elemento = document.createElement(tag);
   if (texto !== undefined) elemento.textContent = texto;
   return elemento;
+}
+
+function criarNumero(tag, texto) {
+  const elemento = criar(tag, texto);
+  elemento.dataset.numero = '';
+  return elemento;
+}
+
+function resumirDescricao(descricao) {
+  const texto = String(descricao || '').trim();
+  if (texto.length <= LIMITE_RESUMO_DESCRICAO) return texto;
+
+  const trecho = texto.slice(0, LIMITE_RESUMO_DESCRICAO);
+  const ultimoEspaco = trecho.lastIndexOf(' ');
+  return `${ultimoEspaco > 0 ? trecho.slice(0, ultimoEspaco) : trecho}...`;
 }
 
 // imageUrl guarda base64 puro, sem o prefixo data: — mas às vezes já vem
@@ -35,9 +52,8 @@ export function cardVinil(vinil) {
   const artigo = criar('article');
   artigo.dataset.vinilId = vinil.id;
 
-  // Imagem + título levam pra tela de detalhes — <a> de verdade, não
-  // clique no card inteiro, senão conflita com o stepper e o botão
-  // "Adicionar ao carrinho" que também moram no card.
+  // A área informativa leva ao detalhe. Os controles ficam fora do link
+  // para não misturar navegação com quantidade e compra.
   const link = criar('a');
   link.href = `${ROTAS.disco}?id=${vinil.id}`;
 
@@ -52,10 +68,11 @@ export function cardVinil(vinil) {
   }
 
   link.append(criar('h3', vinil.title));
-  artigo.append(link);
-  artigo.append(criar('p', formatarBRL(vinil.price)));
+  link.append(criarNumero('p', formatarBRL(vinil.price)));
 
-  if (vinil.description) artigo.append(criar('p', vinil.description));
+  if (vinil.description) link.append(criar('p', resumirDescricao(vinil.description)));
+
+  artigo.append(link);
 
   // Stepper (−/input/+) e "Adicionar ao carrinho" lado a lado. O input
   // não tem <label> visível (cada card já mostra o título; um rótulo por
@@ -77,6 +94,7 @@ export function cardVinil(vinil) {
   qtdInput.min = '1';
   qtdInput.value = '1';
   qtdInput.dataset.qtdVinil = vinil.id;
+  qtdInput.dataset.numero = '';
   qtdInput.setAttribute('aria-label', `Quantidade de ${vinil.title}`);
 
   const mais = criar('button', '+');
@@ -111,7 +129,7 @@ export function linhaCarrinho(item) {
   produto.scope = 'row';
   produto.append(criar('span', vinil.title || `Vinil ${item.vinylId}`));
 
-  const preco = criar('td', formatarBRL(vinil.price));
+  const preco = criarNumero('td', formatarBRL(vinil.price));
 
   const qtdId = `qtd-${item.vinylId}`;
   const qtdCelula = criar('td');
@@ -123,11 +141,12 @@ export function linhaCarrinho(item) {
   qtdInput.min = '1';
   qtdInput.value = String(quantidade);
   qtdInput.dataset.acao = 'atualizar-quantidade';
+  qtdInput.dataset.numero = '';
   qtdInput.dataset.vinilId = item.vinylId;
   qtdInput.dataset.qtdAtual = String(quantidade);
   qtdCelula.append(qtdRotulo, qtdInput);
 
-  const subtotal = criar('td', formatarBRL(Number(vinil.price || 0) * quantidade));
+  const subtotal = criarNumero('td', formatarBRL(Number(vinil.price || 0) * quantidade));
 
   const acao = criar('td');
   const remover = criar('button', 'Remover');
@@ -145,15 +164,15 @@ export function linhaPedido(pedido, statusPagamento = '—') {
   const linha = criar('tr');
   linha.dataset.pedidoId = pedido.id;
 
-  const identificador = criar('th', `#${String(pedido.id).padStart(6, '0')}`);
+  const identificador = criarNumero('th', `#${String(pedido.id).padStart(6, '0')}`);
   identificador.scope = 'row';
 
   linha.append(
     identificador,
-    criar('td', formatarData(pedido.createdAt)),
+    criarNumero('td', formatarData(pedido.createdAt)),
     criar('td', statusPagamento),
-    criar('td', formatarBRL(pedido.shippingPrice || 0)),
-    criar('td', formatarBRL(pedido.totalPrice))
+    criarNumero('td', formatarBRL(pedido.shippingPrice || 0)),
+    criarNumero('td', formatarBRL(pedido.totalPrice))
   );
   return linha;
 }

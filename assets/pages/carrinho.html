@@ -35,11 +35,10 @@
 
     <h1>Carrinho</h1>
 
-    <!-- Troque o action pela rota real de checkout quando ela existir -->
-    <form action="carrinho.html" method="post">
+    <!-- Só aparece depois que a API confirmar que há itens no carrinho. -->
+    <form action="carrinho.html" method="post" hidden>
       <table>
         <caption>Itens no carrinho</caption>
-        <!-- Linha abaixo é só exemplo — o JavaScript troca pelo conteúdo real. -->
         <thead>
           <tr>
             <th scope="col">Produto</th>
@@ -49,24 +48,11 @@
             <th scope="col">Remover</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <th scope="row">
-              <span>Arctic Monkeys &mdash; AM</span>
-            </th>
-            <td>R$ 130,00</td>
-            <td>
-              <label for="qtd-exemplo">Quantidade de AM</label>
-              <input type="number" id="qtd-exemplo" min="1" value="1">
-            </td>
-            <td>R$ 130,00</td>
-            <td><button type="button">Remover</button></td>
-          </tr>
-        </tbody>
+        <tbody></tbody>
         <tfoot>
           <tr>
             <th scope="row" colspan="4">Total</th>
-            <td>R$ 130,00</td>
+            <td>R$ 0,00</td>
           </tr>
         </tfoot>
       </table>
@@ -93,13 +79,13 @@
         <h2>Resumo</h2>
         <dl>
           <dt>Subtotal</dt>
-          <dd>R$ 250,00</dd>
+          <dd>R$ 0,00</dd>
           <dt>Frete</dt>
           <dd>R$ 0,00</dd>
           <dt>Desconto</dt>
           <dd>R$ 0,00</dd>
           <dt>Total</dt>
-          <dd>R$ 250,00</dd>
+          <dd>R$ 0,00</dd>
         </dl>
       </section>
 
@@ -107,8 +93,8 @@
       <a href="catalogo.html">Continuar comprando</a>
     </form>
 
-    <!-- Estado vazio: use no lugar do formulário quando não houver itens -->
-    <section hidden>
+    <!-- Estado padrão: o formulário só substitui este bloco se houver itens. -->
+    <section>
       <h2>Carrinho vazio</h2>
       <p>Seu carrinho está vazio. <a href="catalogo.html">Ver catálogo</a>.</p>
     </section>

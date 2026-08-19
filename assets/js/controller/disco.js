@@ -49,7 +49,10 @@ function renderizar(vinil) {
     elArtistas.textContent = nomes || 'Artista não informado';
   }
 
-  if (elPreco) elPreco.textContent = formatarBRL(vinil.price);
+  if (elPreco) {
+    elPreco.dataset.numero = '';
+    elPreco.textContent = formatarBRL(vinil.price);
+  }
 
   if (elGeneros) {
     elGeneros.replaceChildren(
@@ -62,7 +65,15 @@ function renderizar(vinil) {
   }
 
   if (elDescricao) elDescricao.textContent = vinil.description || 'Sem descrição.';
-  if (elLancamento) elLancamento.textContent = vinil.releasedAt ? `Lançado em ${vinil.releasedAt}` : '';
+  if (elLancamento) {
+    elLancamento.replaceChildren();
+    if (vinil.releasedAt) {
+      const ano = document.createElement('span');
+      ano.dataset.numero = '';
+      ano.textContent = vinil.releasedAt;
+      elLancamento.append('Lançado em ', ano);
+    }
+  }
 
   if (botaoAdicionar) botaoAdicionar.dataset.vinilId = vinil.id;
 }

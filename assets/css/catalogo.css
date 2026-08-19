@@ -105,6 +105,11 @@ main section h2 {
   outline-offset: 2px;
 }
 
+.painel-catalogo input[type="number"] {
+  font-family: var(--fonte-numeros);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
 .painel-catalogo button {
   background-color: var(--cor-destaque);
   color: var(--cor-sobre-destaque);
@@ -333,13 +338,13 @@ main section ul li article > a:hover h3 {
 /* Preço e descrição eram a mesma regra (mesmo tamanho, mesmo peso, mesma
    cor) e competiam entre si. O preço é a informação que decide a compra:
    fica maior e mais pesado; a descrição recua. */
-main section ul li article > p:first-of-type {
+main section ul li article > a > p:first-of-type {
   font-size: var(--texto-4);
   font-weight: 800;
   letter-spacing: var(--tracking-titulo);
 }
 
-main section ul li article > p:nth-of-type(2) {
+main section ul li article > a > p:nth-of-type(2) {
   font-size: var(--texto-corpo);
   font-weight: 400;
   color: var(--cor-texto-suave);
@@ -388,9 +393,10 @@ main section ul li article > p:nth-of-type(2) {
   border-left: 1px solid var(--cor-campo-borda);
   border-right: 1px solid var(--cor-campo-borda);
   text-align: center;
-  font-family: var(--fonte);
+  font-family: var(--fonte-numeros);
   font-size: var(--texto-ui);
   font-weight: 600;
+  font-variant-numeric: lining-nums tabular-nums;
   background: none;
   color: var(--cor-texto);
   padding: 0;

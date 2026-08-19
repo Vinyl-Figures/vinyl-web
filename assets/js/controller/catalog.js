@@ -39,6 +39,13 @@ let carregados = [];
 let visiveis = [];
 let pagina = 1;
 
+function numeroFormatado(valor) {
+  const elemento = document.createElement('span');
+  elemento.dataset.numero = '';
+  elemento.textContent = String(valor);
+  return elemento;
+}
+
 // --- Gêneros ---
 
 // Troca os gêneros fixos do HTML pelos do banco, que têm id próprio.
@@ -140,9 +147,17 @@ function renderizar() {
   preencher(listaProdutos, daPagina.map(cardVinil));
 
   if (contador) {
-    contador.textContent = visiveis.length
-      ? `Mostrando ${daPagina.length} de ${visiveis.length} discos`
-      : 'Nenhum disco para mostrar';
+    if (visiveis.length) {
+      contador.replaceChildren(
+        'Mostrando ',
+        numeroFormatado(daPagina.length),
+        ' de ',
+        numeroFormatado(visiveis.length),
+        ' discos'
+      );
+    } else {
+      contador.textContent = 'Nenhum disco para mostrar';
+    }
   }
 
   alternar(secaoResultados, visiveis.length > 0);
@@ -168,6 +183,7 @@ function desenharPaginacao(totalPaginas) {
     link.href = `#pagina-${numero}`;
     link.textContent = String(numero);
     link.dataset.pagina = numero;
+    link.dataset.numero = '';
     if (numero === pagina) link.setAttribute('aria-current', 'page');
     item.append(link);
     itens.push(item);

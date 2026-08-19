@@ -77,7 +77,10 @@ function renderizar() {
   if (corpo) preencher(corpo, itens.map(linhaCarrinho));
 
   const total = totalDoCarrinho();
-  if (totalRodape) totalRodape.textContent = formatarBRL(total);
+  if (totalRodape) {
+    totalRodape.dataset.numero = '';
+    totalRodape.textContent = formatarBRL(total);
+  }
 
   const subtotal = subtotalDoCarrinho();
   const valorFrete = freteCalculado?.price || 0;
@@ -85,6 +88,7 @@ function renderizar() {
 
   const valores = secaoResumo?.querySelectorAll('dd');
   if (valores?.length >= 4) {
+    valores.forEach((valor) => { valor.dataset.numero = ''; });
     valores[0].textContent = formatarBRL(subtotal);
     valores[1].textContent = formatarBRL(valorFrete);
     valores[2].textContent = formatarBRL(valorDesconto);

@@ -5,6 +5,7 @@ import { mensagemDoErro } from './erros.js';
 import { aplicarMascara } from './mascaras.js';
 
 const PREFIXO = 'vinyl-ui';
+const DURACAO_MINIMA_CARREGAMENTO = 500;
 
 // --- Formatação ---
 
@@ -50,10 +51,22 @@ export function ocupado(elemento, carregando, rotulo = 'Carregando…') {
   }
 }
 
-export function travarBotao(botao, travado, textoOcupado = 'Aguarde…') {
+export async function travarBotao(botao, travado, textoOcupado = 'Aguarde…') {
   if (!botao) return;
   if (travado) {
-    if (botao.dataset.textoOriginal === undefined) botao.dataset.textoOriginal = botao.textContent;
+    if (botao.dataset.textoOriginal === undefined) {
+      botao.dataset.textoOriginal = botao.textContent;
+      botao.dataset.minWidthOriginal = botao.style.minWidth;
+      botao.dataset.minHeightOriginal = botao.style.minHeight;
+
+      // "Adicionando…" é menor que "Adicionar ao carrinho". Mantém as
+      // dimensões calculadas antes de trocar o conteúdo para o card não
+      // encolher durante a requisição.
+      const { width, height } = botao.getBoundingClientRect();
+      botao.style.minWidth = `${width}px`;
+      botao.style.minHeight = `${height}px`;
+      botao.dataset.carregandoDesde = String(Date.now());
+    }
 
     const spinner = document.createElement('span');
     spinner.setAttribute('data-' + PREFIXO, 'spinner');
@@ -63,8 +76,17 @@ export function travarBotao(botao, travado, textoOcupado = 'Aguarde…') {
     botao.disabled = true;
   } else {
     if (botao.dataset.textoOriginal !== undefined) {
+      const inicio = Number(botao.dataset.carregandoDesde) || Date.now();
+      const restante = Math.max(0, DURACAO_MINIMA_CARREGAMENTO - (Date.now() - inicio));
+      if (restante) await new Promise((resolver) => setTimeout(resolver, restante));
+
       botao.textContent = botao.dataset.textoOriginal;
       delete botao.dataset.textoOriginal;
+      botao.style.minWidth = botao.dataset.minWidthOriginal;
+      botao.style.minHeight = botao.dataset.minHeightOriginal;
+      delete botao.dataset.minWidthOriginal;
+      delete botao.dataset.minHeightOriginal;
+      delete botao.dataset.carregandoDesde;
     }
     botao.disabled = false;
   }

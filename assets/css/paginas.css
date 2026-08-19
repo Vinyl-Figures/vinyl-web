@@ -122,6 +122,12 @@ main select {
   width: 100%;
 }
 
+main input[type="number"],
+main input[inputmode="numeric"] {
+  font-family: var(--fonte-numeros);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
 main input:focus,
 main select:focus {
   border-color: var(--cor-destaque);
