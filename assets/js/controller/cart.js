@@ -17,7 +17,7 @@ import {
 import { apenasDigitos, mascararCep } from '../view/mascaras.js';
 import { exigirLogin } from './app.js';
 
-// --- Elementos ---
+
 
 const tabela = document.querySelector('main table');
 const corpo = tabela?.tBodies[0];
@@ -40,19 +40,19 @@ const campoEnderecoSalvo = document.querySelector('#endereco-salvo');
 const botaoFinalizar = formCarrinho?.querySelector('button[type="submit"]');
 
 let itens = [];
-let cupomAplicado = null; // { code, discountPercent }
-let freteCalculado = null; // { zipCode, distanceKm, price }
+let cupomAplicado = null;
+let freteCalculado = null;
 
-// Estes são os mesmos valores padrão da API. A conta e a consulta de CEP
-// acontecem no navegador; o checkout continua recalculando no servidor como
-// validação do valor final.
+
+
+
 const CEP_ORIGEM = '04285000';
 const PRECO_BASE_FRETE = 10;
 const PRECO_POR_KM = 2.5;
 const RAIO_TERRA_KM = 6371;
 const coordenadasPorCep = new Map();
 
-// --- Carregamento ---
+
 
 async function carregar() {
   ocupado(tabela, true);
@@ -71,9 +71,9 @@ function subtotalDoCarrinho() {
   return itens.reduce((soma, item) => soma + Number(item.vinyl?.price || 0) * (item.quantity || 1), 0);
 }
 
-// Mesma fórmula do OrderService.checkout no backend: (subtotal + frete)
-// com desconto percentual aplicado por cima. Se divergir daqui, o resumo
-// mostra um total que o checkout não vai cobrar.
+
+
+
 function totalDoCarrinho() {
   const subtotal = subtotalDoCarrinho();
   const valorFrete = freteCalculado?.price || 0;
@@ -109,7 +109,7 @@ function renderizar() {
   alternar(secaoVazia, !temItens);
 }
 
-// --- Quantidade ---
+
 
 corpo?.addEventListener('change', async (evento) => {
   const input = evento.target.closest('[data-acao="atualizar-quantidade"]');
@@ -129,8 +129,8 @@ corpo?.addEventListener('change', async (evento) => {
   try {
     await carrinho.atualizar(vinylId, nova);
     await carregar();
-    // carregar() reconstrói a tabela inteira — o input que tinha foco não
-    // existe mais; sem isso, quem navega por teclado cai fora da tabela.
+
+
     corpo.querySelector(`[data-acao="atualizar-quantidade"][data-vinil-id="${vinylId}"]`)?.focus();
     avisar('Quantidade atualizada.');
   } catch (erro) {
@@ -140,7 +140,7 @@ corpo?.addEventListener('change', async (evento) => {
   }
 });
 
-// --- Remover item ---
+
 
 corpo?.addEventListener('click', async (evento) => {
   const botao = evento.target.closest('[data-acao="remover-item"]');
@@ -158,7 +158,7 @@ corpo?.addEventListener('click', async (evento) => {
   }
 });
 
-// --- Cupom ---
+
 
 document.querySelector('[data-acao="aplicar-cupom"]')?.addEventListener('click', async (evento) => {
   const botao = evento.target;
@@ -179,7 +179,7 @@ document.querySelector('[data-acao="aplicar-cupom"]')?.addEventListener('click',
   }
 });
 
-// --- Frete ---
+
 
 function arredondar(valor, casas) {
   const fator = 10 ** casas;
@@ -234,8 +234,8 @@ async function carregarEnderecosSalvos() {
   if (!campoEnderecoSalvo) return;
 
   const opcaoPadrao = campoEnderecoSalvo.querySelector('option');
-  // Reseta pro só-placeholder antes de recarregar — a função é chamada de
-  // novo depois de cadastrar um endereço, senão as opções duplicariam.
+
+
   campoEnderecoSalvo.replaceChildren(opcaoPadrao);
 
   try {
@@ -259,8 +259,8 @@ async function carregarEnderecosSalvos() {
   }
 }
 
-// Modal de cadastro em vez de mandar pra tela de conta — quem tá no
-// checkout não perde o carrinho pra ir cadastrar endereço em outra página.
+
+
 document.querySelector('[data-acao="cadastrar-endereco"]')?.addEventListener('click', async () => {
   const valores = await pedirCampos({
     titulo: 'Cadastrar endereço',
@@ -305,13 +305,13 @@ async function calcularFreteComCep(cep) {
   }
 }
 
-// Selecionar o endereço já calcula o frete na hora — não tem mais campo de
-// CEP solto, o endereço vem só da lista (ou do cadastro pelo modal).
+
+
 campoEnderecoSalvo?.addEventListener('change', () => {
   calcularFreteComCep(campoEnderecoSalvo.value);
 });
 
-// --- Checkout ---
+
 
 function nomeDoMetodo(valor) {
   const nomes = {
@@ -331,8 +331,8 @@ formCarrinho?.addEventListener('submit', async (evento) => {
 
   const total = totalDoCarrinho();
 
-  // Perguntado antes do pedido: se fosse depois e o usuário desistisse,
-  // sobraria um pedido criado sem pagamento.
+
+
   const metodo = await escolher({
     titulo: 'Finalizar compra',
     mensagem: `Total: ${formatarBRL(total)}`,
@@ -370,12 +370,12 @@ formCarrinho?.addEventListener('submit', async (evento) => {
   } catch (erro) {
     travarBotao(botaoFinalizar, false);
     mostrarErro(erro);
-    // O pedido pode ter sido criado mesmo com o pagamento falhando.
+
     carregar();
   }
 });
 
-// --- Esvaziar carrinho ---
+
 
 document.querySelector('[data-acao="esvaziar-carrinho"]')?.addEventListener('click', async () => {
   const confirmado = await confirmar({

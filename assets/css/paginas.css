@@ -1,6 +1,6 @@
-/* entrar, cadastro, conta, carrinho — header/footer/breadcrumb e tokens
-   ficam em base.css. Mesmo vocabulário visual do catalogo.css (pílula,
-   cards arredondados, superfície clara nos formulários). */
+
+
+
 
 main {
   flex: 1;
@@ -30,7 +30,7 @@ main > p a {
   text-decoration: underline;
 }
 
-/* Nav de seções da conta (#dados, #enderecos...) */
+
 main > nav[aria-label="Seções da conta"] ul {
   display: flex;
   flex-wrap: wrap;
@@ -54,7 +54,7 @@ main > nav[aria-label="Seções da conta"] a:hover {
   border-color: var(--cor-destaque);
 }
 
-/* Formulário solto (entrar/cadastro) ou dentro de <section> (conta) */
+
 main > form,
 main section {
   background-color: var(--cor-superficie);
@@ -87,8 +87,8 @@ main section > label {
   font-weight: 600;
 }
 
-/* Rótulo colado no campo que ele nomeia: sem isto o gap do form separa
-   os dois tanto quanto separa um campo do próximo. */
+
+
 main form label + input,
 main form label + select,
 main form label + .campo-senha,
@@ -143,7 +143,7 @@ main input::placeholder {
   color: var(--cor-texto-meta);
 }
 
-/* Mostrar/ocultar senha: ícone dentro do campo, à direita */
+
 .campo-senha {
   position: relative;
   width: 100%;
@@ -175,14 +175,14 @@ main input::placeholder {
   background-color: var(--cor-destaque-suave);
 }
 
-/* O botão dentro do campo não pode subir 1px junto com os outros: ele já
-   está centrado por translateY e o :active desalinharia o ícone. */
+
+
 .campo-senha [data-acao="mostrar-senha"]:active {
   transform: translateY(-50%);
 }
 
-/* Ícone é SVG de cor fixa (quase preto) — no tema escuro, o campo fica
-   escuro também e o ícone sumiria sem isso. */
+
+
 :root[data-tema="escuro"] .campo-senha [data-acao="mostrar-senha"] img {
   filter: invert(1);
 }
@@ -246,8 +246,8 @@ fieldset label {
   font-size: var(--texto-corpo);
 }
 
-/* Checkbox de verdade, não a caixinha crua do navegador — acessibilidade
-   (conta), "Continuar conectado" (entrar), "Novidades" (cadastro). */
+
+
 main input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
@@ -284,7 +284,7 @@ main input[type="checkbox"]:checked::after {
   transform: rotate(45deg);
 }
 
-/* Endereços */
+
 #enderecos ul {
   display: flex;
   flex-direction: column;
@@ -308,7 +308,7 @@ main input[type="checkbox"]:checked::after {
   line-height: 1.5;
 }
 
-/* Tabelas: pedidos (conta) e itens (carrinho) */
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -344,7 +344,7 @@ thead th {
   color: var(--cor-texto-meta);
 }
 
-/* Nome do produto/pedido é a âncora de leitura da linha. */
+
 tbody th[scope="row"] {
   font-weight: 700;
 }
@@ -379,16 +379,16 @@ table input[type="number"] {
   padding: var(--espaco-2) var(--espaco-3);
 }
 
-/* table tem overflow:hidden (pros cantos arredondados) — o anel de foco
-   com offset positivo do input[type=number] geral seria cortado perto das
-   bordas da tabela, então aqui o anel precisa desenhar pra dentro. */
+
+
+
 table input[type="number"]:focus-visible {
   outline-offset: -2px;
 }
 
-/* O rótulo de quantidade só existe pra leitor de tela: o cabeçalho da
-   coluna já diz o que o campo é, e o texto repetido em cada linha
-   ("Quantidade de X") deixava a coluna larga e ruidosa. */
+
+
+
 table td label {
   position: absolute;
   width: 1px;
@@ -398,7 +398,7 @@ table td label {
   white-space: nowrap;
 }
 
-/* Resumo (carrinho) */
+
 main section dl {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -436,7 +436,7 @@ main section dl dd:last-of-type {
     padding: var(--espaco-5);
   }
 
-  /* Tabela larga não pode empurrar a página inteira: rola sozinha. */
+
   table {
     display: block;
     overflow-x: auto;

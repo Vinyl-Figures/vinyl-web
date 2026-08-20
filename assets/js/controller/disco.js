@@ -1,6 +1,7 @@
 import { vinis, carrinho } from '../model/store.js';
 import { fonteDaImagem } from '../view/templates.js';
-import { avisar, mostrarErro, alternar, ocupado, travarBotao, formatarBRL } from '../view/ui.js';
+import { avisarComLink, mostrarErro, alternar, ocupado, travarBotao, formatarBRL } from '../view/ui.js';
+import { ROTAS } from '../config.js';
 import { exigirLogin } from './app.js';
 
 const artigo = document.querySelector('main > article');
@@ -96,8 +97,8 @@ async function carregar() {
   }
 }
 
-// Mesma lógica local-only do stepper no card do catálogo — a quantidade
-// só é enviada quando "Adicionar ao carrinho" é clicado.
+
+
 document.querySelector('.linha-acao-catalogo')?.addEventListener('click', (evento) => {
   const botao = evento.target.closest('[data-acao="qtd-disco-menos"], [data-acao="qtd-disco-mais"]');
   if (!botao || !campoQtd) return;
@@ -117,7 +118,12 @@ botaoAdicionar?.addEventListener('click', async () => {
 
   try {
     await carrinho.adicionar(Array(quantidade).fill(vinylId));
-    avisar(quantidade > 1 ? `${quantidade} unidades adicionadas ao carrinho.` : 'Adicionado ao carrinho.');
+    avisarComLink({
+      antes: quantidade > 1 ? `${quantidade} unidades adicionadas ao ` : 'Adicionado ao ',
+      textoLink: 'carrinho',
+      href: ROTAS.carrinho,
+      depois: '.',
+    });
     if (campoQtd) campoQtd.value = '1';
   } catch (erro) {
     mostrarErro(erro);

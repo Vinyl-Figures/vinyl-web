@@ -1,6 +1,6 @@
-/* Página de detalhes do disco — header/footer/breadcrumb e tokens ficam
-   em base.css; o stepper e o botão "Adicionar ao carrinho" reaproveitam
-   as classes de catalogo.css (.linha-acao-catalogo, .stepper-qtd). */
+
+
+
 
 main {
   flex: 1;

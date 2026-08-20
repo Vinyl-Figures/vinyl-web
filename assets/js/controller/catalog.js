@@ -1,16 +1,17 @@
-// Busca, faixa de preço, ordenação e paginação não existem na API:
-// são feitas aqui, em cima da lista já carregada.
+
+
 
 import { vinis, generos, carrinho } from '../model/store.js';
 import { cardVinil, preencher } from '../view/templates.js';
-import { avisar, mostrarErro, alternar, travarBotao } from '../view/ui.js';
+import { avisarComLink, mostrarErro, alternar, travarBotao } from '../view/ui.js';
+import { ROTAS } from '../config.js';
 import { exigirLogin } from './app.js';
 
 const POR_PAGINA = 8;
 
-// --- Elementos ---
 
-// Achado pelo heading, não pelo conteúdo: a lista começa vazia, sem mock.
+
+
 const secaoResultados = [...document.querySelectorAll('main section')].find((secao) =>
   secao.querySelector('h2')?.textContent.trim() === 'Todos os discos'
 );
@@ -35,7 +36,7 @@ const fieldsetGenero = [...document.querySelectorAll('fieldset')].find(
 const opcoesGenero = fieldsetGenero?.querySelector('[data-generos-opcoes]');
 const resumoGenero = fieldsetGenero?.querySelector('[data-generos-resumo]');
 
-// --- Estado ---
+
 
 let carregados = [];
 let visiveis = [];
@@ -48,9 +49,9 @@ function numeroFormatado(valor) {
   return elemento;
 }
 
-// --- Gêneros ---
 
-// Troca os gêneros fixos do HTML pelos do banco, que têm id próprio.
+
+
 async function carregarGeneros() {
   if (!opcoesGenero) return;
 
@@ -87,7 +88,7 @@ fieldsetGenero?.addEventListener('change', (evento) => {
   if (evento.target.matches('input[name="genero"]')) atualizarResumoGeneros();
 });
 
-// --- Carregamento ---
+
 
 function mostrarCarregamento() {
   if (!contador) return;
@@ -123,8 +124,8 @@ async function carregarVinis() {
     if (ids.length === 0) {
       carregados = await vinis.listar();
     } else {
-      // A API aceita um gênero por vez: várias seleções viram várias
-      // chamadas, unidas sem repetir o mesmo disco.
+
+
       const respostas = await Promise.all(ids.map((genreId) => vinis.listar({ genreId })));
       const porId = new Map();
       for (const lista of respostas) {
@@ -143,7 +144,7 @@ async function carregarVinis() {
   }
 }
 
-// --- Filtros locais ---
+
 
 function aplicarFiltros() {
   const termo = (campoBusca?.value || '').trim().toLowerCase();
@@ -167,14 +168,14 @@ function ordenar() {
     'menor-preco': (a, b) => Number(a.price) - Number(b.price),
     'maior-preco': (a, b) => Number(b.price) - Number(a.price),
     az: (a, b) => a.title.localeCompare(b.title, 'pt-BR'),
-    // releasedAt é string de 4 dígitos
+
     recentes: (a, b) => Number(b.releasedAt || 0) - Number(a.releasedAt || 0),
   };
 
   visiveis.sort(comparadores[criterio] || comparadores.recentes);
 }
 
-// --- Desenho ---
+
 
 function renderizar() {
   if (!listaProdutos) return;
@@ -244,7 +245,7 @@ function desenharPaginacao(totalPaginas) {
   lista.replaceChildren(...itens);
 }
 
-// --- Eventos ---
+
 
 navPaginacao?.addEventListener('click', (evento) => {
   const link = evento.target.closest('a[data-pagina]');
@@ -254,8 +255,8 @@ navPaginacao?.addEventListener('click', (evento) => {
   pagina = Number(link.dataset.pagina);
   renderizar();
   secaoResultados?.scrollIntoView({ behavior: 'smooth' });
-  // renderizar() reconstrói a paginação inteira — o link clicado não existe
-  // mais, então sem isso quem navega por teclado perde o foco e cai no topo.
+
+
   navPaginacao.querySelector('a[aria-current="page"]')?.focus();
 });
 
@@ -267,12 +268,12 @@ formBusca?.addEventListener('submit', (evento) => {
 
 formFiltros?.addEventListener('submit', (evento) => {
   evento.preventDefault();
-  // Gênero é filtro do servidor: recarrega. O resto é local.
+
   carregarVinis();
 });
 
 formFiltros?.addEventListener('reset', () => {
-  // O reset limpa os campos só depois deste evento.
+
   setTimeout(() => {
     if (campoBusca) campoBusca.value = '';
     atualizarResumoGeneros();
@@ -285,9 +286,9 @@ campoOrdenar?.addEventListener('change', () => {
   renderizar();
 });
 
-// Stepper de quantidade: só ajusta o número no input, nada de rede
-// ainda — a quantidade só é enviada quando "Adicionar ao carrinho" é
-// clicado (lá embaixo).
+
+
+
 listaProdutos?.addEventListener('click', (evento) => {
   const botao = evento.target.closest('[data-acao="qtd-catalogo-menos"], [data-acao="qtd-catalogo-mais"]');
   if (!botao) return;
@@ -311,10 +312,15 @@ listaProdutos?.addEventListener('click', async (evento) => {
   travarBotao(botao, true, 'Adicionando…');
 
   try {
-    // Sem endpoint de quantidade: manda o mesmo vinylId repetido num só
-    // bulk — o backend soma dentro da mesma transação.
+
+
     await carrinho.adicionar(Array(quantidade).fill(vinylId));
-    avisar(quantidade > 1 ? `${quantidade} unidades adicionadas ao carrinho.` : 'Adicionado ao carrinho.');
+    avisarComLink({
+      antes: quantidade > 1 ? `${quantidade} unidades adicionadas ao ` : 'Adicionado ao ',
+      textoLink: 'carrinho',
+      href: ROTAS.carrinho,
+      depois: '.',
+    });
     if (campoQtd) campoQtd.value = '1';
   } catch (erro) {
     mostrarErro(erro);
@@ -325,6 +331,6 @@ listaProdutos?.addEventListener('click', async (evento) => {
 
 if (exigirLogin()) {
   carregarGeneros()
-    .catch(() => {}) // sem gêneros o catálogo ainda funciona
+    .catch(() => {})
     .then(carregarVinis);
 }

@@ -5,7 +5,7 @@ import { apenasDigitos, aplicarMascara, mascararCpf, mascararTelefone } from '..
 import { sincronizar } from '../acessibility-features/index.js';
 import { destinoAposLogin } from './app.js';
 
-// --- Mostrar/ocultar senha ---
+
 
 document.addEventListener('click', (evento) => {
   const botao = evento.target.closest('[data-acao="mostrar-senha"]');
@@ -23,7 +23,7 @@ document.addEventListener('click', (evento) => {
   alternar(botao.querySelector('[data-icone="aberto"]'), vaiMostrar);
 });
 
-// --- Entrar ---
+
 
 const formEntrar = document.querySelector('#login-email')?.form;
 
@@ -55,7 +55,7 @@ if (formEntrar) {
   });
 }
 
-// --- Criar conta ---
+
 
 const formCadastro = document.querySelector('#cad-nome')?.form;
 
@@ -69,7 +69,7 @@ if (formCadastro) {
     const senha = formCadastro.querySelector('#cad-senha').value;
     const confirmacao = formCadastro.querySelector('#cad-senha-confirma').value;
 
-    // A API não recebe o campo de confirmação.
+
     if (senha !== confirmacao) {
       alertar({
         titulo: 'As senhas não conferem',
@@ -95,7 +95,7 @@ if (formCadastro) {
     travarBotao(botao, true, 'Criando…');
 
     try {
-      // newsletter não tem campo na API: não é enviado.
+
       await usuarios.criar({
         name: formCadastro.querySelector('#cad-nome').value.trim(),
         document: documento,
@@ -109,7 +109,7 @@ if (formCadastro) {
         mensagem: 'Sua conta foi criada. Vamos entrar com ela agora.',
       });
 
-      // O cadastro não devolve token: precisa logar em seguida.
+
       try {
         await auth.entrar(email, senha);
         location.href = destinoAposLogin();

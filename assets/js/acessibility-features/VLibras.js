@@ -1,5 +1,5 @@
-// Integração sob demanda do VLibras. O script externo só é baixado quando a
-// pessoa ativa a preferência, evitando peso extra para o restante da loja.
+
+
 
 const URL_APP = 'https://vlibras.gov.br/app';
 const URL_SCRIPT = `${URL_APP}/vlibras-plugin.js`;

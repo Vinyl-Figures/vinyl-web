@@ -1,4 +1,4 @@
-// Só localStorage. Quem fala com a rede é o store.
+
 
 const CHAVE = 'vinyl.sessao';
 
@@ -10,7 +10,7 @@ function ler() {
   }
 }
 
-// Recebe o TokenResp: { token, tokenType, expiresIn, userId }.
+
 export function salvarSessao({ token, expiresIn, userId }) {
   localStorage.setItem(
     CHAVE,
@@ -26,7 +26,7 @@ export function limparSessao() {
   localStorage.removeItem(CHAVE);
 }
 
-// Null se não há sessão ou se o token venceu. Não existe refresh token.
+
 export function getToken() {
   const sessao = ler();
   if (!sessao) return null;

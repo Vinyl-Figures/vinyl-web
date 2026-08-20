@@ -1,4 +1,4 @@
-// Atalhos Alt + número pra navegar direto entre as páginas principais.
+
 
 import { ROTAS } from '../config.js';
 

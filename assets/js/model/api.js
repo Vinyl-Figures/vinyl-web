@@ -34,7 +34,7 @@ async function requisitar(metodo, caminho, { corpo, query, autenticado = true, c
     headers.Authorization = `Bearer ${token}`;
   }
 
-  // O Render desliga o servidor parado: a primeira chamada leva ~35s.
+
   const avisoDemora = setTimeout(() => {
     document.dispatchEvent(new CustomEvent('api:demorando'));
   }, 3000);
@@ -49,7 +49,7 @@ async function requisitar(metodo, caminho, { corpo, query, autenticado = true, c
       body: corpo === undefined ? undefined : JSON.stringify(corpo),
     });
   } catch {
-    // Servidor fora, DNS ou CORS: o navegador não deixa distinguir.
+
     console.error(`[api] ${metodo} ${caminho} não completou. Veja se há erro de CORS acima.`);
     throw new ErroApi(0, ['Servidor inalcançável.'], contexto);
   } finally {
@@ -75,7 +75,7 @@ async function requisitar(metodo, caminho, { corpo, query, autenticado = true, c
       ? dados.messages
       : [`Erro ${resposta.status}.`];
 
-    // Detalhe cru só no console; a tela mostra a frase da operação.
+
     console.error(`[api] ${metodo} ${caminho} -> ${resposta.status}`, mensagens);
 
     throw new ErroApi(resposta.status, mensagens, contexto);

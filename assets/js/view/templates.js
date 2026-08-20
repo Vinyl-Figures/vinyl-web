@@ -1,4 +1,4 @@
-// Sempre createElement + textContent, nunca innerHTML: o conteúdo vem do servidor.
+
 
 import { formatarBRL, formatarData } from './ui.js';
 import { ROTAS } from '../config.js';
@@ -26,11 +26,11 @@ function resumirDescricao(descricao) {
   return `${ultimoEspaco > 0 ? trecho.slice(0, ultimoEspaco) : trecho}...`;
 }
 
-// imageUrl guarda base64 puro, sem o prefixo data: — mas às vezes já vem
-// com o prefixo completo, daí é só usar direto. A API real manda JPEG,
-// mas o dataload local usa PNG (assinatura diferente) — em vez de fixar
-// um MIME e torcer pro navegador ignorar (data: URI não tem sniffing
-// garantido como recurso buscado por HTTP), lê os primeiros bytes.
+
+
+
+
+
 function mimeDoBase64(base64) {
   if (base64.startsWith('iVBORw0KGgo')) return 'image/png';
   if (base64.startsWith('/9j/')) return 'image/jpeg';
@@ -46,14 +46,14 @@ export function fonteDaImagem(valor) {
   return `data:${mimeDoBase64(base64)};base64,${base64}`;
 }
 
-// <li><article><img?><h3><p><button>, igual ao catalogo.html
+
 export function cardVinil(vinil) {
   const item = criar('li');
   const artigo = criar('article');
   artigo.dataset.vinilId = vinil.id;
 
-  // A área informativa leva ao detalhe. Os controles ficam fora do link
-  // para não misturar navegação com quantidade e compra.
+
+
   const link = criar('a');
   link.href = `${ROTAS.disco}?id=${vinil.id}`;
 
@@ -74,9 +74,9 @@ export function cardVinil(vinil) {
 
   artigo.append(link);
 
-  // Stepper (−/input/+) e "Adicionar ao carrinho" lado a lado. O input
-  // não tem <label> visível (cada card já mostra o título; um rótulo por
-  // card no grid ficaria repetitivo) — leva aria-label direto.
+
+
+
   const linha = document.createElement('div');
   linha.className = 'linha-acao-catalogo';
 
@@ -117,8 +117,8 @@ export function cardVinil(vinil) {
   return item;
 }
 
-// Aumentar quantidade soma no backend (POST repetido); diminuir não tem
-// endpoint — só remover a linha inteira. Por isso o input tem min = atual.
+
+
 export function linhaCarrinho(item) {
   const vinil = item.vinyl || {};
   const quantidade = item.quantity || 1;
@@ -159,7 +159,7 @@ export function linhaCarrinho(item) {
   return linha;
 }
 
-// OrderResp não tem status: ele vem do pagamento associado.
+
 export function linhaPedido(pedido, statusPagamento = '—') {
   const linha = criar('tr');
   linha.dataset.pedidoId = pedido.id;

@@ -11,7 +11,7 @@ import {
 } from '../acessibility-features/index.js';
 import { exigirLogin } from './app.js';
 
-// --- Dados pessoais ---
+
 
 const formDados = document.querySelector('#conta-nome')?.form;
 aplicarMascara(formDados?.querySelector('#conta-telefone'), mascararTelefone);
@@ -31,7 +31,7 @@ formDados?.addEventListener('submit', async (evento) => {
   travarBotao(botao, true, 'Salvando…');
 
   try {
-    // No PATCH todo campo é opcional: só vai o que foi preenchido.
+
     const dados = {};
     const nome = formDados.querySelector('#conta-nome').value.trim();
     const email = formDados.querySelector('#conta-email').value.trim();
@@ -50,7 +50,7 @@ formDados?.addEventListener('submit', async (evento) => {
   }
 });
 
-// --- Endereços ---
+
 
 const secaoEnderecos = document.querySelector('#enderecos');
 const listaEnderecos = secaoEnderecos?.querySelector('ul');
@@ -115,7 +115,7 @@ listaEnderecos?.addEventListener('click', async (evento) => {
   }
 });
 
-// --- Pedidos ---
+
 
 const secaoPedidos = document.querySelector('#pedidos');
 const corpoPedidos = secaoPedidos?.querySelector('tbody');
@@ -124,7 +124,7 @@ async function carregarPedidos() {
   ocupado(secaoPedidos, true);
 
   try {
-    // O status do pedido vem do pagamento associado.
+
     const [lista, listaPagamentos] = await Promise.all([
       pedidos.listar(getUserId()),
       pagamentos.listar({ userId: getUserId() }).catch(() => []),
@@ -144,12 +144,12 @@ async function carregarPedidos() {
   }
 }
 
-// --- Acessibilidade ---
+
 
 const formAcessibilidade = document.querySelector('#acessibilidade form');
 const fieldsetAcessibilidade = formAcessibilidade?.querySelector('fieldset');
 
-// Navegação por teclado não tem checkbox no HTML: é acrescentada aqui.
+
 function completarCheckboxes() {
   if (!fieldsetAcessibilidade) return;
 
@@ -181,7 +181,7 @@ function marcarCheckboxes(slugsAtivos) {
   }
 }
 
-// Acessibilidade vale na hora, não só depois de salvar.
+
 formAcessibilidade?.addEventListener('change', async (evento) => {
   const input = evento.target;
   if (input.name !== 'acessibilidade') return;
@@ -189,14 +189,14 @@ formAcessibilidade?.addEventListener('change', async (evento) => {
   try {
     await definir(input.value, input.checked);
   } catch (erro) {
-    // Já aplicado e salvo no navegador; só o envio para a conta falhou.
+
     avisarErro(erro);
   }
 });
 
 formAcessibilidade?.addEventListener('submit', (evento) => {
   evento.preventDefault();
-  // Cada marcação já foi salva quando mudou.
+
   avisar('Preferências de acessibilidade salvas.');
 });
 
@@ -212,7 +212,7 @@ async function carregarAcessibilidade() {
   if (doServidor) marcarCheckboxes(doServidor);
 }
 
-// Cada bloco carrega sozinho: erro em pedidos não derruba o perfil.
+
 if (exigirLogin()) {
   carregarDados().catch(mostrarErro);
   carregarEnderecos().catch(mostrarErro);

@@ -1,5 +1,5 @@
-// Formata ao vivo (evento input); quem envia pra API sempre limpa de novo
-// com apenasDigitos antes de mandar — a máscara é só visual.
+
+
 
 export function apenasDigitos(valor) {
   return String(valor || '').replace(/\D/g, '');
@@ -16,7 +16,7 @@ export function mascararCep(digitos) {
   return digitos.slice(0, 8).replace(/(\d{5})(\d)/, '$1-$2');
 }
 
-// 10 dígitos (fixo) -> (00) 0000-0000 · 11 dígitos (celular) -> (00) 00000-0000
+
 export function mascararTelefone(digitos) {
   const d = digitos.slice(0, 11);
   const meio = d.length <= 10 ? /(\d{4})(\d)/ : /(\d{5})(\d)/;

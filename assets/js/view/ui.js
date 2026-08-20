@@ -1,5 +1,5 @@
-// Popups usam os atributos data-vinyl-ui="..." — o CSS deles fica em
-// assets/css/base.css, carregado em toda página.
+
+
 
 import { mensagemDoErro } from './erros.js';
 import { aplicarMascara } from './mascaras.js';
@@ -7,7 +7,7 @@ import { aplicarMascara } from './mascaras.js';
 const PREFIXO = 'vinyl-ui';
 const DURACAO_MINIMA_CARREGAMENTO = 500;
 
-// --- Formatação ---
+
 
 export function formatarBRL(valor) {
   const numero = Number(valor);
@@ -21,16 +21,16 @@ export function formatarData(iso) {
   return Number.isNaN(data.getTime()) ? '—' : data.toLocaleDateString('pt-BR');
 }
 
-// --- Estados de elemento ---
+
 
 export function alternar(elemento, visivel) {
   if (elemento) elemento.hidden = !visivel;
 }
 
-// <progress> sem "value" é indeterminado: todo navegador já anima sozinho,
-// sem precisar de CSS. Fica antes do elemento (irmão, não filho) porque
-// alguns dos elementos marcados como ocupados são <table>, que não aceita
-// filho arbitrário.
+
+
+
+
 export function ocupado(elemento, carregando, rotulo = 'Carregando…') {
   if (!elemento) return;
 
@@ -59,9 +59,9 @@ export async function travarBotao(botao, travado, textoOcupado = 'Aguarde…') {
       botao.dataset.minWidthOriginal = botao.style.minWidth;
       botao.dataset.minHeightOriginal = botao.style.minHeight;
 
-      // "Adicionando…" é menor que "Adicionar ao carrinho". Mantém as
-      // dimensões calculadas antes de trocar o conteúdo para o card não
-      // encolher durante a requisição.
+
+
+
       const { width, height } = botao.getBoundingClientRect();
       botao.style.minWidth = `${width}px`;
       botao.style.minHeight = `${height}px`;
@@ -92,7 +92,7 @@ export async function travarBotao(botao, travado, textoOcupado = 'Aguarde…') {
   }
 }
 
-// --- Popups ---
+
 
 function criar(tag, texto) {
   const elemento = document.createElement(tag);
@@ -142,8 +142,8 @@ export function alertar({ titulo, mensagem = '', tipo = 'sucesso', textoBotao = 
   return new Promise((resolver) => {
     dialogo.addEventListener('close', () => {
       dialogo.remove();
-      // showModal() move o foco pro dialog; fechar não devolve sozinho —
-      // sem isso, quem navega por teclado perde o lugar e cai no <body>.
+
+
       invocador?.focus?.();
       resolver();
     });
@@ -234,8 +234,8 @@ export function escolher({ titulo, mensagem = '', opcoes, rotuloCampo = 'Opção
   });
 }
 
-// Como <dialog> só devolve string em close(), o valor de cada checkbox é
-// lido do DOM na hora do 'close', não carregado no returnValue.
+
+
 export function escolherVarios({
   titulo,
   mensagem = '',
@@ -292,11 +292,11 @@ export function escolherVarios({
   });
 }
 
-// Formulário genérico dentro de um <dialog> — campos = [{ id, rotulo,
-// obrigatorio, maxlength, inputmode, mascara }]. Confirmar só fecha se os
-// campos obrigatórios passarem em reportValidity(), igual um <form> normal
-// validaria no submit — não tem <form> aqui porque o botão já fecha o
-// <dialog> sozinho, sem precisar de submit de verdade.
+
+
+
+
+
 export function pedirCampos({ titulo, mensagem = '', campos, textoConfirmar = 'Salvar', textoCancelar = 'Cancelar' }) {
   const dialogo = criarDialogo();
   const invocador = document.activeElement;
@@ -372,6 +372,29 @@ export function avisar(mensagem, tipo = 'sucesso') {
   const aviso = criar('p', mensagem);
   aviso.setAttribute('data-' + PREFIXO, 'aviso');
   aviso.setAttribute('data-' + PREFIXO + '-tipo', tipo);
+  area.append(aviso);
+
+  setTimeout(() => aviso.remove(), 4000);
+}
+
+export function avisarComLink({ antes = '', textoLink, href, depois = '', tipo = 'sucesso' }) {
+  let area = document.querySelector(`[data-${PREFIXO}="avisos"]`);
+  if (!area) {
+    area = document.createElement('div');
+    area.setAttribute('data-' + PREFIXO, 'avisos');
+    area.setAttribute('role', 'status');
+    area.setAttribute('aria-live', 'polite');
+    document.body.append(area);
+  }
+
+  const aviso = criar('p');
+  aviso.setAttribute('data-' + PREFIXO, 'aviso');
+  aviso.setAttribute('data-' + PREFIXO + '-tipo', tipo);
+
+  const link = criar('a', textoLink);
+  link.href = href;
+  link.setAttribute('aria-label', `Abrir ${textoLink}`);
+  aviso.append(antes, link, depois);
   area.append(aviso);
 
   setTimeout(() => aviso.remove(), 4000);
