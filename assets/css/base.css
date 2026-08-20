@@ -130,6 +130,41 @@
   --sombra-card: 0 10px 25px rgba(0, 0, 0, 0.45);
 }
 
+/* Alto contraste é controlado nas preferências de acessibilidade. O amarelo
+   serve apenas como fundo de destaque: todo texto sobre ele é preto. */
+:root[data-a11y-contraste="alto"] {
+  --cor-fundo: #000000;
+  --cor-texto: #ffffff;
+  --cor-texto-suave: #ffffff;
+  --cor-texto-meta: #ffffff;
+  --cor-superficie: #000000;
+  --cor-superficie-alta: #000000;
+  --cor-borda: #ffffff;
+  --cor-borda-suave: #ffffff;
+  --cor-divisor: #ffffff;
+  --cor-campo: #000000;
+  --cor-campo-borda: #ffffff;
+  --cor-controle: #ffe600;
+  --cor-controle-hover: #ffffff;
+  --cor-sobre-controle: #000000;
+  --cor-barra: #000000;
+  --cor-barra-pe: #000000;
+  --cor-barra-texto: #ffffff;
+  --cor-destaque: #ffe600;
+  --cor-destaque-hover: #ffffff;
+  --cor-destaque-suave: #333300;
+  --cor-sobre-destaque: #000000;
+  --cor-foco: #ffe600;
+  --cor-realce-cursor: #ffe600;
+  --cor-hero: #000000;
+  --cor-sobre-hero: #ffffff;
+  --cor-etiqueta: #ffe600;
+  --cor-acao: #ffffff;
+  --cor-sobre-acao: #000000;
+  --cor-preco: #ffffff;
+  --cor-sombra-dura: #ffffff;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -162,6 +197,27 @@ body {
 [data-numero] {
   font-family: var(--fonte-numeros);
   font-variant-numeric: lining-nums tabular-nums;
+}
+
+/* Primeiro foco da página: evita que quem usa Tab precise atravessar toda a
+   navegação antes de chegar ao conteúdo. Só aparece quando recebe foco. */
+#vinyl-pular-conteudo {
+  position: fixed;
+  z-index: 10000;
+  top: var(--espaco-3);
+  left: 50%;
+  padding: var(--espaco-3) var(--espaco-5);
+  border: 2px solid var(--cor-borda);
+  background: var(--cor-controle);
+  color: var(--cor-sobre-controle);
+  font-size: var(--texto-ui);
+  font-weight: 800;
+  transform: translate(-50%, -160%);
+  transition: transform var(--transicao-rapida);
+}
+
+#vinyl-pular-conteudo:focus {
+  transform: translate(-50%, 0);
 }
 
 h1, h2, h3 {

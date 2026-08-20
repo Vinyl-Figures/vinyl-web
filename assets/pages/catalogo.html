@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/catalogo.css">
-  <link rel="stylesheet" href="../css/releitura.css">
+  <link rel="stylesheet" href="../css/releitura.css?v=20260819b">
   <title>Catálogo | Vinyl Figures Store</title>
 </head>
 <body class="pagina-catalogo">
@@ -20,7 +20,6 @@
         <li><a href="catalogo.html" aria-current="page">Catálogo</a></li>
         <li><a href="carrinho.html">Carrinho</a></li>
         <li><a href="conta.html">Conta</a></li>
-        <li><button type="button" data-acao="alternar-tema">Tema</button></li>
       </ul>
     </nav>
   </header>
@@ -57,12 +56,20 @@
       </form>
 
       <form action="catalogo.html" method="get">
-        <fieldset>
+        <fieldset class="seletor-generos">
           <legend>Gênero</legend>
-          <label><input type="checkbox" name="genero" value="rock"> Rock</label>
-          <label><input type="checkbox" name="genero" value="pop"> Pop</label>
-          <label><input type="checkbox" name="genero" value="indie"> Indie</label>
-          <label><input type="checkbox" name="genero" value="eletronica"> Eletrônica</label>
+          <details>
+            <summary>
+              <span data-generos-resumo>Todos os gêneros</span>
+              <span aria-hidden="true">⌄</span>
+            </summary>
+            <div data-generos-opcoes>
+              <label><input type="checkbox" name="genero" value="rock"> Rock</label>
+              <label><input type="checkbox" name="genero" value="pop"> Pop</label>
+              <label><input type="checkbox" name="genero" value="indie"> Indie</label>
+              <label><input type="checkbox" name="genero" value="eletronica"> Eletrônica</label>
+            </div>
+          </details>
         </fieldset>
 
         <div class="linha-filtros">
@@ -102,7 +109,10 @@
     <!-- Resultados -->
     <section class="catalog-results">
       <h2>Todos os discos</h2>
-      <p>Carregando discos…</p>
+      <p class="catalog-status esta-carregando" role="status" aria-live="polite">
+        <span class="catalog-spinner" aria-hidden="true"></span>
+        <span class="catalog-status-text">Carregando discos…</span>
+      </p>
 
       <ul></ul>
 

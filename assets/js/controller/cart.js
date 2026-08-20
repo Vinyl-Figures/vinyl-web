@@ -1,5 +1,5 @@
 import { ROTAS, METODOS_PAGAMENTO } from '../config.js';
-import { carrinho, cupons, enderecos, frete, pedidos, pagamentos } from '../model/store.js';
+import { carrinho, cupons, enderecos, pedidos, pagamentos } from '../model/store.js';
 import { getUserId } from '../model/session.js';
 import { linhaCarrinho, preencher } from '../view/templates.js';
 import {
@@ -42,6 +42,15 @@ const botaoFinalizar = formCarrinho?.querySelector('button[type="submit"]');
 let itens = [];
 let cupomAplicado = null; // { code, discountPercent }
 let freteCalculado = null; // { zipCode, distanceKm, price }
+
+// Estes são os mesmos valores padrão da API. A conta e a consulta de CEP
+// acontecem no navegador; o checkout continua recalculando no servidor como
+// validação do valor final.
+const CEP_ORIGEM = '04285000';
+const PRECO_BASE_FRETE = 10;
+const PRECO_POR_KM = 2.5;
+const RAIO_TERRA_KM = 6371;
+const coordenadasPorCep = new Map();
 
 // --- Carregamento ---
 
@@ -172,6 +181,55 @@ document.querySelector('[data-acao="aplicar-cupom"]')?.addEventListener('click',
 
 // --- Frete ---
 
+function arredondar(valor, casas) {
+  const fator = 10 ** casas;
+  return Math.round((valor + Number.EPSILON) * fator) / fator;
+}
+
+function distanciaEmKm(origem, destino) {
+  const paraRadianos = (graus) => (graus * Math.PI) / 180;
+  const diferencaLatitude = paraRadianos(destino.latitude - origem.latitude);
+  const diferencaLongitude = paraRadianos(destino.longitude - origem.longitude);
+
+  const a = Math.sin(diferencaLatitude / 2) ** 2
+    + Math.cos(paraRadianos(origem.latitude))
+      * Math.cos(paraRadianos(destino.latitude))
+      * Math.sin(diferencaLongitude / 2) ** 2;
+
+  return RAIO_TERRA_KM * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+async function coordenadasDoCep(cep) {
+  const emCache = coordenadasPorCep.get(cep);
+  if (emCache) return emCache;
+
+  const resposta = await fetch(`https://brasilapi.com.br/api/cep/v2/${cep}`);
+  if (!resposta.ok) throw new Error('CEP não encontrado.');
+
+  const dados = await resposta.json();
+  const latitude = Number(dados?.location?.coordinates?.latitude);
+  const longitude = Number(dados?.location?.coordinates?.longitude);
+
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+    throw new Error('Este CEP não possui coordenadas disponíveis.');
+  }
+
+  const coordenadas = { latitude, longitude };
+  coordenadasPorCep.set(cep, coordenadas);
+  return coordenadas;
+}
+
+async function calcularFreteNoNavegador(cep) {
+  const [origem, destino] = await Promise.all([
+    coordenadasDoCep(CEP_ORIGEM),
+    coordenadasDoCep(cep),
+  ]);
+
+  const distanceKm = arredondar(distanciaEmKm(origem, destino), 1);
+  const price = arredondar(PRECO_BASE_FRETE + PRECO_POR_KM * distanceKm, 2);
+  return { zipCode: cep, distanceKm, price };
+}
+
 async function carregarEnderecosSalvos() {
   if (!campoEnderecoSalvo) return;
 
@@ -236,8 +294,7 @@ async function calcularFreteComCep(cep) {
   ocupado(secaoFrete, true, 'Calculando frete…');
 
   try {
-    const resultado = await frete.calcular(cep);
-    freteCalculado = { zipCode: cep, distanceKm: resultado.distanceKm, price: Number(resultado.price) };
+    freteCalculado = await calcularFreteNoNavegador(cep);
     renderizar();
     avisar('Frete calculado.');
   } catch (erro) {

@@ -60,6 +60,42 @@
   --cor-foco: #e9f056;
 }
 
+/* Os tokens ficam também na camada visual, carregada por todas as páginas,
+   para que alto contraste seja consistente inclusive com cache antigo do
+   CSS base durante desenvolvimento. Texto sobre amarelo é sempre preto. */
+:root[data-a11y-contraste="alto"] {
+  --cor-fundo: #000000;
+  --cor-texto: #ffffff;
+  --cor-texto-suave: #ffffff;
+  --cor-texto-meta: #ffffff;
+  --cor-superficie: #000000;
+  --cor-superficie-alta: #000000;
+  --cor-borda: #ffffff;
+  --cor-borda-suave: #ffffff;
+  --cor-divisor: #ffffff;
+  --cor-campo: #000000;
+  --cor-campo-borda: #ffffff;
+  --cor-controle: #ffe600;
+  --cor-controle-hover: #ffffff;
+  --cor-sobre-controle: #000000;
+  --cor-barra: #000000;
+  --cor-barra-pe: #000000;
+  --cor-barra-texto: #ffffff;
+  --cor-destaque: #ffe600;
+  --cor-destaque-hover: #ffffff;
+  --cor-destaque-suave: #333300;
+  --cor-sobre-destaque: #000000;
+  --cor-foco: #ffe600;
+  --cor-realce-cursor: #ffe600;
+  --cor-hero: #000000;
+  --cor-sobre-hero: #ffffff;
+  --cor-etiqueta: #ffe600;
+  --cor-acao: #ffffff;
+  --cor-sobre-acao: #000000;
+  --cor-preco: #ffffff;
+  --cor-sombra-dura: #ffffff;
+}
+
 /* ===== Cabeçalho e rodapé ===== */
 .site-header {
   min-height: 76px;
@@ -187,6 +223,7 @@ main > nav.breadcrumb ol li[aria-current="page"] {
   font-size: 0.65rem;
   font-weight: 800;
   letter-spacing: 0.06em;
+  color: var(--cor-sobre-controle);
 }
 
 .page-intro h1 {
@@ -205,9 +242,12 @@ main > nav.breadcrumb ol li[aria-current="page"] {
 
 /* ===== Home ===== */
 .pagina-inicio main {
-  min-height: min(760px, calc(100vh - 154px));
+  /* A primeira dobra é dedicada à vitrine. O rodapé fica logo depois,
+     acessível ao rolar, sem empurrar os elementos principais para fora. */
+  height: calc(100svh - 76px);
+  min-height: 0;
   margin: 0;
-  padding: clamp(3rem, 7vw, 7rem) 6%;
+  padding: clamp(2rem, 6vh, 5rem) 6%;
   max-width: none;
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(20rem, 0.95fr);
@@ -283,7 +323,7 @@ main > nav.breadcrumb ol li[aria-current="page"] {
   display: flex;
   flex-wrap: wrap;
   gap: var(--espaco-6);
-  margin-top: clamp(3rem, 8vw, 6rem);
+  margin-top: clamp(1.5rem, 5vh, 4rem);
 }
 
 .hero-stats div {
@@ -447,6 +487,77 @@ main > nav.breadcrumb ol li[aria-current="page"] {
 .catalog-page .painel-catalogo fieldset label:has(input[type="checkbox"]:checked) {
   background: var(--cor-controle);
   border-color: var(--cor-borda);
+  color: var(--cor-sobre-controle);
+}
+
+/* A API possui muitos gêneros. A lista permanece multisseleção, mas fica
+   recolhida até a pessoa escolher abri-la, sem empurrar o restante do
+   filtro para baixo. */
+.catalog-page .painel-catalogo .seletor-generos {
+  display: block;
+  width: min(100%, 38rem);
+}
+
+.catalog-page .painel-catalogo .seletor-generos legend {
+  margin-bottom: var(--espaco-2);
+}
+
+.catalog-page .seletor-generos details {
+  position: relative;
+}
+
+.catalog-page .seletor-generos summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espaco-4);
+  min-height: 2.9rem;
+  padding: var(--espaco-3) var(--espaco-4);
+  border: 1.5px solid var(--cor-borda);
+  background: var(--cor-campo);
+  color: var(--cor-texto);
+  cursor: pointer;
+  font-size: var(--texto-ui);
+  font-weight: 700;
+  list-style: none;
+}
+
+.catalog-page .seletor-generos summary::-webkit-details-marker {
+  display: none;
+}
+
+.catalog-page .seletor-generos summary > span:last-child {
+  color: var(--cor-destaque);
+  font-size: 1.25rem;
+  line-height: 1;
+  transition: transform var(--transicao-rapida);
+}
+
+.catalog-page .seletor-generos details[open] summary > span:last-child {
+  transform: rotate(180deg);
+}
+
+.catalog-page .seletor-generos details > div {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% - 1px);
+  left: 0;
+  width: 100%;
+  max-height: 17rem;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espaco-2);
+  padding: var(--espaco-3);
+  border: 1.5px solid var(--cor-borda);
+  background: var(--cor-superficie-alta);
+  box-shadow: var(--sombra-card);
+}
+
+.catalog-page .seletor-generos details > div label:has(input[type="checkbox"]) {
+  min-width: 0;
+  padding: var(--espaco-2) var(--espaco-3);
+  overflow-wrap: anywhere;
 }
 
 .catalog-page .catalog-results {
@@ -461,6 +572,71 @@ main > nav.breadcrumb ol li[aria-current="page"] {
 
 .catalog-page .catalog-results > p {
   color: var(--cor-texto-meta);
+}
+
+/* O catálogo carrega com um vinil próprio, em vez de expor uma linha de
+   texto solta. O texto continua no DOM, dentro de um status vivo, para que
+   leitores de tela recebam o mesmo retorno visual. */
+.catalog-page .catalog-status {
+  margin: var(--espaco-3) 0 var(--espaco-5);
+}
+
+.catalog-page .catalog-status.esta-carregando {
+  min-height: min(21rem, 44vh);
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: var(--espaco-4);
+  padding: var(--espaco-7);
+  border: 2px solid var(--cor-borda);
+  background: var(--cor-superficie-alta);
+  box-shadow: var(--sombra-card);
+  color: var(--cor-texto);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.catalog-page .catalog-spinner {
+  position: relative;
+  display: block;
+  width: clamp(4.75rem, 10vw, 6.5rem);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 2px solid var(--cor-borda);
+  border-radius: 50%;
+  background: var(--cor-texto);
+  box-shadow: 5px 5px 0 var(--cor-destaque);
+  animation: catalog-vinil-girar 1.35s linear infinite;
+}
+
+.catalog-page .catalog-spinner::before {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  border: 1px solid color-mix(in srgb, var(--cor-superficie-alta) 72%, transparent);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 7px color-mix(in srgb, var(--cor-superficie-alta) 18%, transparent),
+    0 0 0 14px color-mix(in srgb, var(--cor-superficie-alta) 10%, transparent),
+    0 0 0 21px color-mix(in srgb, var(--cor-superficie-alta) 7%, transparent);
+}
+
+.catalog-page .catalog-spinner::after {
+  content: "";
+  position: absolute;
+  inset: 35%;
+  border: 2px solid var(--cor-borda);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--cor-superficie-alta) 0 13%, transparent 14%), var(--cor-controle);
+}
+
+@keyframes catalog-vinil-girar {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .catalog-page .catalog-results > ul {
@@ -627,7 +803,7 @@ main > nav.breadcrumb ol li[aria-current="page"] {
 
 .account-page > nav[aria-label="Seções da conta"] a:hover {
   background: var(--cor-controle);
-  color: var(--cor-texto);
+  color: var(--cor-sobre-controle);
   border-color: var(--cor-borda);
 }
 
@@ -688,7 +864,7 @@ main > nav.breadcrumb ol li[aria-current="page"] {
 .auth-page button[type="submit"]:hover:not(:disabled),
 .record-page button:hover:not(:disabled) {
   background: var(--cor-controle);
-  color: var(--cor-texto);
+  color: var(--cor-sobre-controle);
 }
 
 .cart-page button[type="reset"],
@@ -706,7 +882,14 @@ main > nav.breadcrumb ol li[aria-current="page"] {
 .cart-page thead,
 .account-page thead {
   background: var(--cor-controle);
-  color: #080808;
+  color: var(--cor-sobre-controle);
+}
+
+/* thead th define uma cor diretamente em paginas.css; a cor herdada do
+   thead não vence. Mantém preto sobre amarelo no alto contraste. */
+.cart-page thead th,
+.account-page thead th {
+  color: var(--cor-sobre-controle);
 }
 
 .cart-page th,
@@ -727,6 +910,7 @@ main > nav.breadcrumb ol li[aria-current="page"] {
   padding: clamp(2rem, 6vw, 5rem);
   text-align: center;
   background: var(--cor-controle);
+  color: var(--cor-sobre-controle);
 }
 
 .cart-page > section:not([hidden]) h2 {
@@ -767,14 +951,14 @@ main > nav.breadcrumb ol li[aria-current="page"] {
 }
 
 .record-page .disco-preco {
-  color: #c63f20;
+  color: var(--cor-preco, #c63f20);
 }
 
 .record-page .disco-generos li {
   border: 1.5px solid var(--cor-borda);
   border-radius: 0;
   background: var(--cor-controle);
-  color: var(--cor-texto);
+  color: var(--cor-sobre-controle);
 }
 
 .record-page .linha-acao-catalogo > button,
@@ -785,6 +969,47 @@ main > nav.breadcrumb ol li[aria-current="page"] {
 
 .record-page .linha-acao-catalogo > button {
   background: var(--cor-destaque);
+}
+
+/* Alto contraste também cobre os poucos elementos gráficos que a releitura
+   mantém com cores próprias. Assim não sobra texto claro sobre amarelo nem
+   uma área azul de baixo contraste. */
+:root[data-a11y-contraste="alto"] .page-intro,
+:root[data-a11y-contraste="alto"] .pagina-inicio main {
+  background: var(--cor-hero);
+  color: var(--cor-sobre-hero);
+  border-color: var(--cor-sobre-hero);
+}
+
+:root[data-a11y-contraste="alto"] .pagina-inicio .hero,
+:root[data-a11y-contraste="alto"] .pagina-inicio .hero h1,
+:root[data-a11y-contraste="alto"] .pagina-inicio .hero p,
+:root[data-a11y-contraste="alto"] .hero-stats dt,
+:root[data-a11y-contraste="alto"] .hero-stats dd,
+:root[data-a11y-contraste="alto"] .palavra-giro {
+  color: var(--cor-sobre-hero);
+}
+
+:root[data-a11y-contraste="alto"] .page-intro > span,
+:root[data-a11y-contraste="alto"] .hero-badge {
+  background: var(--cor-etiqueta);
+  border-color: var(--cor-sobre-hero);
+  color: var(--cor-sobre-controle);
+}
+
+:root[data-a11y-contraste="alto"] .pagina-inicio .vinyl-container img,
+:root[data-a11y-contraste="alto"] .shape-amarela,
+:root[data-a11y-contraste="alto"] .shape-laranja {
+  border-color: var(--cor-sobre-hero);
+}
+
+:root[data-a11y-contraste="alto"] .shape-amarela {
+  background: var(--cor-etiqueta);
+}
+
+:root[data-a11y-contraste="alto"] .catalog-page .catalog-results > ul li article > a > p:first-of-type,
+:root[data-a11y-contraste="alto"] .record-page .disco-preco {
+  color: var(--cor-preco);
 }
 
 /* Valores sempre usam a fonte neutra, mesmo sobre o novo visual. */
@@ -802,10 +1027,21 @@ input[inputmode="numeric"],
 
   .site-header .site-nav {
     min-height: auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: start;
+    gap: var(--espaco-3);
+  }
+
+  .site-header ul {
+    width: 100%;
+    justify-content: space-between;
+    gap: var(--espaco-2) var(--espaco-4);
   }
 
   .site-header ul li a {
     padding: var(--espaco-2) 0;
+    font-size: 0.8rem;
   }
 
   .site-header ul li a[aria-current="page"]::after {
@@ -815,10 +1051,13 @@ input[inputmode="numeric"],
   .page-intro {
     grid-template-columns: 1fr;
     gap: var(--espaco-5);
+    padding-inline: 6%;
   }
 
   .pagina-inicio main {
     grid-template-columns: 1fr;
+    height: auto;
+    min-height: 0;
     padding: var(--espaco-8) 6% var(--espaco-9);
   }
 
@@ -846,12 +1085,35 @@ input[inputmode="numeric"],
     justify-self: start;
   }
 
+  .catalog-page .seletor-generos details > div {
+    grid-template-columns: 1fr;
+  }
+
   .cart-page > form,
   .cart-page > section,
   .account-page > section,
   .auth-page > form,
   .record-page > article {
     width: 88%;
+  }
+}
+
+@media (max-height: 800px) and (min-width: 761px) {
+  .pagina-inicio main {
+    padding-block: var(--espaco-7);
+  }
+
+  .pagina-inicio .hero h1 {
+    margin-block: var(--espaco-4);
+    font-size: clamp(3rem, 6.5vw, 5.5rem);
+  }
+
+  .pagina-inicio .hero p {
+    margin-bottom: var(--espaco-5);
+  }
+
+  .pagina-inicio .vinyl-container {
+    width: min(35vw, 430px);
   }
 }
 
@@ -862,6 +1124,28 @@ input[inputmode="numeric"],
 }
 
 @media (max-width: 480px) {
+  .site-header ul {
+    display: grid;
+    grid-template-columns: repeat(2, max-content);
+    justify-content: start;
+    column-gap: var(--espaco-6);
+    row-gap: var(--espaco-2);
+  }
+
+  .site-footer {
+    padding-inline: var(--espaco-5);
+  }
+
+  .site-footer nav ul {
+    display: grid;
+    grid-template-columns: repeat(2, max-content);
+    gap: var(--espaco-3) var(--espaco-6);
+  }
+
+  .page-intro {
+    padding-block: var(--espaco-7);
+  }
+
   .pagina-inicio .hero h1,
   .page-intro h1 {
     font-size: clamp(2.75rem, 15vw, 4.5rem);

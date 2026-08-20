@@ -5,10 +5,8 @@ import { estaLogado } from '../model/session.js';
 import { auth } from '../model/store.js';
 import { avisar, mostrarErro, alternar } from '../view/ui.js';
 import { aplicarSalvas, sincronizar, oferecerAcessibilidade } from '../acessibility-features/index.js';
-import { aplicarSalvo, temaAtual, alternarTema } from '../view/tema.js';
 
 aplicarSalvas();
-aplicarSalvo();
 
 const logado = estaLogado();
 
@@ -33,19 +31,6 @@ const crumbAtual = document.querySelector('main > nav[aria-label="Você está aq
 if (logado && primeiroCrumb && crumbAtual?.textContent.trim() !== 'Catálogo') {
   primeiroCrumb.textContent = 'Catálogo';
   primeiroCrumb.href = ROTAS.catalogo;
-}
-
-// Sem CSS ainda: o botão só troca o atributo no <html> e o próprio rótulo.
-function rotuloTema(tema) {
-  return tema === 'escuro' ? 'Modo claro' : 'Modo escuro';
-}
-
-const botaoTema = document.querySelector('[data-acao="alternar-tema"]');
-if (botaoTema) {
-  botaoTema.textContent = rotuloTema(temaAtual());
-  botaoTema.addEventListener('click', () => {
-    botaoTema.textContent = rotuloTema(alternarTema());
-  });
 }
 
 let avisouDemora = false;

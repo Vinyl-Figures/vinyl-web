@@ -3,10 +3,10 @@
 
 import { vinis, generos, carrinho } from '../model/store.js';
 import { cardVinil, preencher } from '../view/templates.js';
-import { avisar, mostrarErro, alternar, ocupado, travarBotao } from '../view/ui.js';
+import { avisar, mostrarErro, alternar, travarBotao } from '../view/ui.js';
 import { exigirLogin } from './app.js';
 
-const POR_PAGINA = 10;
+const POR_PAGINA = 8;
 
 // --- Elementos ---
 
@@ -32,6 +32,8 @@ const campoPrecoMax = document.querySelector('#preco-max');
 const fieldsetGenero = [...document.querySelectorAll('fieldset')].find(
   (f) => f.querySelector('legend')?.textContent.trim() === 'Gênero'
 );
+const opcoesGenero = fieldsetGenero?.querySelector('[data-generos-opcoes]');
+const resumoGenero = fieldsetGenero?.querySelector('[data-generos-resumo]');
 
 // --- Estado ---
 
@@ -50,10 +52,9 @@ function numeroFormatado(valor) {
 
 // Troca os gêneros fixos do HTML pelos do banco, que têm id próprio.
 async function carregarGeneros() {
-  if (!fieldsetGenero) return;
+  if (!opcoesGenero) return;
 
   const lista = await generos.listar();
-  const legenda = fieldsetGenero.querySelector('legend');
 
   const rotulos = lista.map((genero) => {
     const label = document.createElement('label');
@@ -65,17 +66,56 @@ async function carregarGeneros() {
     return label;
   });
 
-  fieldsetGenero.replaceChildren(legenda, ...rotulos);
+  opcoesGenero.replaceChildren(...rotulos);
+  atualizarResumoGeneros();
 }
 
 function generosSelecionados() {
   return [...document.querySelectorAll('input[name="genero"]:checked')].map((i) => i.value);
 }
 
+function atualizarResumoGeneros() {
+  if (!resumoGenero) return;
+
+  const quantidade = generosSelecionados().length;
+  resumoGenero.textContent = quantidade
+    ? `${quantidade} ${quantidade === 1 ? 'gênero selecionado' : 'gêneros selecionados'}`
+    : 'Todos os gêneros';
+}
+
+fieldsetGenero?.addEventListener('change', (evento) => {
+  if (evento.target.matches('input[name="genero"]')) atualizarResumoGeneros();
+});
+
 // --- Carregamento ---
 
+function mostrarCarregamento() {
+  if (!contador) return;
+
+  const spinner = document.createElement('span');
+  spinner.className = 'catalog-spinner';
+  spinner.setAttribute('aria-hidden', 'true');
+
+  const texto = document.createElement('span');
+  texto.className = 'catalog-status-text';
+  texto.textContent = 'Carregando discos…';
+
+  contador.classList.add('esta-carregando');
+  contador.replaceChildren(spinner, texto);
+}
+
+function mostrarFalhaNoCarregamento() {
+  if (!contador) return;
+
+  contador.classList.remove('esta-carregando');
+  contador.textContent = 'Não foi possível carregar os discos. Tente novamente.';
+}
+
 async function carregarVinis() {
-  ocupado(secaoResultados, true);
+  secaoResultados?.setAttribute('aria-busy', 'true');
+  alternar(secaoResultados, true);
+  alternar(secaoVazia, false);
+  mostrarCarregamento();
 
   try {
     const ids = generosSelecionados();
@@ -96,9 +136,10 @@ async function carregarVinis() {
     pagina = 1;
     aplicarFiltros();
   } catch (erro) {
+    mostrarFalhaNoCarregamento();
     mostrarErro(erro);
   } finally {
-    ocupado(secaoResultados, false);
+    secaoResultados?.setAttribute('aria-busy', 'false');
   }
 }
 
@@ -147,6 +188,7 @@ function renderizar() {
   preencher(listaProdutos, daPagina.map(cardVinil));
 
   if (contador) {
+    contador.classList.remove('esta-carregando');
     if (visiveis.length) {
       contador.replaceChildren(
         'Mostrando ',
@@ -233,6 +275,7 @@ formFiltros?.addEventListener('reset', () => {
   // O reset limpa os campos só depois deste evento.
   setTimeout(() => {
     if (campoBusca) campoBusca.value = '';
+    atualizarResumoGeneros();
     carregarVinis();
   });
 });

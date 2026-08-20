@@ -126,12 +126,6 @@ export const cupons = {
   buscar: (code) => api.get(`/coupons/code/${code}`, { contexto: 'cupom-buscar' }),
 };
 
-// distanceKm/price são mockados no backend a partir do CEP, sem geocoding
-// de verdade — mesmo CEP sempre dá o mesmo valor.
-export const frete = {
-  calcular: (zipCode) => api.get('/shipping', { query: { zipCode }, contexto: 'frete-calcular' }),
-};
-
 export const pedidos = {
   // Soma o total, congela o preço em priceAtPurchase e esvazia o carrinho.
   // zipCode/couponCode são opcionais: sem eles, frete e desconto ficam

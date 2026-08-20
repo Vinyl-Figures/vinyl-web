@@ -6,10 +6,10 @@
   z-index: 2147483000;
   max-width: min(21rem, calc(100vw - 2rem));
   padding: 0.9rem;
-  border: 2px solid #080808;
-  background: #ffffff;
-  color: #080808;
-  box-shadow: 5px 5px 0 #080808;
+  border: 2px solid var(--cor-borda, #080808);
+  background: var(--cor-superficie-alta, #ffffff);
+  color: var(--cor-texto, #080808);
+  box-shadow: 5px 5px 0 var(--cor-sombra-dura, #080808);
   font: 700 0.85rem/1.35 Arial, Helvetica, sans-serif;
 }
 
@@ -18,18 +18,18 @@
   width: 100%;
   margin-bottom: 0.65rem;
   padding: 0.75rem;
-  border: 2px solid #080808;
-  background: #ff5c34;
-  color: #080808;
+  border: 2px solid var(--cor-borda, #080808);
+  background: var(--cor-destaque, #ff5c34);
+  color: var(--cor-sobre-destaque, #080808);
   font: inherit;
   cursor: pointer;
 }
 
 .vlibras-tentativa button:hover {
-  background: #e9f056;
+  background: var(--cor-controle, #e9f056);
 }
 
 .vlibras-tentativa button:focus-visible {
-  outline: 3px solid #105682;
+  outline: 3px solid var(--cor-foco, #105682);
   outline-offset: 3px;
 }
