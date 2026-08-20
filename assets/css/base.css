@@ -1,18 +1,18 @@
-/* Compartilhado por todas as páginas: tokens, reset, tipografia,
-   header/footer, popups (view/ui.js), tema escuro e recursos de
-   acessibilidade. Layout específico de cada página fica em style.css
-   (index), catalogo.css, paginas.css (formulários) ou disco.css.
 
-   O vocabulário visual está documentado em DESIGN.md, na raiz. */
 
-/* @import PRECISA vir antes de qualquer regra de estilo: o navegador
-   descarta um @import que apareça depois, e era exatamente isso que
-   acontecia aqui — a Syne nunca carregava e tudo caía no sans-serif do
-   sistema. */
+
+
+
+
+
+
+
+
+
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400..800&display=swap');
 
 :root {
-  /* ===== Cor: base ===== */
+
   --cor-fundo: #ffffff;
   --cor-texto: #000000;
   --cor-texto-suave: #555555;
@@ -31,24 +31,24 @@
   --cor-barra-pe: #0c0c0c;
   --cor-barra-texto: #ffffff;
 
-  /* ===== Cor: destaque ===== */
+
   --cor-destaque: #105682;
   --cor-destaque-hover: #0c4160;
   --cor-destaque-suave: rgba(16, 86, 130, 0.08);
   --cor-sobre-destaque: #ffffff;
   --cor-foco: #105682;
 
-  /* ===== Cor: semântica ===== */
+
   --cor-erro: #c0392b;
   --cor-info: #2d6cdf;
   --cor-realce-cursor: #ff5a00;
 
-  /* ===== Tipografia ===== */
+
   --fonte: 'Syne', sans-serif;
   --fonte-numeros: Arial, Helvetica, sans-serif;
 
-  /* clamp() no lugar de trocar o tamanho no media query: escala contínua,
-     sem o degrau que existia em 992px. */
+
+
   --texto-hero: clamp(2.5rem, 7vw, 4.5rem);
   --texto-1: clamp(2.25rem, 5vw, 3.25rem);
   --texto-2: clamp(1.75rem, 4vw, 2.5rem);
@@ -63,13 +63,13 @@
   --altura-titulo: 1.25;
   --altura-corpo: 1.55;
 
-  /* Tracking em em, não px: acompanha o font-size — inclusive quando o
-     recurso "texto aumentado" leva a raiz pra 120%. */
+
+
   --tracking-hero: -0.035em;
   --tracking-titulo: -0.025em;
   --tracking-caixa-alta: 0.06em;
 
-  /* ===== Espaçamento (escala de 4px) ===== */
+
   --espaco-1: 4px;
   --espaco-2: 8px;
   --espaco-3: 12px;
@@ -82,34 +82,34 @@
   --espaco-10: 64px;
   --espaco-11: 80px;
 
-  /* ===== Forma ===== */
+
   --raio-pilula: 30px;
   --raio-card: 16px;
   --raio-card-interno: 12px;
   --raio-imagem: 10px;
   --raio-caixa: 6px;
 
-  /* ===== Elevação ===== */
+
   --sombra-card: 0 10px 25px rgba(0, 0, 0, 0.08);
   --sombra-flutuante: 0 15px 35px rgba(0, 0, 0, 0.18);
   --sombra-modal: 0 20px 50px rgba(0, 0, 0, 0.25);
 
-  /* ===== Movimento ===== */
+
   --transicao-rapida: 0.15s ease;
   --transicao: 0.25s ease;
 }
 
-/* Tema escuro: só os tokens mudam. As regras de componente lá embaixo
-   são as mesmas dos dois temas — antes cada uma tinha um bloco duplicado
-   só pra trocar cor. */
+
+
+
 :root[data-tema="escuro"] {
   --cor-fundo: #1c1c1c;
   --cor-texto: #f5f5f5;
   --cor-texto-suave: #c4c4c4;
   --cor-texto-meta: #a0a0a0;
   --cor-superficie: #262626;
-  /* Um degrau acima da superfície: no claro é branco sobre cinza; no
-     escuro, sem isso, tabela e card de endereço somem dentro da seção. */
+
+
   --cor-superficie-alta: #2f2f2f;
   --cor-borda: #2a2a2a;
   --cor-borda-suave: #333333;
@@ -123,15 +123,15 @@
   --cor-erro: #e74c3c;
   --cor-info: #5b9bf5;
 
-  /* #105682 sobre #1c1c1c dá ~2:1 — abaixo do 3:1 que a WCAG pede pra
-     indicador de foco. Branco resolve sem introduzir cor nova. */
+
+
   --cor-foco: #ffffff;
 
   --sombra-card: 0 10px 25px rgba(0, 0, 0, 0.45);
 }
 
-/* Alto contraste é controlado nas preferências de acessibilidade. O amarelo
-   serve apenas como fundo de destaque: todo texto sobre ele é preto. */
+
+
 :root[data-a11y-contraste="alto"] {
   --cor-fundo: #000000;
   --cor-texto: #ffffff;
@@ -171,10 +171,10 @@
   box-sizing: border-box;
 }
 
-/* Regra de UA pro atributo hidden é de baixa prioridade: display:flex/grid
-   de qualquer seletor de autor (catalogo.css, paginas.css...) já vence,
-   hidden ou não. !important aqui é o jeito correto e padrão de garantir
-   isso — não dá pra resolver só com especificidade. */
+
+
+
+
 [hidden] {
   display: none !important;
 }
@@ -192,15 +192,15 @@ body {
   overflow-x: hidden;
 }
 
-/* A fonte de identidade é expressiva, mas não é a mais confortável para
-   comparar dígitos. Valores recebem uma fonte de sistema com largura fixa. */
+
+
 [data-numero] {
   font-family: var(--fonte-numeros);
   font-variant-numeric: lining-nums tabular-nums;
 }
 
-/* Primeiro foco da página: evita que quem usa Tab precise atravessar toda a
-   navegação antes de chegar ao conteúdo. Só aparece quando recebe foco. */
+
+
 #vinyl-pular-conteudo {
   position: fixed;
   z-index: 10000;
@@ -237,20 +237,20 @@ img {
   max-width: 100%;
 }
 
-/* Foco visível pra todo link/botão do site — sem isso, quem navega por
-   teclado só via onde está em campos de formulário. outline-offset
-   negativo desenha o anel pra dentro do próprio elemento, então
-   containers com overflow:hidden (.stepper-qtd, table) nunca cortam o
-   anel — não dá pra resolver isso só trocando a cor/especificidade. */
+
+
+
+
+
 a:focus-visible,
 button:focus-visible {
   outline: 2px solid var(--cor-foco);
   outline-offset: -2px;
 }
 
-/* O JS desabilita de verdade (view/ui.js:travarBotao, o <select> de
-   endereço enquanto o frete calcula). Sem isto, elemento travado fica
-   com cara de clicável. */
+
+
+
 button:disabled,
 input:disabled,
 select:disabled,
@@ -259,13 +259,13 @@ textarea:disabled {
   cursor: not-allowed;
 }
 
-/* Resposta ao clique: o projeto tinha hover e foco, mas nada acontecia
-   entre apertar e soltar. */
+
+
 button:not(:disabled):active {
   transform: translateY(1px);
 }
 
-/* ===== HEADER ===== */
+
 header {
   width: 100%;
   background-color: var(--cor-barra);
@@ -324,15 +324,15 @@ header ul li button:hover {
   color: var(--cor-barra);
 }
 
-/* No header o fundo é sempre preto, nos dois temas: o anel azul/branco
-   padrão some ou briga com a barra. */
+
+
 header a:focus-visible,
 header button:focus-visible {
   outline-color: var(--cor-barra-texto);
   outline-offset: 2px;
 }
 
-/* ===== FOOTER ===== */
+
 footer {
   width: 100%;
   background-color: var(--cor-barra-pe);
@@ -372,7 +372,7 @@ footer a:focus-visible {
   outline-offset: 2px;
 }
 
-/* ===== BREADCRUMB (usado em toda página que não é a home) ===== */
+
 main > nav[aria-label="Você está aqui"] ol {
   display: flex;
   flex-wrap: wrap;
@@ -397,13 +397,13 @@ main > nav[aria-label="Você está aqui"] ol li[aria-current="page"] {
   font-weight: 600;
 }
 
-/* ===== POPUPS (view/ui.js) =====
-   Mesmos atributos que ui.js já usa (data-vinyl-ui); a função
-   injetarEstilos() que injetava isso em runtime foi removida — vira
-   CSS estático como o resto do projeto. */
+
+
+
+
 [data-vinyl-ui="dialogo"] {
-  /* O reset global (* { margin: 0 }) apaga o margin:auto que o navegador
-     usa pra centralizar <dialog> modal — repõe aqui. */
+
+
   margin: auto;
   color-scheme: light dark;
   border: none;
@@ -487,9 +487,9 @@ main > nav[aria-label="Você está aqui"] ol li[aria-current="page"] {
   outline-offset: 2px;
 }
 
-/* Campo de formulário genérico (pedirCampos) — label em cima do input,
-   diferente de [data-vinyl-ui="dialogo"] label acima (que é a linha
-   horizontal do checkbox em escolherVarios). */
+
+
+
 [data-vinyl-ui="dialogo"] [data-vinyl-ui="campo"] {
   display: flex;
   flex-direction: column;
@@ -522,8 +522,8 @@ main > nav[aria-label="Você está aqui"] ol li[aria-current="page"] {
   transition: background-color var(--transicao), color var(--transicao);
 }
 
-/* Mesma linguagem de hover do resto do site (troca de fundo), no lugar
-   do opacity que destoava. */
+
+
 [data-vinyl-ui="acoes"] button:hover:not(:disabled) {
   background: var(--cor-texto);
   color: var(--cor-fundo);
@@ -571,6 +571,16 @@ main > nav[aria-label="Você está aqui"] ol li[aria-current="page"] {
   animation: vinyl-aviso-entrada var(--transicao);
 }
 
+[data-vinyl-ui="aviso"] a {
+  color: inherit;
+  font-weight: 800;
+  pointer-events: auto;
+  text-decoration: underline;
+  text-decoration-color: var(--cor-destaque);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.18em;
+}
+
 @keyframes vinyl-aviso-entrada {
   from {
     opacity: 0;
@@ -582,8 +592,8 @@ main > nav[aria-label="Você está aqui"] ol li[aria-current="page"] {
   }
 }
 
-/* sucesso é o padrão (borda preta/branca acima); erro e info só trocam
-   o acento */
+
+
 [data-vinyl-ui-tipo="erro"] {
   border-left-color: var(--cor-erro);
 }
@@ -592,7 +602,7 @@ main > nav[aria-label="Você está aqui"] ol li[aria-current="page"] {
   border-left-color: var(--cor-info);
 }
 
-/* ===== ACESSIBILIDADE (acessibility-features/*.js setam os atributos) ===== */
+
 :root[data-a11y-texto="grande"] {
   font-size: 120%;
 }
@@ -603,8 +613,8 @@ main > nav[aria-label="Você está aqui"] ol li[aria-current="page"] {
   border-radius: var(--raio-caixa);
 }
 
-/* Spinner de view/ui.js:ocupado() — <progress> indeterminado nativo,
-   só um respiro visual em volta. */
+
+
 progress {
   display: block;
   width: 100%;
@@ -616,10 +626,10 @@ progress {
   border: none;
 }
 
-/* Spinner circular pro texto de botão ocupado (view/ui.js:travarBotao) —
-   herda a cor do texto do botão via currentColor, então funciona nos
-   botões azuis (texto branco) e no botão reset (texto escuro) sem regra
-   extra por tema. */
+
+
+
+
 span[data-vinyl-ui="spinner"] {
   display: inline-block;
   width: 12px;
@@ -637,9 +647,9 @@ span[data-vinyl-ui="spinner"] {
   }
 }
 
-/* Quem pede menos movimento no sistema não deveria ver o vinil girando
-   em laço infinito. !important aqui é o padrão da técnica: precisa vencer
-   qualquer animação declarada depois, em qualquer arquivo. */
+
+
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

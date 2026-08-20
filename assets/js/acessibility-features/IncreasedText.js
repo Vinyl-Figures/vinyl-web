@@ -1,4 +1,4 @@
-// html[data-a11y-texto="grande"] — o CSS engancha aqui.
+
 
 export default {
   slug: 'texto-aumentado',

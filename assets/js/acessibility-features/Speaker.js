@@ -1,10 +1,10 @@
-// Leitura em voz alta com a SpeechSynthesis do navegador.
-// Não substitui um leitor de tela de verdade: é apoio para quem não usa um.
+
+
 
 const sintetizador = window.speechSynthesis;
 let ativo = false;
 
-// --- Nome, papel e estado, na ordem que os leitores de tela costumam falar ---
+
 
 function nomeDoElemento(elemento) {
   const rotuloAria = elemento.getAttribute?.('aria-label');
@@ -101,8 +101,8 @@ function aoMudar(evento) {
 }
 
 function aoClicar(evento) {
-  // Botões, links e campos já são lidos ao receber foco ou mudar de estado.
-  // Sem este filtro, um clique comum repetia a fala duas vezes.
+
+
   if (evento.target.closest('a, button, input, select, textarea, label, summary')) return;
 
   const alvo = evento.target.closest('p, h1, h2, h3, li, td, th, dd, dt, address, caption');
@@ -117,10 +117,10 @@ function aoNavegar(evento) {
   falar(evento.detail);
 }
 
-// --- Avisos dinâmicos (toast de view/ui.js:avisar) ---
-// Um leitor de tela de verdade pega aria-live sozinho; este aqui não ouve
-// mudança de DOM por padrão, só foco e clique — sem isso, "Adicionado ao
-// carrinho." e erros de formulário nunca seriam lidos.
+
+
+
+
 
 let observadorAoVivo = null;
 

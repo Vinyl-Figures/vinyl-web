@@ -1,7 +1,7 @@
-/* Página do catálogo — header/footer/breadcrumb e tokens ficam em
-   base.css. Vocabulário visual documentado em DESIGN.md. */
 
-/* ===== MAIN CONTAINER ===== */
+
+
+
 main {
   flex: 1;
   width: 100%;
@@ -27,10 +27,10 @@ main section h2 {
   margin-bottom: var(--espaco-4);
 }
 
-/* ===== PAINEL DE BUSCA E FILTROS =====
-   O card é a <section>; as duas <form> dentro dele são transparentes e
-   ficam separadas por um divisor. Antes cada form era um card cinza
-   próprio, o que dava dois blocos pesados empilhados antes da grade. */
+
+
+
+
 .painel-catalogo {
   background-color: var(--cor-superficie);
   border: 1px solid var(--cor-borda);
@@ -41,8 +41,8 @@ main section h2 {
   gap: var(--espaco-5);
 }
 
-/* O painel é ferramenta, não conteúdo: seu título fica menor que o
-   "Todos os discos" da seção de resultados. */
+
+
 .painel-catalogo h2 {
   font-size: var(--texto-meta);
   font-weight: 600;
@@ -69,7 +69,7 @@ main section h2 {
   font-weight: 600;
 }
 
-/* Busca: campo largo com o botão do lado, não um input curto solto. */
+
 .linha-busca {
   display: flex;
   gap: var(--espaco-3);
@@ -137,7 +137,7 @@ main section h2 {
   background-color: var(--cor-controle-hover);
 }
 
-/* Gênero: chips que quebram em várias linhas, sem caixa em volta. */
+
 .painel-catalogo fieldset {
   border: none;
   display: flex;
@@ -146,16 +146,16 @@ main section h2 {
   align-items: center;
 }
 
-/* flex-basis: 100% força a legend pra própria linha mesmo nos navegadores
-   onde ela participa do flex do fieldset — sem isso o comportamento varia
-   entre navegadores e o filtro de Gênero ficava torto. */
+
+
+
 .painel-catalogo legend {
   flex-basis: 100%;
   margin-bottom: var(--espaco-2);
 }
 
-/* Checkbox de gênero como pílula clicável, não caixinha crua do
-   navegador do lado de inputs arredondados. */
+
+
 .painel-catalogo fieldset label:has(input[type="checkbox"]) {
   display: inline-flex;
   align-items: center;
@@ -187,7 +187,7 @@ main section h2 {
   font-weight: 600;
 }
 
-/* Preço + ordenação + ações na mesma linha, alinhados pela base. */
+
 .linha-filtros {
   display: flex;
   flex-wrap: wrap;
@@ -223,8 +223,8 @@ main section h2 {
   width: 6.5rem;
 }
 
-/* O travessão entre mínimo e máximo acompanha a linha dos inputs, não a
-   dos rótulos acima deles. */
+
+
 .faixa-preco > span {
   padding-bottom: var(--espaco-3);
   color: var(--cor-texto-meta);
@@ -236,18 +236,18 @@ main section h2 {
   gap: var(--espaco-2);
 }
 
-/* Ações empurradas pra direita; na quebra pra telas estreitas elas
-   voltam pro fluxo normal em vez de ficarem penduradas. */
+
+
 .acoes-filtro {
   display: flex;
   gap: var(--espaco-3);
   margin-left: auto;
 }
 
-/* ===== RESULTADOS ===== */
-/* O contador ("Mostrando X de Y discos") é metadado, não corpo de texto:
-   encosta no título em vez de flutuar como parágrafo solto. O :not()
-   evita pegar o parágrafo do estado vazio, que é texto de verdade. */
+
+
+
+
 main section:not(.estado-vazio) > p {
   font-size: var(--texto-ui);
   color: var(--cor-texto-meta);
@@ -269,7 +269,7 @@ main section:not(.estado-vazio) > p {
   margin: 0 auto;
 }
 
-/* ===== PRODUCT LIST / GRID ===== */
+
 main section ul {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -277,10 +277,10 @@ main section ul {
   gap: var(--espaco-6);
 }
 
-/* Nem todo vinil tem imagem/descrição (fonteDaImagem pode não ter nada
-   pra mostrar) — sem altura igual, os cards da mesma fileira ficam
-   desalinhados. O <li> já estica com o grid (align-items: stretch); o
-   article precisa de height: 100% pra realmente preencher isso. */
+
+
+
+
 main section ul li {
   height: 100%;
 }
@@ -303,8 +303,8 @@ main section ul li article:hover {
   border-color: var(--cor-campo-borda);
 }
 
-/* O card responde ao mouse desde sempre; :focus-within dá o mesmo
-   retorno pra quem chega nele pelo teclado. */
+
+
 main section ul li article:focus-within {
   border-color: var(--cor-destaque);
   box-shadow: var(--sombra-card);
@@ -335,9 +335,9 @@ main section ul li article > a:hover h3 {
   text-decoration: underline;
 }
 
-/* Preço e descrição eram a mesma regra (mesmo tamanho, mesmo peso, mesma
-   cor) e competiam entre si. O preço é a informação que decide a compra:
-   fica maior e mais pesado; a descrição recua. */
+
+
+
 main section ul li article > a > p:first-of-type {
   font-size: var(--texto-4);
   font-weight: 800;
@@ -350,9 +350,9 @@ main section ul li article > a > p:nth-of-type(2) {
   color: var(--cor-texto-suave);
 }
 
-/* Stepper de quantidade + "Adicionar ao carrinho", lado a lado, sempre
-   no fim do card mesmo com a altura esticada pelo grid (main section ul,
-   align-items: stretch). */
+
+
+
 .linha-acao-catalogo {
   margin-top: auto;
   padding-top: var(--espaco-2);
@@ -402,7 +402,7 @@ main section ul li article > a > p:nth-of-type(2) {
   padding: 0;
 }
 
-/* Já tem +/- do lado: some com as setinhas nativas do number. */
+
 .stepper-qtd input[type="number"]::-webkit-outer-spin-button,
 .stepper-qtd input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -413,8 +413,8 @@ main section ul li article > a > p:nth-of-type(2) {
   -moz-appearance: textfield;
 }
 
-/* outline-offset negativo: .stepper-qtd tem overflow:hidden pra recortar
-   os cantos em pílula, e um anel de foco normal (pra fora) seria cortado. */
+
+
 .stepper-qtd input[type="number"]:focus-visible {
   outline: 2px solid var(--cor-foco);
   outline-offset: -2px;
@@ -438,7 +438,7 @@ main section ul li article > a > p:nth-of-type(2) {
   background-color: var(--cor-destaque-hover);
 }
 
-/* ===== PAGINATION ===== */
+
 main section nav[aria-label="Paginação"] ul {
   display: flex;
   flex-wrap: wrap;

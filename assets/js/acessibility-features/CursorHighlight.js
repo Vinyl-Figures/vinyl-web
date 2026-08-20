@@ -1,5 +1,5 @@
-// html[data-a11y-cursor="realce"] liga o recurso;
-// o elemento sob o ponteiro ganha data-a11y-sob-cursor para o CSS realçar.
+
+
 
 const ATRIBUTO_ALVO = 'data-a11y-sob-cursor';
 

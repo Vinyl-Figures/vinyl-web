@@ -1,4 +1,4 @@
-// Frase mostrada ao usuário, escolhida por contexto da operação + status.
+
 
 const POR_STATUS = {
   0: 'Não foi possível falar com o servidor. Verifique sua conexão e tente de novo.',
@@ -14,7 +14,7 @@ const POR_STATUS = {
 const PADRAO = 'Algo deu errado. Tente novamente.';
 
 const POR_OPERACAO = {
-  // Autenticação
+
   login: {
     400: 'Preencha o e-mail e a senha.',
     401: 'E-mail ou senha incorretos.',
@@ -30,7 +30,7 @@ const POR_OPERACAO = {
     padrao: 'Não foi possível criar a conta.',
   },
 
-  // Perfil
+
   'perfil-carregar': { padrao: 'Não foi possível carregar seus dados.' },
   'perfil-salvar': {
     400: 'Confira os dados informados.',
@@ -39,7 +39,7 @@ const POR_OPERACAO = {
   },
   'conta-excluir': { padrao: 'Não foi possível excluir a conta.' },
 
-  // Catálogo
+
   'catalogo-listar': { padrao: 'Não foi possível carregar o catálogo.' },
   'vinil-carregar': {
     404: 'Esse disco não está mais disponível.',
@@ -47,7 +47,7 @@ const POR_OPERACAO = {
   },
   'generos-listar': { padrao: 'Não foi possível carregar os gêneros.' },
 
-  // Endereços
+
   'enderecos-listar': { padrao: 'Não foi possível carregar seus endereços.' },
   'endereco-criar': {
     400: 'Confira o número e o CEP.',
@@ -59,7 +59,7 @@ const POR_OPERACAO = {
   },
   'endereco-excluir': { padrao: 'Não foi possível remover o endereço.' },
 
-  // Carrinho
+
   'carrinho-listar': { padrao: 'Não foi possível carregar seu carrinho.' },
   'carrinho-adicionar': {
     404: 'Esse disco não está mais disponível.',
@@ -79,7 +79,7 @@ const POR_OPERACAO = {
     padrao: 'Não foi possível calcular o frete.',
   },
 
-  // Pedidos
+
   checkout: {
     400: 'Seu carrinho está vazio ou tem itens indisponíveis.',
     409: 'Você já usou esse cupom antes.',
@@ -92,7 +92,7 @@ const POR_OPERACAO = {
   },
   'pedido-excluir': { padrao: 'Não foi possível excluir o pedido.' },
 
-  // Pagamentos
+
   'pagamento-criar': {
     400: 'Confira a forma de pagamento.',
     padrao: 'O pedido foi criado, mas o pagamento não foi registrado.',
@@ -100,7 +100,7 @@ const POR_OPERACAO = {
   'pagamentos-listar': { padrao: 'Não foi possível carregar os pagamentos.' },
   'pagamento-status': { padrao: 'Não foi possível atualizar o pagamento.' },
 
-  // Acessibilidade
+
   'acessibilidade-carregar': {
     padrao: 'Não foi possível carregar suas preferências de acessibilidade.',
   },
@@ -111,8 +111,8 @@ const POR_OPERACAO = {
 
 const STATUS_SEM_RESPOSTA = 0;
 
-// Sessão vencida e falta de permissão explicam melhor que a frase padrão
-// da operação. A operação ainda sobrescreve: no login, 401 é senha errada.
+
+
 const STATUS_QUE_EXPLICAM_MELHOR = [401, 403];
 
 export function mensagemDoErro(erro) {

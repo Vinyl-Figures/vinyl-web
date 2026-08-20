@@ -1,5 +1,5 @@
-// O contexto de cada chamada é o que o erros.js usa para escolher
-// a mensagem mostrada ao usuário quando a operação falha.
+
+
 
 import { api } from './api.js';
 import { salvarSessao, limparSessao, getUserId } from './session.js';
@@ -19,7 +19,7 @@ export const auth = {
     try {
       await api.delete('/auth/tokens/current', { contexto: 'logout' });
     } catch {
-      // token vencido ou servidor fora: limpar local mesmo assim
+
     }
     limparSessao();
   },
@@ -48,8 +48,8 @@ export const usuarios = {
 };
 
 export const vinis = {
-  // A API filtra por genreId OU artistId. Busca, preço, ordenação
-  // e paginação não existem no servidor: são feitas na tela.
+
+
   listar({ genreId, artistId } = {}) {
     return api.get('/vinyls', {
       query: { genreId, artistId },
@@ -57,7 +57,7 @@ export const vinis = {
     });
   },
 
-  // expand: 'genres', 'artists' ou 'genres,artists'
+
   buscar(id, expand) {
     return api.get(`/vinyls/${id}`, { query: { expand }, contexto: 'vinil-carregar' });
   },
@@ -68,7 +68,7 @@ export const generos = {
   buscar: (id) => api.get(`/genres/${id}`, { contexto: 'generos-listar' }),
 };
 
-// A API guarda apenas número, complemento e CEP (8 dígitos, sem traço).
+
 export const enderecos = {
   listar: (userId) =>
     api.get(`/users/${userId}/addresses`, { contexto: 'enderecos-listar' }),
@@ -87,7 +87,7 @@ export const enderecos = {
     api.delete(`/addresses/${addressId}`, { contexto: 'endereco-excluir' }),
 };
 
-// Conjunto de vinis, sem quantidade e sem repetição.
+
 export const carrinho = {
   listar(userId = getUserId()) {
     return api.get(`/users/${userId}/cartItems`, {
@@ -96,7 +96,7 @@ export const carrinho = {
     });
   },
 
-  // Devolve { created: [...], skipped: { id: motivo } }
+
   adicionar(vinylIds, userId = getUserId()) {
     return api.post(
       `/users/${userId}/cartItems/bulk`,
@@ -127,9 +127,9 @@ export const cupons = {
 };
 
 export const pedidos = {
-  // Soma o total, congela o preço em priceAtPurchase e esvazia o carrinho.
-  // zipCode/couponCode são opcionais: sem eles, frete e desconto ficam
-  // zerados no backend (mesma conta que cart.js já mostra no resumo).
+
+
+
   finalizar({ userId = getUserId(), zipCode, couponCode } = {}) {
     return api.post('/orders', { userId, zipCode, couponCode }, { contexto: 'checkout' });
   },
@@ -176,7 +176,7 @@ export const pagamentos = {
     api.patch(`/payments/${id}`, { status }, { contexto: 'pagamento-status' }),
 };
 
-// Os recursos vêm do banco: o front casa pelo nome, não por id fixo.
+
 export const acessibilidade = {
   catalogo: () => api.get('/accessibility', { contexto: 'acessibilidade-carregar' }),
 

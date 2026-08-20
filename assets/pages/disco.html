@@ -6,12 +6,12 @@
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/catalogo.css">
   <link rel="stylesheet" href="../css/disco.css">
-  <link rel="stylesheet" href="../css/releitura.css?v=20260819b">
+  <link rel="stylesheet" href="../css/releitura.css?v=20260820a">
   <title>Disco | Vinyl Figures Store</title>
 </head>
 <body class="pagina-disco">
 
-  <!-- ===== NAVBAR ===== -->
+
   <header class="site-header">
     <nav class="site-nav">
       <a class="site-logo" href="../../index.html">Vinyl Figures</a>
@@ -45,8 +45,7 @@
         <p class="disco-descricao"></p>
         <p class="disco-lancamento"></p>
 
-        <!-- Stepper (−/input/+) e "Adicionar ao carrinho", igual ao card
-             do catálogo, reaproveitando as mesmas classes de catalogo.css. -->
+
         <div class="linha-acao-catalogo">
           <div class="stepper-qtd">
             <button type="button" data-acao="qtd-disco-menos" aria-label="Diminuir quantidade">−</button>
@@ -58,7 +57,7 @@
       </div>
     </article>
 
-    <!-- Estado sem resultado: id inválido, removido ou ausente na URL -->
+
     <section class="estado-vazio" hidden>
       <h2>Disco não encontrado</h2>
       <p>Esse disco não existe ou foi removido. <a href="catalogo.html">Voltar ao catálogo</a>.</p>
@@ -67,15 +66,12 @@
   </main>
 
   <footer class="site-footer">
-    <nav>
-      <ul>
-        <li><a href="catalogo.html">Catálogo</a></li>
-        <li><a href="conta.html">Minha conta</a></li>
-        <li><a href="entrar.html">Entrar</a></li>
-        <li><a href="cadastro.html">Criar conta</a></li>
-      </ul>
-    </nav>
-    <p>&copy; 2026 Vinyl Figures</p>
+    <div class="footer-content">
+      <div class="footer-brand"><strong>VINYL<br>FIGURES<span>.</span></strong><p>Música feita para girar.</p></div>
+      <nav class="footer-column" aria-label="Explorar a loja"><strong>Explore</strong><ul><li><a href="catalogo.html">Catálogo</a></li></ul></nav>
+      <nav class="footer-column" aria-label="Sua conta"><strong>Conta</strong><ul><li><a href="conta.html">Minha conta</a></li><li><a href="entrar.html">Entrar</a></li><li><a href="cadastro.html">Criar conta</a></li></ul></nav>
+    </div>
+    <div class="footer-bottom"><p>&copy; 2026 Vinyl Figures</p><p>Keep spinning.</p></div>
   </footer>
 
   <script type="module" src="../js/controller/disco.js"></script>

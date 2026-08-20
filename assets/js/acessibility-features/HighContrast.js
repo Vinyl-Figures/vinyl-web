@@ -1,5 +1,5 @@
-// Alto contraste é uma preferência de acessibilidade, não uma escolha de
-// tema. O CSS centraliza as combinações de cores no atributo abaixo.
+
+
 
 export default {
   slug: 'alto-contraste',
