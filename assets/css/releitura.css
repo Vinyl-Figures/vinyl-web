@@ -1865,7 +1865,7 @@ input[inputmode="numeric"],
 
 .auth-page .auth-layout {
   width: min(1000px, 88%);
-  margin: clamp(2.5rem, 5vw, 4.5rem) auto 0;
+  margin: clamp(2.5rem, 5vw, 4.5rem) auto var(--espaco-7);
   display: grid;
   grid-template-columns: minmax(13rem, 0.76fr) minmax(0, 1fr);
   border: 2px solid var(--cor-borda);
