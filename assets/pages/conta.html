@@ -5,35 +5,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/paginas.css">
+  <link rel="stylesheet" href="../css/releitura.css">
   <title>Minha conta | Vinyl Figures Store</title>
 </head>
-<body>
+<body class="pagina-conta">
 
   <!-- ===== NAVBAR ===== -->
-  <header>
-    <nav>
-      <a href="../../index.html">Vinyl Records</a>
+  <header class="site-header">
+    <nav class="site-nav">
+      <a class="site-logo" href="../../index.html">Vinyl Figures</a>
 
       <ul>
         <li><a href="../../index.html">Início</a></li>
         <li><a href="catalogo.html">Catálogo</a></li>
         <li><a href="carrinho.html">Carrinho</a></li>
-        <li><a href="conta.html">Conta</a></li>
+        <li><a href="conta.html" aria-current="page">Conta</a></li>
         <li><button type="button" data-acao="alternar-tema">Tema</button></li>
       </ul>
     </nav>
   </header>
 
-  <main>
+  <main class="account-page">
 
-    <nav aria-label="Você está aqui">
+    <nav class="breadcrumb" aria-label="Você está aqui">
       <ol>
         <li><a href="../../index.html">Início</a></li>
         <li aria-current="page">Minha conta</li>
       </ol>
     </nav>
 
-    <h1>Minha conta</h1>
+    <div class="page-intro">
+      <span>● YOUR VINYL CLUB</span>
+      <h1>Minha<br>conta<span>.</span></h1>
+      <p>Dados, pedidos e preferências da sua coleção em um só lugar.</p>
+    </div>
 
     <nav aria-label="Seções da conta">
       <ul>
@@ -151,7 +156,7 @@
 
   </main>
 
-  <footer>
+  <footer class="site-footer">
     <nav>
       <ul>
         <li><a href="catalogo.html">Catálogo</a></li>
@@ -160,7 +165,7 @@
         <li><a href="cadastro.html">Criar conta</a></li>
       </ul>
     </nav>
-    <p>&copy; 2026 Vinyl Records</p>
+    <p>&copy; 2026 Vinyl Figures</p>
   </footer>
 
   <script type="module" src="../js/controller/account.js"></script>
