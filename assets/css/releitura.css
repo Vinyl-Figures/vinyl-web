@@ -1633,6 +1633,17 @@ input[inputmode="numeric"],
   margin-top: var(--espaco-7);
 }
 
+.record-page > article,
+.record-page > .estado-vazio {
+  margin-top: 0;
+  margin-bottom: var(--espaco-7);
+}
+
+.record-page > .breadcrumb {
+  background: var(--cor-fundo);
+  padding-bottom: clamp(2.5rem, 5vw, 4.5rem);
+}
+
 
 .cart-page > .cart-form {
   width: min(1320px, 88%);
