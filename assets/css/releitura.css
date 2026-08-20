@@ -464,11 +464,15 @@ main > nav.breadcrumb ol li[aria-current="page"] {
 }
 
 .catalog-page .catalog-results > ul {
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  /* A composição da referência trabalha com quatro capas por linha. Com
+     cinco, o texto do botão não cabe ao lado do stepper e vaza para o
+     card vizinho em telas largas. */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: clamp(1.25rem, 2.6vw, 2.25rem);
 }
 
 .catalog-page .catalog-results > ul li article {
+  min-width: 0;
   border: 2px solid transparent;
   border-radius: 0;
   padding: 0;
@@ -478,12 +482,17 @@ main > nav.breadcrumb ol li[aria-current="page"] {
 
 .catalog-page .catalog-results > ul li article:hover,
 .catalog-page .catalog-results > ul li article:focus-within {
-  border-color: var(--cor-borda);
-  transform: translate(-3px, -3px);
-  box-shadow: var(--sombra-card);
+  /* O indicador não pode mudar o tamanho do card: isso desalinhava a
+     fileira de botões quando o link recebia foco. */
+  border-color: transparent;
+  transform: none;
+  box-shadow: none;
+  outline: 2px solid var(--cor-borda);
+  outline-offset: 4px;
 }
 
 .catalog-page .catalog-results > ul li article > a {
+  min-width: 0;
   gap: var(--espaco-2);
 }
 
@@ -518,6 +527,16 @@ main > nav.breadcrumb ol li[aria-current="page"] {
 
 .catalog-page .linha-acao-catalogo {
   margin-bottom: var(--espaco-4);
+  min-width: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.catalog-page .linha-acao-catalogo > button {
+  min-width: 0;
+  padding-inline: var(--espaco-2);
+  line-height: 1.15;
+  overflow-wrap: anywhere;
 }
 
 .catalog-page .stepper-qtd {
@@ -816,7 +835,15 @@ input[inputmode="numeric"],
   }
 
   .catalog-page .catalog-results > ul {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .catalog-page .linha-acao-catalogo {
+    grid-template-columns: 1fr;
+  }
+
+  .catalog-page .stepper-qtd {
+    justify-self: start;
   }
 
   .cart-page > form,
@@ -825,6 +852,12 @@ input[inputmode="numeric"],
   .auth-page > form,
   .record-page > article {
     width: 88%;
+  }
+}
+
+@media (max-width: 1120px) and (min-width: 761px) {
+  .catalog-page .catalog-results > ul {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 

@@ -6,7 +6,7 @@ import { cardVinil, preencher } from '../view/templates.js';
 import { avisar, mostrarErro, alternar, ocupado, travarBotao } from '../view/ui.js';
 import { exigirLogin } from './app.js';
 
-const POR_PAGINA = 8;
+const POR_PAGINA = 10;
 
 // --- Elementos ---
 
