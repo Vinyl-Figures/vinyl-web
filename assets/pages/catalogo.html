@@ -3,169 +3,133 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/catalogo.css">
+  <link rel="stylesheet" href="../css/releitura.css?v=20260819b">
   <title>Catálogo | Vinyl Figures Store</title>
 </head>
-<body>
+<body class="pagina-catalogo">
 
   <!-- ===== NAVBAR ===== -->
-  <header>
-    <nav>
-      <a href="index.html">Vinyl Records</a>
+  <header class="site-header">
+    <nav class="site-nav">
+      <a class="site-logo" href="../../index.html">Vinyl Figures</a>
 
       <ul>
-        <li><a href="index.html">Início</a></li>
-        <li><a href="catalogo.html">Catálogo</a></li>
+        <li><a href="../../index.html">Início</a></li>
+        <li><a href="catalogo.html" aria-current="page">Catálogo</a></li>
         <li><a href="carrinho.html">Carrinho</a></li>
         <li><a href="conta.html">Conta</a></li>
       </ul>
     </nav>
   </header>
 
-  <main>
+  <main class="catalog-page">
 
-    <nav aria-label="Você está aqui">
+    <nav class="breadcrumb" aria-label="Você está aqui">
       <ol>
-        <li><a href="index.html">Início</a></li>
+        <li><a href="../../index.html">Início</a></li>
         <li aria-current="page">Catálogo</li>
       </ol>
     </nav>
 
-    <h1>Catálogo</h1>
+    <div class="page-intro">
+      <span>● EXPLORE THE COLLECTION</span>
+      <h1>Encontre seu<br>próximo giro<span>.</span></h1>
+      <p>Clássicos, lançamentos e raridades para a sua coleção.</p>
+    </div>
 
-    <!-- ===== SEARCH BAR (só existe nesta página) ===== -->
-    <section>
-      <h2>Buscar</h2>
+    <!-- ===== BUSCA E FILTROS =====
+         Um painel só: antes eram dois cards cinzas empilhados, um pra
+         busca e outro pros filtros. As duas <form> continuam separadas
+         (a busca filtra local, os filtros recarregam do servidor), só
+         que agora dividem o mesmo contêiner. -->
+    <section class="painel-catalogo catalog-filters">
+      <h2>Buscar e filtrar</h2>
+
       <form action="catalogo.html" method="get" role="search">
         <label for="busca">Buscar discos</label>
-        <input type="search" id="busca" name="q" placeholder="Buscar por artista ou álbum">
-        <button type="submit">Buscar</button>
+        <div class="linha-busca">
+          <input type="search" id="busca" name="q" placeholder="Buscar por artista ou álbum">
+          <button type="submit">Buscar</button>
+        </div>
       </form>
-    </section>
 
-    <!-- Filtros -->
-    <section>
-      <h2>Filtrar</h2>
       <form action="catalogo.html" method="get">
-        <fieldset>
+        <fieldset class="seletor-generos">
           <legend>Gênero</legend>
-          <label><input type="checkbox" name="genero" value="rock"> Rock</label>
-          <label><input type="checkbox" name="genero" value="pop"> Pop</label>
-          <label><input type="checkbox" name="genero" value="indie"> Indie</label>
-          <label><input type="checkbox" name="genero" value="eletronica"> Eletrônica</label>
+          <details>
+            <summary>
+              <span data-generos-resumo>Todos os gêneros</span>
+              <span aria-hidden="true">⌄</span>
+            </summary>
+            <div data-generos-opcoes>
+              <label><input type="checkbox" name="genero" value="rock"> Rock</label>
+              <label><input type="checkbox" name="genero" value="pop"> Pop</label>
+              <label><input type="checkbox" name="genero" value="indie"> Indie</label>
+              <label><input type="checkbox" name="genero" value="eletronica"> Eletrônica</label>
+            </div>
+          </details>
         </fieldset>
 
-        <fieldset>
-          <legend>Preço</legend>
-          <label for="preco-min">Mínimo</label>
-          <input type="number" id="preco-min" name="preco_min" min="0" step="10">
-          <label for="preco-max">Máximo</label>
-          <input type="number" id="preco-max" name="preco_max" min="0" step="10">
-        </fieldset>
+        <div class="linha-filtros">
+          <fieldset class="filtro-preco">
+            <legend>Preço</legend>
+            <div class="faixa-preco">
+              <div>
+                <label for="preco-min">Mínimo</label>
+                <input type="number" id="preco-min" name="preco_min" min="0" step="10" placeholder="0">
+              </div>
+              <span aria-hidden="true">&ndash;</span>
+              <div>
+                <label for="preco-max">Máximo</label>
+                <input type="number" id="preco-max" name="preco_max" min="0" step="10" placeholder="500">
+              </div>
+            </div>
+          </fieldset>
 
-        <label for="ordenar">Ordenar por</label>
-        <select id="ordenar" name="ordenar">
-          <option value="recentes">Mais recentes</option>
-          <option value="menor-preco">Menor preço</option>
-          <option value="maior-preco">Maior preço</option>
-          <option value="az">A-Z</option>
-        </select>
+          <div class="filtro-ordenar">
+            <label for="ordenar">Ordenar por</label>
+            <select id="ordenar" name="ordenar">
+              <option value="recentes">Mais recentes</option>
+              <option value="menor-preco">Menor preço</option>
+              <option value="maior-preco">Maior preço</option>
+              <option value="az">A-Z</option>
+            </select>
+          </div>
 
-        <button type="submit">Aplicar filtros</button>
-        <button type="reset">Limpar</button>
+          <div class="acoes-filtro">
+            <button type="submit">Aplicar filtros</button>
+            <button type="reset">Limpar</button>
+          </div>
+        </div>
       </form>
     </section>
 
     <!-- Resultados -->
-    <section>
+    <section class="catalog-results">
       <h2>Todos os discos</h2>
-      <p>Mostrando 8 de 8 discos</p>
+      <p class="catalog-status esta-carregando" role="status" aria-live="polite">
+        <span class="catalog-spinner" aria-hidden="true"></span>
+        <span class="catalog-status-text">Carregando discos…</span>
+      </p>
 
-      <ul>
-        <li>
-          <article>
-            <img src="imagens/billie-eilish-happier-than-ever.jpg" alt="Capa do álbum Happier Than Ever, de Billie Eilish">
-            <h3>Billie Eilish &mdash; Happier Than Ever</h3>
-            <p>R$ 150,00</p>
-            <button type="button">Adicionar ao carrinho</button>
-          </article>
-        </li>
-        <li>
-          <article>
-            <img src="imagens/arctic-monkeys-am.jpg" alt="Capa do álbum AM, do Arctic Monkeys">
-            <h3>Arctic Monkeys &mdash; AM</h3>
-            <p>R$ 130,00</p>
-            <button type="button">Adicionar ao carrinho</button>
-          </article>
-        </li>
-        <li>
-          <article>
-            <img src="imagens/michael-jackson-bad.jpg" alt="Capa do álbum Bad, de Michael Jackson">
-            <h3>Michael Jackson &mdash; Bad</h3>
-            <p>R$ 200,00</p>
-            <button type="button">Adicionar ao carrinho</button>
-          </article>
-        </li>
-        <li>
-          <article>
-            <img src="imagens/the-xx-xx.jpg" alt="Capa do álbum xx, da banda The xx">
-            <h3>The xx &mdash; xx</h3>
-            <p>R$ 120,00</p>
-            <button type="button">Adicionar ao carrinho</button>
-          </article>
-        </li>
-        <li>
-          <article>
-            <img src="imagens/coldplay-x-and-y.jpg" alt="Capa do álbum X&amp;Y, do Coldplay">
-            <h3>Coldplay &mdash; X&amp;Y</h3>
-            <p>R$ 130,00</p>
-            <button type="button">Adicionar ao carrinho</button>
-          </article>
-        </li>
-        <li>
-          <article>
-            <img src="imagens/produto-06.jpg" alt="Capa do sexto álbum do catálogo">
-            <h3>Artista &mdash; Álbum</h3>
-            <p>R$ 130,00</p>
-            <button type="button">Adicionar ao carrinho</button>
-          </article>
-        </li>
-        <li>
-          <article>
-            <img src="imagens/kings-of-leon-only-by-the-night.jpg" alt="Capa do álbum Only by the Night, do Kings of Leon">
-            <h3>Kings of Leon &mdash; Only by the Night</h3>
-            <p>R$ 130,00</p>
-            <button type="button">Adicionar ao carrinho</button>
-          </article>
-        </li>
-        <li>
-          <article>
-            <img src="imagens/placebo-mtv-unplugged.jpg" alt="Capa do álbum MTV Unplugged, do Placebo">
-            <h3>Placebo &mdash; MTV Unplugged</h3>
-            <p>R$ 150,00</p>
-            <button type="button">Adicionar ao carrinho</button>
-          </article>
-        </li>
-      </ul>
+      <ul></ul>
 
-      <nav aria-label="Paginação">
-        <ul>
-          <li><a href="catalogo.html?pagina=1" aria-current="page">1</a></li>
-          <li><a href="catalogo.html?pagina=2">2</a></li>
-          <li><a href="catalogo.html?pagina=3">3</a></li>
-          <li><a href="catalogo.html?pagina=2">Próxima</a></li>
-        </ul>
+      <nav aria-label="Paginação" hidden>
+        <ul></ul>
       </nav>
     </section>
 
     <!-- Estado sem resultados: use quando a busca não retornar discos -->
-    <section>
+    <section class="estado-vazio" hidden>
       <h2>Nenhum disco encontrado</h2>
       <p>Não encontramos discos com esses filtros. Limpe os filtros ou tente outro artista.</p>
     </section>
 
   </main>
 
-  <footer>
+  <footer class="site-footer">
     <nav>
       <ul>
         <li><a href="catalogo.html">Catálogo</a></li>
@@ -174,8 +138,10 @@
         <li><a href="cadastro.html">Criar conta</a></li>
       </ul>
     </nav>
-    <p>&copy; 2026 Vinyl Records</p>
+    <p>&copy; 2026 Vinyl Figures</p>
   </footer>
+
+  <script type="module" src="../js/controller/catalog.js"></script>
 
 </body>
 </html>

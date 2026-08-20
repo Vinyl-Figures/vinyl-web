@@ -3,17 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/paginas.css">
+  <link rel="stylesheet" href="../css/releitura.css?v=20260819b">
   <title>Entrar | Vinyl Figures Store</title>
 </head>
-<body>
+<body class="pagina-entrar">
 
   <!-- ===== NAVBAR ===== -->
-  <header>
-    <nav>
-      <a href="index.html">Vinyl Records</a>
+  <header class="site-header">
+    <nav class="site-nav">
+      <a class="site-logo" href="../../index.html">Vinyl Figures</a>
 
       <ul>
-        <li><a href="index.html">Início</a></li>
+        <li><a href="../../index.html">Início</a></li>
         <li><a href="catalogo.html">Catálogo</a></li>
         <li><a href="carrinho.html">Carrinho</a></li>
         <li><a href="conta.html">Conta</a></li>
@@ -21,23 +24,33 @@
     </nav>
   </header>
 
-  <main>
+  <main class="auth-page">
 
-    <nav aria-label="Você está aqui">
+    <nav class="breadcrumb" aria-label="Você está aqui">
       <ol>
-        <li><a href="index.html">Início</a></li>
+        <li><a href="../../index.html">Início</a></li>
         <li aria-current="page">Entrar</li>
       </ol>
     </nav>
 
-    <h1>Entrar</h1>
+    <div class="page-intro">
+      <span>● WELCOME BACK</span>
+      <h1>Entre<br>no ritmo<span>.</span></h1>
+      <p>Acesse sua coleção, pedidos e preferências.</p>
+    </div>
 
     <form action="conta.html" method="post">
       <label for="login-email">E-mail</label>
       <input type="email" id="login-email" name="email" autocomplete="email" required>
 
       <label for="login-senha">Senha</label>
-      <input type="password" id="login-senha" name="senha" autocomplete="current-password" required>
+      <div class="campo-senha">
+        <input type="password" id="login-senha" name="senha" autocomplete="current-password" required>
+        <button type="button" data-acao="mostrar-senha" data-alvo="login-senha" aria-pressed="false" aria-label="Mostrar senha">
+          <img data-icone="fechado" src="../icons/eye_closed.svg" width="16" height="16" alt="" aria-hidden="true">
+          <img data-icone="aberto" hidden src="../icons/eye_open.svg" width="16" height="16" alt="" aria-hidden="true">
+        </button>
+      </div>
 
       <label>
         <input type="checkbox" name="lembrar" value="1">
@@ -51,7 +64,7 @@
 
   </main>
 
-  <footer>
+  <footer class="site-footer">
     <nav>
       <ul>
         <li><a href="catalogo.html">Catálogo</a></li>
@@ -60,8 +73,10 @@
         <li><a href="cadastro.html">Criar conta</a></li>
       </ul>
     </nav>
-    <p>&copy; 2026 Vinyl Records</p>
+    <p>&copy; 2026 Vinyl Figures</p>
   </footer>
+
+  <script type="module" src="../js/controller/auth.js"></script>
 
 </body>
 </html>

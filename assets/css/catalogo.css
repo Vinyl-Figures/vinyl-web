@@ -1,0 +1,493 @@
+/* Página do catálogo — header/footer/breadcrumb e tokens ficam em
+   base.css. Vocabulário visual documentado em DESIGN.md. */
+
+/* ===== MAIN CONTAINER ===== */
+main {
+  flex: 1;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--espaco-9) var(--espaco-8) var(--espaco-11);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-8);
+}
+
+main > h1 {
+  font-size: var(--texto-1);
+  font-weight: 800;
+  letter-spacing: var(--tracking-hero);
+  line-height: var(--altura-display);
+}
+
+main section h2 {
+  font-size: var(--texto-3);
+  font-weight: 800;
+  letter-spacing: var(--tracking-titulo);
+  margin-bottom: var(--espaco-4);
+}
+
+/* ===== PAINEL DE BUSCA E FILTROS =====
+   O card é a <section>; as duas <form> dentro dele são transparentes e
+   ficam separadas por um divisor. Antes cada form era um card cinza
+   próprio, o que dava dois blocos pesados empilhados antes da grade. */
+.painel-catalogo {
+  background-color: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-card);
+  padding: var(--espaco-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-5);
+}
+
+/* O painel é ferramenta, não conteúdo: seu título fica menor que o
+   "Todos os discos" da seção de resultados. */
+.painel-catalogo h2 {
+  font-size: var(--texto-meta);
+  font-weight: 600;
+  letter-spacing: var(--tracking-caixa-alta);
+  text-transform: uppercase;
+  color: var(--cor-texto-meta);
+  margin-bottom: 0;
+}
+
+.painel-catalogo form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-4);
+}
+
+.painel-catalogo form + form {
+  border-top: 1px solid var(--cor-borda);
+  padding-top: var(--espaco-5);
+}
+
+.painel-catalogo label,
+.painel-catalogo legend {
+  font-size: var(--texto-ui);
+  font-weight: 600;
+}
+
+/* Busca: campo largo com o botão do lado, não um input curto solto. */
+.linha-busca {
+  display: flex;
+  gap: var(--espaco-3);
+}
+
+.linha-busca input[type="search"] {
+  flex: 1;
+  min-width: 0;
+}
+
+.painel-catalogo input[type="search"],
+.painel-catalogo input[type="number"],
+.painel-catalogo select {
+  padding: var(--espaco-3) var(--espaco-5);
+  border-radius: var(--raio-pilula);
+  border: 1px solid var(--cor-campo-borda);
+  font-family: var(--fonte);
+  font-size: var(--texto-corpo);
+  background-color: var(--cor-campo);
+  color: var(--cor-texto);
+  outline: none;
+  transition: border-color var(--transicao-rapida);
+}
+
+.painel-catalogo input:focus,
+.painel-catalogo select:focus {
+  border-color: var(--cor-destaque);
+}
+
+.painel-catalogo input:focus-visible,
+.painel-catalogo select:focus-visible {
+  outline: 2px solid var(--cor-foco);
+  outline-offset: 2px;
+}
+
+.painel-catalogo input[type="number"] {
+  font-family: var(--fonte-numeros);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.painel-catalogo button {
+  background-color: var(--cor-destaque);
+  color: var(--cor-sobre-destaque);
+  padding: var(--espaco-3) var(--espaco-6);
+  border-radius: var(--raio-pilula);
+  border: none;
+  font-family: var(--fonte);
+  font-size: var(--texto-ui);
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color var(--transicao);
+}
+
+.painel-catalogo button:hover:not(:disabled) {
+  background-color: var(--cor-destaque-hover);
+}
+
+.painel-catalogo button[type="reset"] {
+  background-color: var(--cor-controle);
+  color: var(--cor-sobre-controle);
+}
+
+.painel-catalogo button[type="reset"]:hover:not(:disabled) {
+  background-color: var(--cor-controle-hover);
+}
+
+/* Gênero: chips que quebram em várias linhas, sem caixa em volta. */
+.painel-catalogo fieldset {
+  border: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espaco-2) var(--espaco-3);
+  align-items: center;
+}
+
+/* flex-basis: 100% força a legend pra própria linha mesmo nos navegadores
+   onde ela participa do flex do fieldset — sem isso o comportamento varia
+   entre navegadores e o filtro de Gênero ficava torto. */
+.painel-catalogo legend {
+  flex-basis: 100%;
+  margin-bottom: var(--espaco-2);
+}
+
+/* Checkbox de gênero como pílula clicável, não caixinha crua do
+   navegador do lado de inputs arredondados. */
+.painel-catalogo fieldset label:has(input[type="checkbox"]) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espaco-2);
+  padding: var(--espaco-2) var(--espaco-4);
+  border-radius: var(--raio-pilula);
+  border: 1px solid var(--cor-campo-borda);
+  background-color: var(--cor-campo);
+  font-size: var(--texto-ui);
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color var(--transicao-rapida), background-color var(--transicao-rapida);
+}
+
+.painel-catalogo fieldset label:has(input[type="checkbox"]):hover {
+  border-color: var(--cor-destaque);
+}
+
+.painel-catalogo fieldset input[type="checkbox"] {
+  accent-color: var(--cor-destaque);
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+
+.painel-catalogo fieldset label:has(input[type="checkbox"]:checked) {
+  border-color: var(--cor-destaque);
+  background-color: var(--cor-destaque-suave);
+  font-weight: 600;
+}
+
+/* Preço + ordenação + ações na mesma linha, alinhados pela base. */
+.linha-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--espaco-5);
+}
+
+.linha-filtros .filtro-preco {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--espaco-2);
+}
+
+.faixa-preco {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--espaco-2);
+}
+
+.faixa-preco > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-1);
+}
+
+.faixa-preco label {
+  font-size: var(--texto-meta);
+  font-weight: 500;
+  color: var(--cor-texto-meta);
+}
+
+.faixa-preco input[type="number"] {
+  width: 6.5rem;
+}
+
+/* O travessão entre mínimo e máximo acompanha a linha dos inputs, não a
+   dos rótulos acima deles. */
+.faixa-preco > span {
+  padding-bottom: var(--espaco-3);
+  color: var(--cor-texto-meta);
+}
+
+.filtro-ordenar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-2);
+}
+
+/* Ações empurradas pra direita; na quebra pra telas estreitas elas
+   voltam pro fluxo normal em vez de ficarem penduradas. */
+.acoes-filtro {
+  display: flex;
+  gap: var(--espaco-3);
+  margin-left: auto;
+}
+
+/* ===== RESULTADOS ===== */
+/* O contador ("Mostrando X de Y discos") é metadado, não corpo de texto:
+   encosta no título em vez de flutuar como parágrafo solto. O :not()
+   evita pegar o parágrafo do estado vazio, que é texto de verdade. */
+main section:not(.estado-vazio) > p {
+  font-size: var(--texto-ui);
+  color: var(--cor-texto-meta);
+  margin-top: calc(var(--espaco-4) * -1);
+  margin-bottom: var(--espaco-5);
+}
+
+.estado-vazio {
+  text-align: center;
+  padding: var(--espaco-10) var(--espaco-5);
+  border: 1px dashed var(--cor-campo-borda);
+  border-radius: var(--raio-card);
+}
+
+.estado-vazio p {
+  font-size: var(--texto-corpo);
+  color: var(--cor-texto-suave);
+  max-width: 42ch;
+  margin: 0 auto;
+}
+
+/* ===== PRODUCT LIST / GRID ===== */
+main section ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  align-items: stretch;
+  gap: var(--espaco-6);
+}
+
+/* Nem todo vinil tem imagem/descrição (fonteDaImagem pode não ter nada
+   pra mostrar) — sem altura igual, os cards da mesma fileira ficam
+   desalinhados. O <li> já estica com o grid (align-items: stretch); o
+   article precisa de height: 100% pra realmente preencher isso. */
+main section ul li {
+  height: 100%;
+}
+
+main section ul li article {
+  height: 100%;
+  background-color: var(--cor-superficie-alta);
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: var(--raio-card);
+  padding: var(--espaco-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-3);
+  transition: transform var(--transicao), box-shadow var(--transicao), border-color var(--transicao);
+}
+
+main section ul li article:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--sombra-card);
+  border-color: var(--cor-campo-borda);
+}
+
+/* O card responde ao mouse desde sempre; :focus-within dá o mesmo
+   retorno pra quem chega nele pelo teclado. */
+main section ul li article:focus-within {
+  border-color: var(--cor-destaque);
+  box-shadow: var(--sombra-card);
+}
+
+main section ul li article > a {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-3);
+}
+
+main section ul li article img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-radius: var(--raio-imagem);
+  background-color: var(--cor-superficie);
+}
+
+main section ul li article h3 {
+  font-size: var(--texto-5);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+main section ul li article > a:hover h3 {
+  text-decoration: underline;
+}
+
+/* Preço e descrição eram a mesma regra (mesmo tamanho, mesmo peso, mesma
+   cor) e competiam entre si. O preço é a informação que decide a compra:
+   fica maior e mais pesado; a descrição recua. */
+main section ul li article > a > p:first-of-type {
+  font-size: var(--texto-4);
+  font-weight: 800;
+  letter-spacing: var(--tracking-titulo);
+}
+
+main section ul li article > a > p:nth-of-type(2) {
+  font-size: var(--texto-corpo);
+  font-weight: 400;
+  color: var(--cor-texto-suave);
+}
+
+/* Stepper de quantidade + "Adicionar ao carrinho", lado a lado, sempre
+   no fim do card mesmo com a altura esticada pelo grid (main section ul,
+   align-items: stretch). */
+.linha-acao-catalogo {
+  margin-top: auto;
+  padding-top: var(--espaco-2);
+  display: flex;
+  align-items: stretch;
+  gap: var(--espaco-2);
+}
+
+.stepper-qtd {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--cor-campo-borda);
+  border-radius: var(--raio-pilula);
+  overflow: hidden;
+  flex-shrink: 0;
+  background-color: var(--cor-campo);
+}
+
+.stepper-qtd button {
+  background: none;
+  border: none;
+  width: 32px;
+  font-family: var(--fonte);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--cor-destaque);
+  cursor: pointer;
+  transition: background-color var(--transicao-rapida);
+}
+
+.stepper-qtd button:hover:not(:disabled) {
+  background-color: var(--cor-destaque-suave);
+}
+
+.stepper-qtd input[type="number"] {
+  width: 34px;
+  border: none;
+  border-left: 1px solid var(--cor-campo-borda);
+  border-right: 1px solid var(--cor-campo-borda);
+  text-align: center;
+  font-family: var(--fonte-numeros);
+  font-size: var(--texto-ui);
+  font-weight: 600;
+  font-variant-numeric: lining-nums tabular-nums;
+  background: none;
+  color: var(--cor-texto);
+  padding: 0;
+}
+
+/* Já tem +/- do lado: some com as setinhas nativas do number. */
+.stepper-qtd input[type="number"]::-webkit-outer-spin-button,
+.stepper-qtd input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.stepper-qtd input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* outline-offset negativo: .stepper-qtd tem overflow:hidden pra recortar
+   os cantos em pílula, e um anel de foco normal (pra fora) seria cortado. */
+.stepper-qtd input[type="number"]:focus-visible {
+  outline: 2px solid var(--cor-foco);
+  outline-offset: -2px;
+}
+
+.linha-acao-catalogo > button {
+  flex: 1;
+  background-color: var(--cor-destaque);
+  color: var(--cor-sobre-destaque);
+  padding: var(--espaco-3) var(--espaco-4);
+  border-radius: var(--raio-pilula);
+  border: none;
+  font-family: var(--fonte);
+  font-size: var(--texto-ui);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transicao);
+}
+
+.linha-acao-catalogo > button:hover:not(:disabled) {
+  background-color: var(--cor-destaque-hover);
+}
+
+/* ===== PAGINATION ===== */
+main section nav[aria-label="Paginação"] ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--espaco-2);
+  margin-top: var(--espaco-8);
+}
+
+main section nav[aria-label="Paginação"] ul li a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--cor-borda);
+  font-size: var(--texto-ui);
+  font-weight: 600;
+  transition: background-color var(--transicao), color var(--transicao), border-color var(--transicao);
+}
+
+main section nav[aria-label="Paginação"] ul li a[aria-current="page"],
+main section nav[aria-label="Paginação"] ul li a:hover {
+  background-color: var(--cor-destaque);
+  color: var(--cor-sobre-destaque);
+  border-color: var(--cor-destaque);
+}
+
+main section nav[aria-label="Paginação"] ul li:last-child a {
+  width: auto;
+  padding: 0 var(--espaco-5);
+  border-radius: var(--raio-pilula);
+}
+
+@media (max-width: 640px) {
+  main {
+    padding: var(--espaco-7) var(--espaco-5) var(--espaco-9);
+  }
+
+  .painel-catalogo {
+    padding: var(--espaco-5);
+  }
+
+  .acoes-filtro {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .acoes-filtro button {
+    flex: 1;
+  }
+}

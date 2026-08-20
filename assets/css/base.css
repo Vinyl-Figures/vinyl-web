@@ -1,0 +1,652 @@
+/* Compartilhado por todas as páginas: tokens, reset, tipografia,
+   header/footer, popups (view/ui.js), tema escuro e recursos de
+   acessibilidade. Layout específico de cada página fica em style.css
+   (index), catalogo.css, paginas.css (formulários) ou disco.css.
+
+   O vocabulário visual está documentado em DESIGN.md, na raiz. */
+
+/* @import PRECISA vir antes de qualquer regra de estilo: o navegador
+   descarta um @import que apareça depois, e era exatamente isso que
+   acontecia aqui — a Syne nunca carregava e tudo caía no sans-serif do
+   sistema. */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400..800&display=swap');
+
+:root {
+  /* ===== Cor: base ===== */
+  --cor-fundo: #ffffff;
+  --cor-texto: #000000;
+  --cor-texto-suave: #555555;
+  --cor-texto-meta: #6b6b6b;
+  --cor-superficie: #f9f9f9;
+  --cor-superficie-alta: #ffffff;
+  --cor-borda: #e5e5e5;
+  --cor-borda-suave: #eaeaea;
+  --cor-divisor: #cccccc;
+  --cor-campo: #ffffff;
+  --cor-campo-borda: #dcdcdc;
+  --cor-controle: #e0e0e0;
+  --cor-controle-hover: #cccccc;
+  --cor-sobre-controle: #000000;
+  --cor-barra: #000000;
+  --cor-barra-pe: #0c0c0c;
+  --cor-barra-texto: #ffffff;
+
+  /* ===== Cor: destaque ===== */
+  --cor-destaque: #105682;
+  --cor-destaque-hover: #0c4160;
+  --cor-destaque-suave: rgba(16, 86, 130, 0.08);
+  --cor-sobre-destaque: #ffffff;
+  --cor-foco: #105682;
+
+  /* ===== Cor: semântica ===== */
+  --cor-erro: #c0392b;
+  --cor-info: #2d6cdf;
+  --cor-realce-cursor: #ff5a00;
+
+  /* ===== Tipografia ===== */
+  --fonte: 'Syne', sans-serif;
+  --fonte-numeros: Arial, Helvetica, sans-serif;
+
+  /* clamp() no lugar de trocar o tamanho no media query: escala contínua,
+     sem o degrau que existia em 992px. */
+  --texto-hero: clamp(2.5rem, 7vw, 4.5rem);
+  --texto-1: clamp(2.25rem, 5vw, 3.25rem);
+  --texto-2: clamp(1.75rem, 4vw, 2.5rem);
+  --texto-3: 1.75rem;
+  --texto-4: 1.25rem;
+  --texto-5: 1.0625rem;
+  --texto-corpo: 0.9375rem;
+  --texto-ui: 0.875rem;
+  --texto-meta: 0.8125rem;
+
+  --altura-display: 1.05;
+  --altura-titulo: 1.25;
+  --altura-corpo: 1.55;
+
+  /* Tracking em em, não px: acompanha o font-size — inclusive quando o
+     recurso "texto aumentado" leva a raiz pra 120%. */
+  --tracking-hero: -0.035em;
+  --tracking-titulo: -0.025em;
+  --tracking-caixa-alta: 0.06em;
+
+  /* ===== Espaçamento (escala de 4px) ===== */
+  --espaco-1: 4px;
+  --espaco-2: 8px;
+  --espaco-3: 12px;
+  --espaco-4: 16px;
+  --espaco-5: 20px;
+  --espaco-6: 24px;
+  --espaco-7: 32px;
+  --espaco-8: 40px;
+  --espaco-9: 48px;
+  --espaco-10: 64px;
+  --espaco-11: 80px;
+
+  /* ===== Forma ===== */
+  --raio-pilula: 30px;
+  --raio-card: 16px;
+  --raio-card-interno: 12px;
+  --raio-imagem: 10px;
+  --raio-caixa: 6px;
+
+  /* ===== Elevação ===== */
+  --sombra-card: 0 10px 25px rgba(0, 0, 0, 0.08);
+  --sombra-flutuante: 0 15px 35px rgba(0, 0, 0, 0.18);
+  --sombra-modal: 0 20px 50px rgba(0, 0, 0, 0.25);
+
+  /* ===== Movimento ===== */
+  --transicao-rapida: 0.15s ease;
+  --transicao: 0.25s ease;
+}
+
+/* Tema escuro: só os tokens mudam. As regras de componente lá embaixo
+   são as mesmas dos dois temas — antes cada uma tinha um bloco duplicado
+   só pra trocar cor. */
+:root[data-tema="escuro"] {
+  --cor-fundo: #1c1c1c;
+  --cor-texto: #f5f5f5;
+  --cor-texto-suave: #c4c4c4;
+  --cor-texto-meta: #a0a0a0;
+  --cor-superficie: #262626;
+  /* Um degrau acima da superfície: no claro é branco sobre cinza; no
+     escuro, sem isso, tabela e card de endereço somem dentro da seção. */
+  --cor-superficie-alta: #2f2f2f;
+  --cor-borda: #2a2a2a;
+  --cor-borda-suave: #333333;
+  --cor-divisor: #444444;
+  --cor-campo: #1c1c1c;
+  --cor-campo-borda: #333333;
+  --cor-controle: #3a3a3a;
+  --cor-controle-hover: #4a4a4a;
+  --cor-sobre-controle: #f5f5f5;
+
+  --cor-erro: #e74c3c;
+  --cor-info: #5b9bf5;
+
+  /* #105682 sobre #1c1c1c dá ~2:1 — abaixo do 3:1 que a WCAG pede pra
+     indicador de foco. Branco resolve sem introduzir cor nova. */
+  --cor-foco: #ffffff;
+
+  --sombra-card: 0 10px 25px rgba(0, 0, 0, 0.45);
+}
+
+/* Alto contraste é controlado nas preferências de acessibilidade. O amarelo
+   serve apenas como fundo de destaque: todo texto sobre ele é preto. */
+:root[data-a11y-contraste="alto"] {
+  --cor-fundo: #000000;
+  --cor-texto: #ffffff;
+  --cor-texto-suave: #ffffff;
+  --cor-texto-meta: #ffffff;
+  --cor-superficie: #000000;
+  --cor-superficie-alta: #000000;
+  --cor-borda: #ffffff;
+  --cor-borda-suave: #ffffff;
+  --cor-divisor: #ffffff;
+  --cor-campo: #000000;
+  --cor-campo-borda: #ffffff;
+  --cor-controle: #ffe600;
+  --cor-controle-hover: #ffffff;
+  --cor-sobre-controle: #000000;
+  --cor-barra: #000000;
+  --cor-barra-pe: #000000;
+  --cor-barra-texto: #ffffff;
+  --cor-destaque: #ffe600;
+  --cor-destaque-hover: #ffffff;
+  --cor-destaque-suave: #333300;
+  --cor-sobre-destaque: #000000;
+  --cor-foco: #ffe600;
+  --cor-realce-cursor: #ffe600;
+  --cor-hero: #000000;
+  --cor-sobre-hero: #ffffff;
+  --cor-etiqueta: #ffe600;
+  --cor-acao: #ffffff;
+  --cor-sobre-acao: #000000;
+  --cor-preco: #ffffff;
+  --cor-sombra-dura: #ffffff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Regra de UA pro atributo hidden é de baixa prioridade: display:flex/grid
+   de qualquer seletor de autor (catalogo.css, paginas.css...) já vence,
+   hidden ou não. !important aqui é o jeito correto e padrão de garantir
+   isso — não dá pra resolver só com especificidade. */
+[hidden] {
+  display: none !important;
+}
+
+body {
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
+  font-family: var(--fonte);
+  font-size: 1rem;
+  line-height: var(--altura-corpo);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow-x: hidden;
+}
+
+/* A fonte de identidade é expressiva, mas não é a mais confortável para
+   comparar dígitos. Valores recebem uma fonte de sistema com largura fixa. */
+[data-numero] {
+  font-family: var(--fonte-numeros);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+/* Primeiro foco da página: evita que quem usa Tab precise atravessar toda a
+   navegação antes de chegar ao conteúdo. Só aparece quando recebe foco. */
+#vinyl-pular-conteudo {
+  position: fixed;
+  z-index: 10000;
+  top: var(--espaco-3);
+  left: 50%;
+  padding: var(--espaco-3) var(--espaco-5);
+  border: 2px solid var(--cor-borda);
+  background: var(--cor-controle);
+  color: var(--cor-sobre-controle);
+  font-size: var(--texto-ui);
+  font-weight: 800;
+  transform: translate(-50%, -160%);
+  transition: transform var(--transicao-rapida);
+}
+
+#vinyl-pular-conteudo:focus {
+  transform: translate(-50%, 0);
+}
+
+h1, h2, h3 {
+  line-height: var(--altura-titulo);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* Foco visível pra todo link/botão do site — sem isso, quem navega por
+   teclado só via onde está em campos de formulário. outline-offset
+   negativo desenha o anel pra dentro do próprio elemento, então
+   containers com overflow:hidden (.stepper-qtd, table) nunca cortam o
+   anel — não dá pra resolver isso só trocando a cor/especificidade. */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--cor-foco);
+  outline-offset: -2px;
+}
+
+/* O JS desabilita de verdade (view/ui.js:travarBotao, o <select> de
+   endereço enquanto o frete calcula). Sem isto, elemento travado fica
+   com cara de clicável. */
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Resposta ao clique: o projeto tinha hover e foco, mas nada acontecia
+   entre apertar e soltar. */
+button:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+/* ===== HEADER ===== */
+header {
+  width: 100%;
+  background-color: var(--cor-barra);
+  color: var(--cor-barra-texto);
+  padding: var(--espaco-5) var(--espaco-10);
+}
+
+header nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: var(--espaco-4);
+}
+
+header nav > a:first-child {
+  font-size: var(--texto-4);
+  font-weight: 700;
+  letter-spacing: var(--tracking-titulo);
+}
+
+header ul {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-8);
+  flex-wrap: wrap;
+}
+
+header ul li a {
+  font-size: var(--texto-ui);
+  font-weight: 500;
+  opacity: 0.85;
+  transition: opacity var(--transicao);
+}
+
+header ul li a:hover {
+  opacity: 1;
+}
+
+header ul li button {
+  background: transparent;
+  border: 1px solid var(--cor-barra-texto);
+  color: var(--cor-barra-texto);
+  padding: var(--espaco-2) var(--espaco-5);
+  border-radius: var(--raio-pilula);
+  font-family: var(--fonte);
+  font-size: var(--texto-meta);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transicao), color var(--transicao);
+}
+
+header ul li button:hover {
+  background-color: var(--cor-barra-texto);
+  color: var(--cor-barra);
+}
+
+/* No header o fundo é sempre preto, nos dois temas: o anel azul/branco
+   padrão some ou briga com a barra. */
+header a:focus-visible,
+header button:focus-visible {
+  outline-color: var(--cor-barra-texto);
+  outline-offset: 2px;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  width: 100%;
+  background-color: var(--cor-barra-pe);
+  color: var(--cor-barra-texto);
+  padding: var(--espaco-7) var(--espaco-8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espaco-4);
+  font-size: var(--texto-ui);
+}
+
+footer nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--espaco-7);
+}
+
+footer nav ul li a {
+  opacity: 0.8;
+  font-weight: 500;
+  transition: opacity var(--transicao);
+}
+
+footer nav ul li a:hover {
+  opacity: 1;
+}
+
+footer p {
+  font-size: var(--texto-meta);
+  opacity: 0.55;
+}
+
+footer a:focus-visible {
+  outline-color: var(--cor-barra-texto);
+  outline-offset: 2px;
+}
+
+/* ===== BREADCRUMB (usado em toda página que não é a home) ===== */
+main > nav[aria-label="Você está aqui"] ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espaco-2);
+  font-size: var(--texto-ui);
+  color: var(--cor-texto-meta);
+  padding: var(--espaco-7) var(--espaco-8) 0;
+}
+
+main > nav[aria-label="Você está aqui"] ol li + li::before {
+  content: "/";
+  margin-right: var(--espaco-2);
+  color: var(--cor-divisor);
+}
+
+main > nav[aria-label="Você está aqui"] ol li a:hover {
+  text-decoration: underline;
+}
+
+main > nav[aria-label="Você está aqui"] ol li[aria-current="page"] {
+  color: var(--cor-texto);
+  font-weight: 600;
+}
+
+/* ===== POPUPS (view/ui.js) =====
+   Mesmos atributos que ui.js já usa (data-vinyl-ui); a função
+   injetarEstilos() que injetava isso em runtime foi removida — vira
+   CSS estático como o resto do projeto. */
+[data-vinyl-ui="dialogo"] {
+  /* O reset global (* { margin: 0 }) apaga o margin:auto que o navegador
+     usa pra centralizar <dialog> modal — repõe aqui. */
+  margin: auto;
+  color-scheme: light dark;
+  border: none;
+  border-radius: var(--raio-card);
+  padding: var(--espaco-7);
+  max-width: 28rem;
+  width: 90vw;
+  background: var(--cor-superficie-alta);
+  color: var(--cor-texto);
+  font-family: var(--fonte);
+  line-height: var(--altura-corpo);
+  box-shadow: var(--sombra-modal);
+}
+
+[data-vinyl-ui="dialogo"]::backdrop {
+  background: rgb(0 0 0 / 0.6);
+}
+
+[data-vinyl-ui="dialogo"] h2 {
+  margin: 0 0 var(--espaco-3);
+  font-size: var(--texto-4);
+  font-weight: 800;
+  letter-spacing: var(--tracking-titulo);
+}
+
+[data-vinyl-ui="dialogo"] ul {
+  margin: 0 0 var(--espaco-4);
+  padding-left: 0;
+}
+
+[data-vinyl-ui="dialogo"] li {
+  padding: var(--espaco-1) 0;
+}
+
+[data-vinyl-ui="dialogo"] p {
+  margin: 0 0 var(--espaco-4);
+  color: var(--cor-texto-suave);
+  font-size: var(--texto-corpo);
+}
+
+[data-vinyl-ui="dialogo"] fieldset {
+  border: none;
+  margin: 0 0 var(--espaco-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-3);
+}
+
+[data-vinyl-ui="dialogo"] label {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-2);
+  font-size: var(--texto-corpo);
+}
+
+[data-vinyl-ui="dialogo"] select,
+[data-vinyl-ui="dialogo"] input[type="text"] {
+  padding: var(--espaco-3) var(--espaco-4);
+  border-radius: var(--raio-pilula);
+  border: 1px solid var(--cor-campo-borda);
+  font-family: var(--fonte);
+  font-size: var(--texto-corpo);
+  width: 100%;
+  background: var(--cor-campo);
+  color: var(--cor-texto);
+  transition: border-color var(--transicao-rapida);
+}
+
+[data-vinyl-ui="dialogo"] select {
+  margin-bottom: var(--espaco-4);
+}
+
+[data-vinyl-ui="dialogo"] select:focus,
+[data-vinyl-ui="dialogo"] input[type="text"]:focus {
+  border-color: var(--cor-destaque);
+}
+
+[data-vinyl-ui="dialogo"] select:focus-visible,
+[data-vinyl-ui="dialogo"] input[type="text"]:focus-visible {
+  outline: 2px solid var(--cor-foco);
+  outline-offset: 2px;
+}
+
+/* Campo de formulário genérico (pedirCampos) — label em cima do input,
+   diferente de [data-vinyl-ui="dialogo"] label acima (que é a linha
+   horizontal do checkbox em escolherVarios). */
+[data-vinyl-ui="dialogo"] [data-vinyl-ui="campo"] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-2);
+  margin-bottom: var(--espaco-4);
+}
+
+[data-vinyl-ui="dialogo"] [data-vinyl-ui="campo"] label {
+  font-size: var(--texto-ui);
+  font-weight: 600;
+}
+
+[data-vinyl-ui="acoes"] {
+  display: flex;
+  gap: var(--espaco-3);
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+[data-vinyl-ui="acoes"] button {
+  font-family: var(--fonte);
+  font-size: var(--texto-ui);
+  font-weight: 600;
+  padding: var(--espaco-3) var(--espaco-6);
+  border-radius: var(--raio-pilula);
+  border: 1px solid var(--cor-texto);
+  background: transparent;
+  color: var(--cor-texto);
+  cursor: pointer;
+  transition: background-color var(--transicao), color var(--transicao);
+}
+
+/* Mesma linguagem de hover do resto do site (troca de fundo), no lugar
+   do opacity que destoava. */
+[data-vinyl-ui="acoes"] button:hover:not(:disabled) {
+  background: var(--cor-texto);
+  color: var(--cor-fundo);
+}
+
+[data-vinyl-ui="acoes"] button:last-child {
+  background: var(--cor-destaque);
+  border-color: var(--cor-destaque);
+  color: var(--cor-sobre-destaque);
+}
+
+[data-vinyl-ui="acoes"] button:last-child:hover:not(:disabled) {
+  background: var(--cor-destaque-hover);
+  border-color: var(--cor-destaque-hover);
+  color: var(--cor-sobre-destaque);
+}
+
+[data-vinyl-ui="avisos"] {
+  position: fixed;
+  top: var(--espaco-6);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espaco-3);
+  width: 100%;
+  padding: 0 var(--espaco-5);
+  pointer-events: none;
+}
+
+[data-vinyl-ui="aviso"] {
+  color-scheme: light dark;
+  background: var(--cor-superficie-alta);
+  color: var(--cor-texto);
+  border-left: 4px solid var(--cor-texto);
+  border-radius: var(--raio-card-interno);
+  padding: var(--espaco-4) var(--espaco-5);
+  max-width: 420px;
+  font-size: var(--texto-ui);
+  font-weight: 600;
+  line-height: 1.45;
+  box-shadow: var(--sombra-flutuante);
+  animation: vinyl-aviso-entrada var(--transicao);
+}
+
+@keyframes vinyl-aviso-entrada {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* sucesso é o padrão (borda preta/branca acima); erro e info só trocam
+   o acento */
+[data-vinyl-ui-tipo="erro"] {
+  border-left-color: var(--cor-erro);
+}
+
+[data-vinyl-ui-tipo="info"] {
+  border-left-color: var(--cor-info);
+}
+
+/* ===== ACESSIBILIDADE (acessibility-features/*.js setam os atributos) ===== */
+:root[data-a11y-texto="grande"] {
+  font-size: 120%;
+}
+
+:root[data-a11y-cursor="realce"] [data-a11y-sob-cursor] {
+  outline: 3px solid var(--cor-realce-cursor);
+  outline-offset: 3px;
+  border-radius: var(--raio-caixa);
+}
+
+/* Spinner de view/ui.js:ocupado() — <progress> indeterminado nativo,
+   só um respiro visual em volta. */
+progress {
+  display: block;
+  width: 100%;
+  height: 6px;
+  margin-bottom: var(--espaco-4);
+  accent-color: var(--cor-destaque);
+  border-radius: var(--raio-pilula);
+  overflow: hidden;
+  border: none;
+}
+
+/* Spinner circular pro texto de botão ocupado (view/ui.js:travarBotao) —
+   herda a cor do texto do botão via currentColor, então funciona nos
+   botões azuis (texto branco) e no botão reset (texto escuro) sem regra
+   extra por tema. */
+span[data-vinyl-ui="spinner"] {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  vertical-align: -1px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: vinyl-girar 0.6s linear infinite;
+}
+
+@keyframes vinyl-girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Quem pede menos movimento no sistema não deveria ver o vinil girando
+   em laço infinito. !important aqui é o padrão da técnica: precisa vencer
+   qualquer animação declarada depois, em qualquer arquivo. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

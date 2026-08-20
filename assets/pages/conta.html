@@ -3,34 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/paginas.css">
+  <link rel="stylesheet" href="../css/releitura.css?v=20260819b">
   <title>Minha conta | Vinyl Figures Store</title>
 </head>
-<body>
+<body class="pagina-conta">
 
   <!-- ===== NAVBAR ===== -->
-  <header>
-    <nav>
-      <a href="index.html">Vinyl Records</a>
+  <header class="site-header">
+    <nav class="site-nav">
+      <a class="site-logo" href="../../index.html">Vinyl Figures</a>
 
       <ul>
-        <li><a href="index.html">Início</a></li>
+        <li><a href="../../index.html">Início</a></li>
         <li><a href="catalogo.html">Catálogo</a></li>
         <li><a href="carrinho.html">Carrinho</a></li>
-        <li><a href="conta.html">Conta</a></li>
+        <li><a href="conta.html" aria-current="page">Conta</a></li>
       </ul>
     </nav>
   </header>
 
-  <main>
+  <main class="account-page">
 
-    <nav aria-label="Você está aqui">
+    <nav class="breadcrumb" aria-label="Você está aqui">
       <ol>
-        <li><a href="index.html">Início</a></li>
+        <li><a href="../../index.html">Início</a></li>
         <li aria-current="page">Minha conta</li>
       </ol>
     </nav>
 
-    <h1>Minha conta</h1>
+    <div class="page-intro">
+      <span>● YOUR VINYL CLUB</span>
+      <h1>Minha<br>conta<span>.</span></h1>
+      <p>Dados, pedidos e preferências da sua coleção em um só lugar.</p>
+    </div>
 
     <nav aria-label="Seções da conta">
       <ul>
@@ -38,7 +45,7 @@
         <li><a href="#enderecos">Endereços</a></li>
         <li><a href="#pedidos">Pedidos</a></li>
         <li><a href="#acessibilidade">Acessibilidade</a></li>
-        <li><a href="index.html">Sair</a></li>
+        <li><a href="../../index.html" data-acao="sair">Sair</a></li>
       </ul>
     </nav>
 
@@ -52,7 +59,7 @@
         <input type="email" id="conta-email" name="email" autocomplete="email">
 
         <label for="conta-telefone">Telefone</label>
-        <input type="tel" id="conta-telefone" name="telefone" autocomplete="tel">
+        <input type="tel" id="conta-telefone" name="telefone" inputmode="numeric" maxlength="15" autocomplete="tel">
 
         <button type="submit">Salvar alterações</button>
       </form>
@@ -60,18 +67,30 @@
 
     <section id="enderecos">
       <h2>Endereços</h2>
+      <!-- A API guarda apenas número, complemento e CEP -->
       <ul>
         <li>
           <address>
-            Rua Exemplo, 000<br>
-            São Paulo &mdash; SP<br>
+            Nº 000<br>
+            Complemento<br>
             00000-000
           </address>
-          <button type="button">Editar</button>
           <button type="button">Remover</button>
         </li>
       </ul>
-      <button type="button">Adicionar endereço</button>
+
+      <form action="conta.html" method="post">
+        <label for="end-numero">Número</label>
+        <input type="text" id="end-numero" name="numero" maxlength="12" required>
+
+        <label for="end-complemento">Complemento</label>
+        <input type="text" id="end-complemento" name="complemento">
+
+        <label for="end-cep">CEP</label>
+        <input type="text" id="end-cep" name="cep" inputmode="numeric" maxlength="9" required>
+
+        <button type="submit">Adicionar endereço</button>
+      </form>
     </section>
 
     <section id="pedidos">
@@ -83,6 +102,7 @@
             <th scope="col">Pedido</th>
             <th scope="col">Data</th>
             <th scope="col">Status</th>
+            <th scope="col">Frete</th>
             <th scope="col">Total</th>
           </tr>
         </thead>
@@ -91,6 +111,7 @@
             <th scope="row">#000000</th>
             <td>01/01/2026</td>
             <td>Em transporte</td>
+            <td>R$ 10,00</td>
             <td>R$ 130,00</td>
           </tr>
         </tbody>
@@ -116,14 +137,14 @@
             Realce de cursor
           </label>
 
-          <label for="alto-contraste">
-            <input type="checkbox" id="alto-contraste" name="acessibilidade" value="alto-contraste">
-            Alto contraste
-          </label>
-
           <label for="texto-aumentado">
             <input type="checkbox" id="texto-aumentado" name="acessibilidade" value="texto-aumentado">
             Texto aumentado
+          </label>
+
+          <label for="fonte-dislexia">
+            <input type="checkbox" id="fonte-dislexia" name="acessibilidade" value="fonte-dislexia">
+            Fonte para dislexia
           </label>
         </fieldset>
 
@@ -134,7 +155,7 @@
 
   </main>
 
-  <footer>
+  <footer class="site-footer">
     <nav>
       <ul>
         <li><a href="catalogo.html">Catálogo</a></li>
@@ -143,8 +164,10 @@
         <li><a href="cadastro.html">Criar conta</a></li>
       </ul>
     </nav>
-    <p>&copy; 2026 Vinyl Records</p>
+    <p>&copy; 2026 Vinyl Figures</p>
   </footer>
+
+  <script type="module" src="../js/controller/account.js"></script>
 
 </body>
 </html>

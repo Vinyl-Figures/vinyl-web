@@ -1,0 +1,445 @@
+/* entrar, cadastro, conta, carrinho — header/footer/breadcrumb e tokens
+   ficam em base.css. Mesmo vocabulário visual do catalogo.css (pílula,
+   cards arredondados, superfície clara nos formulários). */
+
+main {
+  flex: 1;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--espaco-9) var(--espaco-8) var(--espaco-11);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-8);
+}
+
+main > h1 {
+  font-size: var(--texto-1);
+  font-weight: 800;
+  letter-spacing: var(--tracking-hero);
+  line-height: var(--altura-display);
+}
+
+main > p {
+  font-size: var(--texto-corpo);
+  color: var(--cor-texto-suave);
+}
+
+main > p a {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+/* Nav de seções da conta (#dados, #enderecos...) */
+main > nav[aria-label="Seções da conta"] ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espaco-3);
+}
+
+main > nav[aria-label="Seções da conta"] a {
+  display: inline-block;
+  padding: var(--espaco-3) var(--espaco-5);
+  border-radius: var(--raio-pilula);
+  border: 1px solid var(--cor-borda);
+  background-color: var(--cor-superficie-alta);
+  font-size: var(--texto-ui);
+  font-weight: 600;
+  transition: background-color var(--transicao), color var(--transicao), border-color var(--transicao);
+}
+
+main > nav[aria-label="Seções da conta"] a:hover {
+  background-color: var(--cor-destaque);
+  color: var(--cor-sobre-destaque);
+  border-color: var(--cor-destaque);
+}
+
+/* Formulário solto (entrar/cadastro) ou dentro de <section> (conta) */
+main > form,
+main section {
+  background-color: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-card);
+  padding: var(--espaco-7);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-4);
+}
+
+main section h2 {
+  font-size: var(--texto-4);
+  font-weight: 800;
+  letter-spacing: var(--tracking-titulo);
+}
+
+main section form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-4);
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+main form label,
+main section > label {
+  font-size: var(--texto-ui);
+  font-weight: 600;
+}
+
+/* Rótulo colado no campo que ele nomeia: sem isto o gap do form separa
+   os dois tanto quanto separa um campo do próximo. */
+main form label + input,
+main form label + select,
+main form label + .campo-senha,
+main section > label + input,
+main section > label + select {
+  margin-top: calc(var(--espaco-4) * -1 + var(--espaco-2));
+}
+
+main form label:has(input[type="checkbox"]) {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-2);
+  font-weight: 500;
+}
+
+main input[type="text"],
+main input[type="email"],
+main input[type="password"],
+main input[type="tel"],
+main input[type="number"],
+main select {
+  padding: var(--espaco-3) var(--espaco-5);
+  border-radius: var(--raio-pilula);
+  border: 1px solid var(--cor-campo-borda);
+  font-family: var(--fonte);
+  font-size: var(--texto-corpo);
+  background-color: var(--cor-campo);
+  color: var(--cor-texto);
+  outline: none;
+  transition: border-color var(--transicao-rapida);
+  width: 100%;
+}
+
+main input[type="number"],
+main input[inputmode="numeric"] {
+  font-family: var(--fonte-numeros);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+main input:focus,
+main select:focus {
+  border-color: var(--cor-destaque);
+}
+
+main input:focus-visible,
+main select:focus-visible {
+  outline: 2px solid var(--cor-foco);
+  outline-offset: 2px;
+}
+
+main input::placeholder {
+  color: var(--cor-texto-meta);
+}
+
+/* Mostrar/ocultar senha: ícone dentro do campo, à direita */
+.campo-senha {
+  position: relative;
+  width: 100%;
+}
+
+.campo-senha input {
+  padding-right: var(--espaco-9);
+}
+
+.campo-senha [data-acao="mostrar-senha"] {
+  position: absolute;
+  right: var(--espaco-2);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  padding: 0;
+  cursor: pointer;
+  transition: background-color var(--transicao-rapida);
+}
+
+.campo-senha [data-acao="mostrar-senha"]:hover {
+  background-color: var(--cor-destaque-suave);
+}
+
+/* O botão dentro do campo não pode subir 1px junto com os outros: ele já
+   está centrado por translateY e o :active desalinharia o ícone. */
+.campo-senha [data-acao="mostrar-senha"]:active {
+  transform: translateY(-50%);
+}
+
+/* Ícone é SVG de cor fixa (quase preto) — no tema escuro, o campo fica
+   escuro também e o ícone sumiria sem isso. */
+:root[data-tema="escuro"] .campo-senha [data-acao="mostrar-senha"] img {
+  filter: invert(1);
+}
+
+main button[type="submit"],
+main button[type="reset"],
+main button[data-acao] {
+  align-self: flex-start;
+  background-color: var(--cor-destaque);
+  color: var(--cor-sobre-destaque);
+  padding: var(--espaco-4) var(--espaco-7);
+  border-radius: var(--raio-pilula);
+  border: none;
+  font-family: var(--fonte);
+  font-size: var(--texto-ui);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transicao);
+}
+
+main button[type="submit"]:hover:not(:disabled),
+main button[data-acao]:hover:not(:disabled) {
+  background-color: var(--cor-destaque-hover);
+}
+
+main button[type="reset"] {
+  background-color: var(--cor-controle);
+  color: var(--cor-sobre-controle);
+}
+
+main button[type="reset"]:hover:not(:disabled) {
+  background-color: var(--cor-controle-hover);
+}
+
+main > form > a {
+  align-self: flex-start;
+  padding: var(--espaco-3) 0;
+  font-weight: 700;
+  text-decoration: underline;
+  background: none;
+}
+
+fieldset {
+  border: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-3);
+}
+
+fieldset legend {
+  font-weight: 700;
+  font-size: var(--texto-corpo);
+  margin-bottom: var(--espaco-1);
+}
+
+fieldset label {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-2);
+  font-weight: 500;
+  font-size: var(--texto-corpo);
+}
+
+/* Checkbox de verdade, não a caixinha crua do navegador — acessibilidade
+   (conta), "Continuar conectado" (entrar), "Novidades" (cadastro). */
+main input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  border: 2px solid var(--cor-campo-borda);
+  border-radius: var(--raio-caixa);
+  background-color: var(--cor-campo);
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: border-color var(--transicao-rapida), background-color var(--transicao-rapida);
+}
+
+main input[type="checkbox"]:hover {
+  border-color: var(--cor-destaque);
+}
+
+main input[type="checkbox"]:checked {
+  background-color: var(--cor-destaque);
+  border-color: var(--cor-destaque);
+}
+
+main input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid var(--cor-sobre-destaque);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Endereços */
+#enderecos ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-3);
+}
+
+#enderecos li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--espaco-4);
+  background: var(--cor-superficie-alta);
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: var(--raio-card-interno);
+  padding: var(--espaco-4) var(--espaco-5);
+}
+
+#enderecos address {
+  font-style: normal;
+  font-size: var(--texto-corpo);
+  line-height: 1.5;
+}
+
+/* Tabelas: pedidos (conta) e itens (carrinho) */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--cor-superficie-alta);
+  border-radius: var(--raio-card-interno);
+  overflow: hidden;
+}
+
+caption {
+  text-align: left;
+  font-weight: 700;
+  font-size: var(--texto-corpo);
+  margin-bottom: var(--espaco-3);
+}
+
+th, td {
+  text-align: left;
+  padding: var(--espaco-4);
+  border-bottom: 1px solid var(--cor-borda-suave);
+  font-size: var(--texto-corpo);
+}
+
+tbody tr:last-child th,
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+thead th {
+  font-size: var(--texto-meta);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caixa-alta);
+  font-weight: 600;
+  color: var(--cor-texto-meta);
+}
+
+/* Nome do produto/pedido é a âncora de leitura da linha. */
+tbody th[scope="row"] {
+  font-weight: 700;
+}
+
+tfoot th, tfoot td {
+  font-weight: 800;
+  font-size: var(--texto-5);
+  border-bottom: none;
+  border-top: 2px solid var(--cor-texto);
+}
+
+table button {
+  background-color: var(--cor-destaque);
+  color: var(--cor-sobre-destaque);
+  padding: var(--espaco-2) var(--espaco-4);
+  border-radius: var(--raio-pilula);
+  border: none;
+  font-family: var(--fonte);
+  font-size: var(--texto-meta);
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color var(--transicao);
+}
+
+table button:hover:not(:disabled) {
+  background-color: var(--cor-destaque-hover);
+}
+
+table input[type="number"] {
+  width: 70px;
+  padding: var(--espaco-2) var(--espaco-3);
+}
+
+/* table tem overflow:hidden (pros cantos arredondados) — o anel de foco
+   com offset positivo do input[type=number] geral seria cortado perto das
+   bordas da tabela, então aqui o anel precisa desenhar pra dentro. */
+table input[type="number"]:focus-visible {
+  outline-offset: -2px;
+}
+
+/* O rótulo de quantidade só existe pra leitor de tela: o cabeçalho da
+   coluna já diz o que o campo é, e o texto repetido em cada linha
+   ("Quantidade de X") deixava a coluna larga e ruidosa. */
+table td label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Resumo (carrinho) */
+main section dl {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--espaco-3) var(--espaco-4);
+}
+
+main section dt {
+  color: var(--cor-texto-suave);
+  font-size: var(--texto-corpo);
+}
+
+main section dd {
+  text-align: right;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+main section dl dt:last-of-type,
+main section dl dd:last-of-type {
+  font-size: var(--texto-4);
+  font-weight: 800;
+  color: var(--cor-texto);
+  border-top: 1px solid var(--cor-borda-suave);
+  padding-top: var(--espaco-3);
+  margin-top: var(--espaco-1);
+}
+
+@media (max-width: 640px) {
+  main {
+    padding: var(--espaco-7) var(--espaco-5) var(--espaco-9);
+  }
+
+  main > form,
+  main section {
+    padding: var(--espaco-5);
+  }
+
+  /* Tabela larga não pode empurrar a página inteira: rola sozinha. */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}

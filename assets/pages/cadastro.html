@@ -3,17 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/paginas.css">
+  <link rel="stylesheet" href="../css/releitura.css?v=20260819b">
   <title>Criar conta | Vinyl Figures Store</title>
 </head>
-<body>
+<body class="pagina-cadastro">
 
   <!-- ===== NAVBAR ===== -->
-  <header>
-    <nav>
-      <a href="index.html">Vinyl Records</a>
+  <header class="site-header">
+    <nav class="site-nav">
+      <a class="site-logo" href="../../index.html">Vinyl Figures</a>
 
       <ul>
-        <li><a href="index.html">Início</a></li>
+        <li><a href="../../index.html">Início</a></li>
         <li><a href="catalogo.html">Catálogo</a></li>
         <li><a href="carrinho.html">Carrinho</a></li>
         <li><a href="conta.html">Conta</a></li>
@@ -21,29 +24,52 @@
     </nav>
   </header>
 
-  <main>
+  <main class="auth-page">
 
-    <nav aria-label="Você está aqui">
+    <nav class="breadcrumb" aria-label="Você está aqui">
       <ol>
-        <li><a href="index.html">Início</a></li>
+        <li><a href="../../index.html">Início</a></li>
         <li aria-current="page">Criar conta</li>
       </ol>
     </nav>
 
-    <h1>Criar conta</h1>
+    <div class="page-intro">
+      <span>● JOIN THE CLUB</span>
+      <h1>Comece<br>a girar<span>.</span></h1>
+      <p>Crie sua conta para reunir seus próximos achados.</p>
+    </div>
 
     <form action="conta.html" method="post">
       <label for="cad-nome">Nome completo</label>
       <input type="text" id="cad-nome" name="nome" autocomplete="name" required>
 
+      <!-- CPF e celular são obrigatórios no POST /users da API -->
+      <label for="cad-documento">CPF</label>
+      <input type="text" id="cad-documento" name="documento" inputmode="numeric" maxlength="14" autocomplete="off" required>
+
+      <label for="cad-celular">Celular</label>
+      <input type="tel" id="cad-celular" name="celular" inputmode="numeric" maxlength="15" autocomplete="tel" required>
+
       <label for="cad-email">E-mail</label>
       <input type="email" id="cad-email" name="email" autocomplete="email" required>
 
       <label for="cad-senha">Senha</label>
-      <input type="password" id="cad-senha" name="senha" autocomplete="new-password" required>
+      <div class="campo-senha">
+        <input type="password" id="cad-senha" name="senha" autocomplete="new-password" required>
+        <button type="button" data-acao="mostrar-senha" data-alvo="cad-senha" aria-pressed="false" aria-label="Mostrar senha">
+          <img data-icone="fechado" src="../icons/eye_closed.svg" width="16" height="16" alt="" aria-hidden="true">
+          <img data-icone="aberto" hidden src="../icons/eye_open.svg" width="16" height="16" alt="" aria-hidden="true">
+        </button>
+      </div>
 
       <label for="cad-senha-confirma">Confirmar senha</label>
-      <input type="password" id="cad-senha-confirma" name="senha_confirma" autocomplete="new-password" required>
+      <div class="campo-senha">
+        <input type="password" id="cad-senha-confirma" name="senha_confirma" autocomplete="new-password" required>
+        <button type="button" data-acao="mostrar-senha" data-alvo="cad-senha-confirma" aria-pressed="false" aria-label="Mostrar senha">
+          <img data-icone="fechado" src="../icons/eye_closed.svg" width="16" height="16" alt="" aria-hidden="true">
+          <img data-icone="aberto" hidden src="../icons/eye_open.svg" width="16" height="16" alt="" aria-hidden="true">
+        </button>
+      </div>
 
       <label>
         <input type="checkbox" name="newsletter" value="1">
@@ -57,7 +83,7 @@
 
   </main>
 
-  <footer>
+  <footer class="site-footer">
     <nav>
       <ul>
         <li><a href="catalogo.html">Catálogo</a></li>
@@ -66,8 +92,10 @@
         <li><a href="cadastro.html">Criar conta</a></li>
       </ul>
     </nav>
-    <p>&copy; 2026 Vinyl Records</p>
+    <p>&copy; 2026 Vinyl Figures</p>
   </footer>
+
+  <script type="module" src="../js/controller/auth.js"></script>
 
 </body>
 </html>

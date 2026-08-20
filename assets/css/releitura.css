@@ -1,0 +1,1161 @@
+/*
+ * Releitura visual inspirada na cssibelle.
+ *
+ * Este arquivo só traduz a linguagem visual da referência para a estrutura
+ * semântica e os controladores atuais. Não contém os scripts legados da
+ * branch, para que catálogo, carrinho, autenticação e acessibilidade
+ * continuem usando a arquitetura da qa.
+ */
+
+:root {
+  --cor-fundo: #fffdf9;
+  --cor-texto: #080808;
+  --cor-texto-suave: #545454;
+  --cor-texto-meta: #646464;
+  --cor-superficie: #f3f3f3;
+  --cor-superficie-alta: #ffffff;
+  --cor-borda: #080808;
+  --cor-borda-suave: #c9c9c9;
+  --cor-divisor: #080808;
+  --cor-campo: #ffffff;
+  --cor-campo-borda: #080808;
+  --cor-controle: #e9f056;
+  --cor-controle-hover: #dce344;
+  --cor-sobre-controle: #080808;
+  --cor-barra: #080808;
+  --cor-barra-pe: #080808;
+  --cor-barra-texto: #ffffff;
+  --cor-destaque: #ff5c34;
+  --cor-destaque-hover: #d94724;
+  --cor-destaque-suave: #fff0eb;
+  --cor-sobre-destaque: #080808;
+  --cor-foco: #105682;
+  --raio-pilula: 999px;
+  --raio-card: 0;
+  --raio-card-interno: 0;
+  --raio-imagem: 0;
+  --raio-caixa: 0;
+  --sombra-card: 6px 6px 0 rgb(8 8 8 / 1);
+  --sombra-flutuante: 7px 7px 0 rgb(8 8 8 / 1);
+  --sombra-modal: 10px 10px 0 rgb(8 8 8 / 1);
+}
+
+:root[data-tema="escuro"] {
+  --cor-fundo: #111111;
+  --cor-texto: #ffffff;
+  --cor-texto-suave: #dddddd;
+  --cor-texto-meta: #bbbbbb;
+  --cor-superficie: #1d1d1d;
+  --cor-superficie-alta: #151515;
+  --cor-borda: #ffffff;
+  --cor-borda-suave: #747474;
+  --cor-divisor: #ffffff;
+  --cor-campo: #111111;
+  --cor-campo-borda: #ffffff;
+  --cor-controle: #e9f056;
+  --cor-controle-hover: #dce344;
+  --cor-sobre-controle: #080808;
+  --cor-destaque-suave: #4a2419;
+  --cor-sobre-destaque: #080808;
+  --cor-foco: #e9f056;
+}
+
+/* Os tokens ficam também na camada visual, carregada por todas as páginas,
+   para que alto contraste seja consistente inclusive com cache antigo do
+   CSS base durante desenvolvimento. Texto sobre amarelo é sempre preto. */
+:root[data-a11y-contraste="alto"] {
+  --cor-fundo: #000000;
+  --cor-texto: #ffffff;
+  --cor-texto-suave: #ffffff;
+  --cor-texto-meta: #ffffff;
+  --cor-superficie: #000000;
+  --cor-superficie-alta: #000000;
+  --cor-borda: #ffffff;
+  --cor-borda-suave: #ffffff;
+  --cor-divisor: #ffffff;
+  --cor-campo: #000000;
+  --cor-campo-borda: #ffffff;
+  --cor-controle: #ffe600;
+  --cor-controle-hover: #ffffff;
+  --cor-sobre-controle: #000000;
+  --cor-barra: #000000;
+  --cor-barra-pe: #000000;
+  --cor-barra-texto: #ffffff;
+  --cor-destaque: #ffe600;
+  --cor-destaque-hover: #ffffff;
+  --cor-destaque-suave: #333300;
+  --cor-sobre-destaque: #000000;
+  --cor-foco: #ffe600;
+  --cor-realce-cursor: #ffe600;
+  --cor-hero: #000000;
+  --cor-sobre-hero: #ffffff;
+  --cor-etiqueta: #ffe600;
+  --cor-acao: #ffffff;
+  --cor-sobre-acao: #000000;
+  --cor-preco: #ffffff;
+  --cor-sombra-dura: #ffffff;
+}
+
+/* ===== Cabeçalho e rodapé ===== */
+.site-header {
+  min-height: 76px;
+  padding: 0 6%;
+  border-bottom: 2px solid var(--cor-borda);
+}
+
+.site-header .site-nav {
+  min-height: 76px;
+  max-width: 1440px;
+  margin: 0 auto;
+  gap: var(--espaco-6);
+}
+
+.site-header .site-logo {
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: -0.06em;
+}
+
+.site-header .site-logo::after,
+.page-intro h1 span,
+.hero h1 span {
+  color: var(--cor-destaque);
+  content: ".";
+}
+
+.site-header ul {
+  gap: clamp(1rem, 3.3vw, 3rem);
+}
+
+.site-header ul li a {
+  position: relative;
+  padding: 27px 0 25px;
+  font-weight: 700;
+  opacity: 1;
+}
+
+.site-header ul li a:hover,
+.site-header ul li a[aria-current="page"] {
+  color: var(--cor-destaque);
+}
+
+.site-header ul li a[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 3px;
+  left: 50%;
+  bottom: 15px;
+  transform: translateX(-50%);
+  background: var(--cor-destaque);
+}
+
+.site-header ul li button {
+  border-color: var(--cor-destaque);
+  color: var(--cor-barra-texto);
+  font-weight: 800;
+}
+
+.site-header ul li button:hover {
+  background: var(--cor-destaque);
+  border-color: var(--cor-destaque);
+  color: var(--cor-sobre-destaque);
+}
+
+.site-footer {
+  border-top: 2px solid var(--cor-borda);
+  padding: var(--espaco-8) 6% var(--espaco-6);
+  background: var(--cor-barra-pe);
+}
+
+.site-footer nav ul {
+  gap: clamp(1rem, 4vw, 3.5rem);
+}
+
+.site-footer nav ul li a:hover {
+  color: var(--cor-destaque);
+}
+
+.site-footer p::after {
+  content: "  /  KEEP SPINNING.";
+  color: var(--cor-destaque);
+  font-weight: 800;
+}
+
+/* ===== Intro compartilhada das páginas internas ===== */
+.breadcrumb {
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+main > nav.breadcrumb ol {
+  padding: 0;
+  font-size: 0.67rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+main > nav.breadcrumb ol li[aria-current="page"] {
+  color: var(--cor-texto);
+}
+
+.page-intro {
+  background: #d7efff;
+  color: #080808;
+  border-bottom: 2px solid #080808;
+  padding: clamp(2rem, 5vw, 4rem) max(6%, calc((100% - 1320px) / 2));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.42fr);
+  align-items: end;
+  gap: var(--espaco-7);
+}
+
+.page-intro > span,
+.hero-badge {
+  grid-column: 1 / -1;
+  justify-self: start;
+  display: inline-block;
+  padding: 0.5rem 0.85rem;
+  background: #e9f056;
+  border: 2px solid #080808;
+  border-radius: var(--raio-pilula);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--cor-sobre-controle);
+}
+
+.page-intro h1 {
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  line-height: 0.88;
+  letter-spacing: -0.075em;
+  text-transform: uppercase;
+}
+
+.page-intro p {
+  max-width: 31ch;
+  font-size: var(--texto-5);
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+/* ===== Home ===== */
+.pagina-inicio main {
+  /* A primeira dobra é dedicada à vitrine. O rodapé fica logo depois,
+     acessível ao rolar, sem empurrar os elementos principais para fora. */
+  height: calc(100svh - 76px);
+  min-height: 0;
+  margin: 0;
+  padding: clamp(2rem, 6vh, 5rem) 6%;
+  max-width: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(20rem, 0.95fr);
+  overflow: hidden;
+  gap: clamp(2rem, 6vw, 8rem);
+  background: #d7efff;
+  border-bottom: 2px solid #080808;
+}
+
+.pagina-inicio .hero {
+  display: block;
+  width: 100%;
+  color: #080808;
+}
+
+.pagina-inicio .hero-content {
+  max-width: 42rem;
+}
+
+.pagina-inicio .hero h1 {
+  margin: var(--espaco-5) 0 var(--espaco-5);
+  font-size: clamp(3.5rem, 8vw, 7rem);
+  line-height: 0.84;
+  letter-spacing: -0.09em;
+  text-transform: uppercase;
+  color: #080808;
+}
+
+.pagina-inicio .hero p {
+  margin: 0 0 var(--espaco-7);
+  max-width: 34ch;
+  color: #080808;
+  font-size: 1.12rem;
+  font-weight: 600;
+}
+
+.pagina-inicio .hero .hero-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espaco-5);
+  padding: 0.9rem 0.95rem 0.9rem 1.25rem;
+  background: #080808;
+  color: #ffffff;
+  border: 2px solid #080808;
+  border-radius: 0;
+  font-size: var(--texto-ui);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.pagina-inicio .hero .hero-button span {
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  background: var(--cor-destaque);
+  color: #080808;
+  border-radius: 50%;
+}
+
+.pagina-inicio .hero .hero-button:hover {
+  background: var(--cor-destaque);
+  color: #080808;
+}
+
+.pagina-inicio .hero .hero-button:hover span {
+  background: #080808;
+  color: #ffffff;
+}
+
+.hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espaco-6);
+  margin-top: clamp(1.5rem, 5vh, 4rem);
+}
+
+.hero-stats div {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 5.5rem;
+}
+
+.hero-stats dt {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #080808;
+}
+
+.hero-stats dd {
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #080808;
+}
+
+.pagina-inicio .vinyl-container {
+  position: relative;
+  right: auto;
+  top: auto;
+  transform: none;
+  width: min(42vw, 540px);
+  max-width: 100%;
+  aspect-ratio: 1;
+  justify-self: center;
+  align-self: center;
+  display: grid;
+  place-items: center;
+}
+
+.pagina-inicio .vinyl-container img {
+  position: relative;
+  z-index: 2;
+  width: 88%;
+  max-width: none;
+  border: 2px solid #080808;
+  border-radius: 50%;
+  filter: drop-shadow(10px 10px 0 rgb(8 8 8 / 1));
+  animation-duration: 18s;
+}
+
+.shape-amarela,
+.shape-laranja {
+  position: absolute;
+  z-index: 0;
+  border: 2px solid #080808;
+}
+
+.shape-amarela {
+  width: 70%;
+  height: 70%;
+  top: -5%;
+  left: -5%;
+  background: #e9f056;
+}
+
+.shape-laranja {
+  width: 44%;
+  height: 44%;
+  right: -3%;
+  bottom: -2%;
+  background: var(--cor-destaque);
+  border-radius: 50%;
+}
+
+.palavra-giro {
+  position: absolute;
+  z-index: 3;
+  right: -1.2rem;
+  top: 10%;
+  color: #080808;
+  font-size: clamp(2rem, 5vw, 4.5rem);
+  font-weight: 800;
+  letter-spacing: -0.1em;
+  transform: rotate(90deg);
+}
+
+/* ===== Catálogo ===== */
+.catalog-page {
+  max-width: none;
+  margin: 0;
+  padding: 0 0 var(--espaco-11);
+  gap: 0;
+}
+
+.catalog-page > .breadcrumb {
+  padding: var(--espaco-6) 6% 0;
+}
+
+.catalog-page .page-intro {
+  margin-top: var(--espaco-5);
+}
+
+.catalog-page .catalog-filters,
+.catalog-page .catalog-results,
+.catalog-page .estado-vazio {
+  width: min(1320px, 88%);
+  margin-inline: auto;
+}
+
+.catalog-page .catalog-filters {
+  margin-top: clamp(2rem, 5vw, 4rem);
+  padding: clamp(1.25rem, 3vw, 2.25rem);
+  background: var(--cor-superficie-alta);
+  border: 2px solid var(--cor-borda);
+  border-radius: 0;
+  box-shadow: var(--sombra-card);
+}
+
+.catalog-page .catalog-filters > h2 {
+  padding-bottom: var(--espaco-4);
+  border-bottom: 2px solid var(--cor-borda);
+  color: var(--cor-texto);
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
+}
+
+.catalog-page .painel-catalogo form + form {
+  border-top: 1px solid var(--cor-borda-suave);
+}
+
+.catalog-page .painel-catalogo input[type="search"],
+.catalog-page .painel-catalogo input[type="number"],
+.catalog-page .painel-catalogo select {
+  border: 1.5px solid var(--cor-campo-borda);
+  border-radius: 0;
+  background: var(--cor-campo);
+}
+
+.catalog-page .painel-catalogo button,
+.catalog-page .linha-acao-catalogo > button {
+  border: 2px solid var(--cor-borda);
+  border-radius: 0;
+  background: var(--cor-destaque);
+  color: var(--cor-sobre-destaque);
+  font-weight: 800;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.catalog-page .painel-catalogo button:hover:not(:disabled),
+.catalog-page .linha-acao-catalogo > button:hover:not(:disabled) {
+  background: var(--cor-controle);
+}
+
+.catalog-page .painel-catalogo button[type="reset"] {
+  background: var(--cor-superficie-alta);
+}
+
+.catalog-page .painel-catalogo fieldset label:has(input[type="checkbox"]) {
+  border: 1.5px solid var(--cor-borda);
+  border-radius: 0;
+}
+
+.catalog-page .painel-catalogo fieldset label:has(input[type="checkbox"]:checked) {
+  background: var(--cor-controle);
+  border-color: var(--cor-borda);
+  color: var(--cor-sobre-controle);
+}
+
+/* A API possui muitos gêneros. A lista permanece multisseleção, mas fica
+   recolhida até a pessoa escolher abri-la, sem empurrar o restante do
+   filtro para baixo. */
+.catalog-page .painel-catalogo .seletor-generos {
+  display: block;
+  width: min(100%, 38rem);
+}
+
+.catalog-page .painel-catalogo .seletor-generos legend {
+  margin-bottom: var(--espaco-2);
+}
+
+.catalog-page .seletor-generos details {
+  position: relative;
+}
+
+.catalog-page .seletor-generos summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espaco-4);
+  min-height: 2.9rem;
+  padding: var(--espaco-3) var(--espaco-4);
+  border: 1.5px solid var(--cor-borda);
+  background: var(--cor-campo);
+  color: var(--cor-texto);
+  cursor: pointer;
+  font-size: var(--texto-ui);
+  font-weight: 700;
+  list-style: none;
+}
+
+.catalog-page .seletor-generos summary::-webkit-details-marker {
+  display: none;
+}
+
+.catalog-page .seletor-generos summary > span:last-child {
+  color: var(--cor-destaque);
+  font-size: 1.25rem;
+  line-height: 1;
+  transition: transform var(--transicao-rapida);
+}
+
+.catalog-page .seletor-generos details[open] summary > span:last-child {
+  transform: rotate(180deg);
+}
+
+.catalog-page .seletor-generos details > div {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% - 1px);
+  left: 0;
+  width: 100%;
+  max-height: 17rem;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espaco-2);
+  padding: var(--espaco-3);
+  border: 1.5px solid var(--cor-borda);
+  background: var(--cor-superficie-alta);
+  box-shadow: var(--sombra-card);
+}
+
+.catalog-page .seletor-generos details > div label:has(input[type="checkbox"]) {
+  min-width: 0;
+  padding: var(--espaco-2) var(--espaco-3);
+  overflow-wrap: anywhere;
+}
+
+.catalog-page .catalog-results {
+  margin-top: clamp(3.5rem, 7vw, 6rem);
+}
+
+.catalog-page .catalog-results > h2 {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  letter-spacing: -0.055em;
+  text-transform: uppercase;
+}
+
+.catalog-page .catalog-results > p {
+  color: var(--cor-texto-meta);
+}
+
+/* O catálogo carrega com um vinil próprio, em vez de expor uma linha de
+   texto solta. O texto continua no DOM, dentro de um status vivo, para que
+   leitores de tela recebam o mesmo retorno visual. */
+.catalog-page .catalog-status {
+  margin: var(--espaco-3) 0 var(--espaco-5);
+}
+
+.catalog-page .catalog-status.esta-carregando {
+  min-height: min(21rem, 44vh);
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: var(--espaco-4);
+  padding: var(--espaco-7);
+  border: 2px solid var(--cor-borda);
+  background: var(--cor-superficie-alta);
+  box-shadow: var(--sombra-card);
+  color: var(--cor-texto);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.catalog-page .catalog-spinner {
+  position: relative;
+  display: block;
+  width: clamp(4.75rem, 10vw, 6.5rem);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 2px solid var(--cor-borda);
+  border-radius: 50%;
+  background: var(--cor-texto);
+  box-shadow: 5px 5px 0 var(--cor-destaque);
+  animation: catalog-vinil-girar 1.35s linear infinite;
+}
+
+.catalog-page .catalog-spinner::before {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  border: 1px solid color-mix(in srgb, var(--cor-superficie-alta) 72%, transparent);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 7px color-mix(in srgb, var(--cor-superficie-alta) 18%, transparent),
+    0 0 0 14px color-mix(in srgb, var(--cor-superficie-alta) 10%, transparent),
+    0 0 0 21px color-mix(in srgb, var(--cor-superficie-alta) 7%, transparent);
+}
+
+.catalog-page .catalog-spinner::after {
+  content: "";
+  position: absolute;
+  inset: 35%;
+  border: 2px solid var(--cor-borda);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--cor-superficie-alta) 0 13%, transparent 14%), var(--cor-controle);
+}
+
+@keyframes catalog-vinil-girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.catalog-page .catalog-results > ul {
+  /* A composição da referência trabalha com quatro capas por linha. Com
+     cinco, o texto do botão não cabe ao lado do stepper e vaza para o
+     card vizinho em telas largas. */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(1.25rem, 2.6vw, 2.25rem);
+}
+
+.catalog-page .catalog-results > ul li article {
+  min-width: 0;
+  border: 2px solid transparent;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.catalog-page .catalog-results > ul li article:hover,
+.catalog-page .catalog-results > ul li article:focus-within {
+  /* O indicador não pode mudar o tamanho do card: isso desalinhava a
+     fileira de botões quando o link recebia foco. */
+  border-color: transparent;
+  transform: none;
+  box-shadow: none;
+  outline: 2px solid var(--cor-borda);
+  outline-offset: 4px;
+}
+
+.catalog-page .catalog-results > ul li article > a {
+  min-width: 0;
+  gap: var(--espaco-2);
+}
+
+.catalog-page .catalog-results > ul li article img {
+  border: 0;
+  border-radius: 0;
+  background: var(--cor-superficie);
+}
+
+.catalog-page .catalog-results > ul li article h3,
+.catalog-page .catalog-results > ul li article > a > p,
+.catalog-page .catalog-results > ul li article .linha-acao-catalogo {
+  margin-inline: var(--espaco-4);
+}
+
+.catalog-page .catalog-results > ul li article h3 {
+  margin-top: var(--espaco-3);
+  font-size: 0.95rem;
+  text-transform: uppercase;
+}
+
+.catalog-page .catalog-results > ul li article > a > p:first-of-type {
+  color: #c63f20;
+  font-size: 1rem;
+  letter-spacing: 0;
+}
+
+.catalog-page .catalog-results > ul li article > a > p:nth-of-type(2) {
+  margin-bottom: var(--espaco-2);
+  font-size: var(--texto-ui);
+}
+
+.catalog-page .linha-acao-catalogo {
+  margin-bottom: var(--espaco-4);
+  min-width: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.catalog-page .linha-acao-catalogo > button {
+  min-width: 0;
+  padding-inline: var(--espaco-2);
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.catalog-page .stepper-qtd {
+  border: 1.5px solid var(--cor-borda);
+  border-radius: 0;
+}
+
+.catalog-page .stepper-qtd input[type="number"] {
+  border-color: var(--cor-borda);
+}
+
+.catalog-page .estado-vazio {
+  margin-top: var(--espaco-8);
+  border: 2px solid var(--cor-borda);
+  border-radius: 0;
+  background: var(--cor-superficie);
+}
+
+/* ===== Carrinho, conta e formulários ===== */
+.cart-page,
+.account-page,
+.auth-page,
+.record-page {
+  max-width: none;
+  margin: 0;
+  padding: 0 0 var(--espaco-11);
+  gap: 0;
+}
+
+.cart-page > .breadcrumb,
+.account-page > .breadcrumb,
+.auth-page > .breadcrumb,
+.record-page > .breadcrumb {
+  width: 88%;
+  padding: var(--espaco-6) 0 0;
+}
+
+.cart-page .page-intro,
+.account-page .page-intro,
+.auth-page .page-intro {
+  margin-top: var(--espaco-5);
+}
+
+.cart-page > form,
+.cart-page > section,
+.account-page > section,
+.auth-page > form,
+.record-page > article,
+.record-page > .estado-vazio,
+.account-page > nav[aria-label="Seções da conta"] {
+  width: min(980px, 88%);
+  margin-inline: auto;
+}
+
+.cart-page > form,
+.cart-page > section,
+.account-page > section,
+.auth-page > form,
+.record-page > article,
+.record-page > .estado-vazio {
+  margin-top: clamp(2.5rem, 5vw, 4.5rem);
+  border: 2px solid var(--cor-borda);
+  border-radius: 0;
+  box-shadow: var(--sombra-card);
+  background: var(--cor-superficie-alta);
+}
+
+.account-page > section + section {
+  margin-top: var(--espaco-8);
+}
+
+.account-page > nav[aria-label="Seções da conta"] {
+  margin-top: var(--espaco-7);
+}
+
+.account-page > nav[aria-label="Seções da conta"] ul {
+  gap: 0;
+}
+
+.account-page > nav[aria-label="Seções da conta"] a {
+  border: 2px solid var(--cor-borda);
+  border-radius: 0;
+  margin: 0 -2px -2px 0;
+  background: var(--cor-superficie-alta);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.account-page > nav[aria-label="Seções da conta"] a:hover {
+  background: var(--cor-controle);
+  color: var(--cor-sobre-controle);
+  border-color: var(--cor-borda);
+}
+
+.cart-page h2,
+.account-page h2,
+.auth-page h1,
+.record-page h1 {
+  text-transform: uppercase;
+}
+
+.auth-page > form {
+  max-width: 620px;
+}
+
+.auth-page > p {
+  width: min(620px, 88%);
+  margin: var(--espaco-6) auto 0;
+}
+
+.cart-page input[type="text"],
+.cart-page input[type="number"],
+.cart-page select,
+.account-page input[type="text"],
+.account-page input[type="email"],
+.account-page input[type="password"],
+.account-page input[type="tel"],
+.auth-page input[type="text"],
+.auth-page input[type="email"],
+.auth-page input[type="password"],
+.auth-page input[type="tel"] {
+  border: 1.5px solid var(--cor-campo-borda);
+  border-radius: 0;
+}
+
+.cart-page button[type="submit"],
+.cart-page button[type="reset"],
+.cart-page button[data-acao],
+.account-page button[type="submit"],
+.account-page button[type="reset"],
+.account-page button[data-acao],
+.auth-page button[type="submit"],
+.auth-page button[type="reset"],
+.auth-page button[data-acao],
+.record-page button {
+  border: 2px solid var(--cor-borda);
+  border-radius: 0;
+  background: var(--cor-destaque);
+  color: var(--cor-sobre-destaque);
+  font-weight: 800;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.cart-page button[type="submit"]:hover:not(:disabled),
+.cart-page button[data-acao]:hover:not(:disabled),
+.account-page button[type="submit"]:hover:not(:disabled),
+.account-page button[data-acao]:hover:not(:disabled),
+.auth-page button[type="submit"]:hover:not(:disabled),
+.record-page button:hover:not(:disabled) {
+  background: var(--cor-controle);
+  color: var(--cor-sobre-controle);
+}
+
+.cart-page button[type="reset"],
+.account-page button[type="reset"],
+.auth-page button[type="reset"] {
+  background: var(--cor-controle);
+}
+
+.cart-page table,
+.account-page table {
+  border: 2px solid var(--cor-borda);
+  border-radius: 0;
+}
+
+.cart-page thead,
+.account-page thead {
+  background: var(--cor-controle);
+  color: var(--cor-sobre-controle);
+}
+
+/* thead th define uma cor diretamente em paginas.css; a cor herdada do
+   thead não vence. Mantém preto sobre amarelo no alto contraste. */
+.cart-page thead th,
+.account-page thead th {
+  color: var(--cor-sobre-controle);
+}
+
+.cart-page th,
+.cart-page td,
+.account-page th,
+.account-page td {
+  border-color: var(--cor-borda-suave);
+}
+
+.cart-page tfoot th,
+.cart-page tfoot td,
+.account-page tfoot th,
+.account-page tfoot td {
+  border-top-color: var(--cor-borda);
+}
+
+.cart-page > section:not([hidden]) {
+  padding: clamp(2rem, 6vw, 5rem);
+  text-align: center;
+  background: var(--cor-controle);
+  color: var(--cor-sobre-controle);
+}
+
+.cart-page > section:not([hidden]) h2 {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+}
+
+.cart-page > section:not([hidden]) a,
+.auth-page > p a {
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-color: var(--cor-destaque);
+  text-underline-offset: 0.25em;
+}
+
+.account-page #enderecos li {
+  border: 1.5px solid var(--cor-borda);
+  border-radius: 0;
+}
+
+.account-page input[type="checkbox"] {
+  border-radius: 0;
+}
+
+.account-page input[type="checkbox"]:checked {
+  background: var(--cor-destaque);
+  border-color: var(--cor-borda);
+}
+
+/* ===== Detalhe do disco ===== */
+.record-page > article {
+  padding: clamp(1.5rem, 4vw, 3rem);
+}
+
+.record-page .disco-capa {
+  border: 2px solid var(--cor-borda);
+  border-radius: 0;
+  box-shadow: var(--sombra-card);
+}
+
+.record-page .disco-preco {
+  color: var(--cor-preco, #c63f20);
+}
+
+.record-page .disco-generos li {
+  border: 1.5px solid var(--cor-borda);
+  border-radius: 0;
+  background: var(--cor-controle);
+  color: var(--cor-sobre-controle);
+}
+
+.record-page .linha-acao-catalogo > button,
+.record-page .stepper-qtd {
+  border: 2px solid var(--cor-borda);
+  border-radius: 0;
+}
+
+.record-page .linha-acao-catalogo > button {
+  background: var(--cor-destaque);
+}
+
+/* Alto contraste também cobre os poucos elementos gráficos que a releitura
+   mantém com cores próprias. Assim não sobra texto claro sobre amarelo nem
+   uma área azul de baixo contraste. */
+:root[data-a11y-contraste="alto"] .page-intro,
+:root[data-a11y-contraste="alto"] .pagina-inicio main {
+  background: var(--cor-hero);
+  color: var(--cor-sobre-hero);
+  border-color: var(--cor-sobre-hero);
+}
+
+:root[data-a11y-contraste="alto"] .pagina-inicio .hero,
+:root[data-a11y-contraste="alto"] .pagina-inicio .hero h1,
+:root[data-a11y-contraste="alto"] .pagina-inicio .hero p,
+:root[data-a11y-contraste="alto"] .hero-stats dt,
+:root[data-a11y-contraste="alto"] .hero-stats dd,
+:root[data-a11y-contraste="alto"] .palavra-giro {
+  color: var(--cor-sobre-hero);
+}
+
+:root[data-a11y-contraste="alto"] .page-intro > span,
+:root[data-a11y-contraste="alto"] .hero-badge {
+  background: var(--cor-etiqueta);
+  border-color: var(--cor-sobre-hero);
+  color: var(--cor-sobre-controle);
+}
+
+:root[data-a11y-contraste="alto"] .pagina-inicio .vinyl-container img,
+:root[data-a11y-contraste="alto"] .shape-amarela,
+:root[data-a11y-contraste="alto"] .shape-laranja {
+  border-color: var(--cor-sobre-hero);
+}
+
+:root[data-a11y-contraste="alto"] .shape-amarela {
+  background: var(--cor-etiqueta);
+}
+
+:root[data-a11y-contraste="alto"] .catalog-page .catalog-results > ul li article > a > p:first-of-type,
+:root[data-a11y-contraste="alto"] .record-page .disco-preco {
+  color: var(--cor-preco);
+}
+
+/* Valores sempre usam a fonte neutra, mesmo sobre o novo visual. */
+input[type="number"],
+input[inputmode="numeric"],
+[data-numero] {
+  font-family: var(--fonte-numeros);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+@media (max-width: 760px) {
+  .site-header {
+    padding: var(--espaco-3) 6%;
+  }
+
+  .site-header .site-nav {
+    min-height: auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: start;
+    gap: var(--espaco-3);
+  }
+
+  .site-header ul {
+    width: 100%;
+    justify-content: space-between;
+    gap: var(--espaco-2) var(--espaco-4);
+  }
+
+  .site-header ul li a {
+    padding: var(--espaco-2) 0;
+    font-size: 0.8rem;
+  }
+
+  .site-header ul li a[aria-current="page"]::after {
+    bottom: -2px;
+  }
+
+  .page-intro {
+    grid-template-columns: 1fr;
+    gap: var(--espaco-5);
+    padding-inline: 6%;
+  }
+
+  .pagina-inicio main {
+    grid-template-columns: 1fr;
+    height: auto;
+    min-height: 0;
+    padding: var(--espaco-8) 6% var(--espaco-9);
+  }
+
+  .pagina-inicio .vinyl-container {
+    width: min(78vw, 440px);
+  }
+
+  .catalog-page .linha-filtros {
+    align-items: stretch;
+  }
+
+  .catalog-page .acoes-filtro {
+    margin-left: 0;
+  }
+
+  .catalog-page .catalog-results > ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .catalog-page .linha-acao-catalogo {
+    grid-template-columns: 1fr;
+  }
+
+  .catalog-page .stepper-qtd {
+    justify-self: start;
+  }
+
+  .catalog-page .seletor-generos details > div {
+    grid-template-columns: 1fr;
+  }
+
+  .cart-page > form,
+  .cart-page > section,
+  .account-page > section,
+  .auth-page > form,
+  .record-page > article {
+    width: 88%;
+  }
+}
+
+@media (max-height: 800px) and (min-width: 761px) {
+  .pagina-inicio main {
+    padding-block: var(--espaco-7);
+  }
+
+  .pagina-inicio .hero h1 {
+    margin-block: var(--espaco-4);
+    font-size: clamp(3rem, 6.5vw, 5.5rem);
+  }
+
+  .pagina-inicio .hero p {
+    margin-bottom: var(--espaco-5);
+  }
+
+  .pagina-inicio .vinyl-container {
+    width: min(35vw, 430px);
+  }
+}
+
+@media (max-width: 1120px) and (min-width: 761px) {
+  .catalog-page .catalog-results > ul {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .site-header ul {
+    display: grid;
+    grid-template-columns: repeat(2, max-content);
+    justify-content: start;
+    column-gap: var(--espaco-6);
+    row-gap: var(--espaco-2);
+  }
+
+  .site-footer {
+    padding-inline: var(--espaco-5);
+  }
+
+  .site-footer nav ul {
+    display: grid;
+    grid-template-columns: repeat(2, max-content);
+    gap: var(--espaco-3) var(--espaco-6);
+  }
+
+  .page-intro {
+    padding-block: var(--espaco-7);
+  }
+
+  .pagina-inicio .hero h1,
+  .page-intro h1 {
+    font-size: clamp(2.75rem, 15vw, 4.5rem);
+  }
+
+  .hero-stats {
+    gap: var(--espaco-4);
+  }
+
+  .catalog-page .catalog-results > ul {
+    grid-template-columns: 1fr;
+  }
+}
