@@ -14,6 +14,7 @@ const ID_CONTEUDO = 'vinyl-conteudo-principal';
 
 function garantirAtalhoDeConteudo() {
   if (document.getElementById(ID_PULAR_CONTEUDO)) return;
+  if (document.body?.dataset.semAtalhoConteudo === 'true') return;
 
   const conteudo = document.querySelector('main');
   if (!conteudo) return;

@@ -1,55 +1,144 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="assets/css/base.css">
-  <link rel="stylesheet" href="assets/css/style.css">
-  <link rel="stylesheet" href="assets/css/releitura.css?v=20260820a">
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400..800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="./assets/css/index.css">
+
   <title>Vinyl Figures Store</title>
 </head>
-<body class="pagina-inicio">
 
+<body data-sem-atalho-conteudo="true">
 
-  <header class="site-header">
-    <nav class="site-nav">
-      <a class="site-logo" href="index.html">Vinyl Figures</a>
+  <header class="header">
 
-      <ul>
-        <li><a href="index.html" aria-current="page">Início</a></li>
-        <li><a href="assets/pages/catalogo.html">Catálogo</a></li>
-        <li><a href="assets/pages/carrinho.html">Carrinho</a></li>
-        <li><a href="assets/pages/conta.html">Conta</a></li>
+    <nav class="navbar">
+
+      <a href="/index.html" class="logo">
+        Vinyl Records<span>.</span>
+      </a>
+
+      <ul class="nav-links">
+
+        <li>
+          <a href="/index.html" class="active">
+            Início
+          </a>
+        </li>
+
+        <li>
+          <a href="/assets/pages/catalogo.html">
+            Catálogo
+          </a>
+        </li>
+
+        <li>
+          <a href="/assets/pages/carrinho.html">
+            Carrinho
+          </a>
+        </li>
+
+        <li>
+          <a href="/assets/pages/conta.html">
+            Conta
+          </a>
+        </li>
+
       </ul>
+
     </nav>
+
   </header>
 
+
   <main>
-    <section class="home-hero">
-      <div class="hero">
-        <div class="hero-content">
-          <span class="hero-badge">● NEW DROPS EVERY WEEK</span>
-          <h1>Vinyl Figures<br>Store<span>.</span></h1>
-          <p>Expanda sua coleção e ouça a música no giro.</p>
-          <a class="hero-button" href="assets/pages/catalogo.html">
-            Ver catálogo
-            <span aria-hidden="true">&#8599;</span>
-          </a>
-          <dl class="hero-stats" aria-label="Destaques da loja">
-            <div><dt data-numero>500+</dt><dd>Títulos</dd></div>
-            <div><dt data-numero>100%</dt><dd>Originais</dd></div>
-            <div><dt>Brasil</dt><dd>Entregas</dd></div>
-          </dl>
+
+    <section class="hero">
+
+      <div class="hero-content">
+
+        <span class="hero-badge">
+          ● NEW DROPS EVERY WEEK
+        </span>
+
+        <h1>
+          Vinyl Figures<br>
+          Store<span>.</span>
+        </h1>
+
+        <p class="hero-description">
+          Expanda sua coleção e ouça a música no giro.
+        </p>
+
+        <a
+          href="/assets/pages/catalogo.html"
+          class="hero-button"
+        >
+
+          Ver Catálogo
+
+          <span>
+            ↗
+          </span>
+
+        </a>
+
+
+        <div class="hero-stats">
+
+
         </div>
+
       </div>
 
-      <div class="vinyl-container" aria-hidden="true">
-        <span class="shape-amarela"></span>
-        <span class="shape-laranja"></span>
-        <span class="palavra-giro">SPIN</span>
-        <img src="assets/images/Vinil.png" alt="">
+
+      <div class="hero-visual">
+
+        <div class="yellow-shape"></div>
+
+        <div class="orange-circle"></div>
+
+        <span class="hero-word">
+          SPIN
+        </span>
+
+
+        <div class="hero-record">
+
+          <div class="hero-record-center">
+            <span>VINYL</span>
+          </div>
+
+        </div>
+
       </div>
+
     </section>
+
+
+
+    <div class="marquee">
+
+      <div>
+        ✦ LIMITED EDITIONS
+        ✦ NEW DROPS
+        ✦ RARE FINDS
+        ✦ VINYL LOVERS
+        ✦ LIMITED EDITIONS
+        ✦ NEW DROPS
+        ✦ RARE FINDS
+        ✦ VINYL LOVERS
+      </div>
+
+    </div>
+
 
     <section class="home-new-spins" aria-labelledby="novidades-titulo">
       <div class="home-section-header">
@@ -84,64 +173,109 @@
       </div>
     </section>
 
-    <section class="home-discover" aria-labelledby="descubra-titulo">
-      <div class="home-discover-art" aria-hidden="true"><span>PLAY</span></div>
-      <div>
-        <h2 id="descubra-titulo">Descubra seu<br>próximo favorito<span>.</span></h2>
-      </div>
-      <div class="home-discover-info">
-        <p>Clássicos, raridades e lançamentos selecionados para quem leva música a sério.</p>
-        <a href="assets/pages/catalogo.html">Explorar catálogo <span aria-hidden="true">&#8599;</span></a>
-      </div>
-    </section>
-
-    <div class="store-marquee" aria-hidden="true">
-      <span>✦ LIMITED EDITIONS &nbsp; ✦ NEW DROPS &nbsp; ✦ RARE FINDS &nbsp; ✦ VINYL LOVERS &nbsp; ✦ LIMITED EDITIONS &nbsp; ✦ NEW DROPS &nbsp; ✦ RARE FINDS &nbsp; ✦ VINYL LOVERS</span>
-    </div>
-
-    <section class="home-collections" aria-labelledby="colecoes-titulo">
-      <div class="home-section-header">
-        <div>
-          <h2 id="colecoes-titulo">Coleções em destaque</h2>
-          <p>Escolha seu próximo giro.</p>
-        </div>
-        <a href="assets/pages/catalogo.html">Ver todas <span aria-hidden="true">→</span></a>
-      </div>
-      <div class="home-collections-grid">
-        <a href="assets/pages/catalogo.html"><span aria-hidden="true">♫</span><strong>Rock</strong><small>Ver coleção</small></a>
-        <a href="assets/pages/catalogo.html"><span aria-hidden="true">90</span><strong>Anos 90</strong><small>Ver coleção</small></a>
-        <a href="assets/pages/catalogo.html"><span aria-hidden="true">♪</span><strong>Hip hop</strong><small>Ver coleção</small></a>
-        <a href="assets/pages/catalogo.html"><span aria-hidden="true">✦</span><strong>Indie</strong><small>Ver coleção</small></a>
-        <a href="assets/pages/catalogo.html"><span aria-hidden="true">●</span><strong>Pop</strong><small>Ver coleção</small></a>
-        <a href="assets/pages/catalogo.html"><span aria-hidden="true">♬</span><strong>Jazz</strong><small>Ver coleção</small></a>
-      </div>
-    </section>
-
   </main>
 
-  <footer class="site-footer">
+
+  <footer>
+
     <div class="footer-content">
+
       <div class="footer-brand">
-        <strong>VINYL<br>FIGURES<span>.</span></strong>
-        <p>Música feita para girar.</p>
+
+        <h2>
+          VINYL<br>
+          RECORDS<span>.</span>
+        </h2>
+
+        <p>
+          Música feita para girar.
+        </p>
+
       </div>
-      <nav class="footer-column" aria-label="Explorar a loja">
-        <strong>Explore</strong>
-        <ul><li><a href="assets/pages/catalogo.html">Catálogo</a></li></ul>
-      </nav>
-      <nav class="footer-column" aria-label="Sua conta">
-        <strong>Conta</strong>
-        <ul>
-          <li><a href="assets/pages/conta.html">Minha conta</a></li>
-          <li><a href="assets/pages/entrar.html">Entrar</a></li>
-          <li><a href="assets/pages/cadastro.html">Criar conta</a></li>
-        </ul>
-      </nav>
+
+
+      <div class="footer-column">
+
+        <strong>
+          EXPLORE
+        </strong>
+
+        <a href="/assets/pages/catalogo.html">
+          Catálogo
+        </a>
+
+        <a href="/assets/pages/catalogo.html">
+          Novidades
+        </a>
+
+        <a href="/assets/pages/catalogo.html">
+          Mais vendidos
+        </a>
+
+      </div>
+
+
+      <div class="footer-column">
+
+        <strong>
+          ACCOUNT
+        </strong>
+
+        <a href="/assets/pages/conta.html">
+          Minha conta
+        </a>
+
+        <a href="/assets/pages/carrinho.html">
+          Carrinho
+        </a>
+
+        <a href="/assets/pages/entrar.html">
+          Entrar
+        </a>
+
+      </div>
+
+
+      <div class="footer-column">
+
+        <strong>
+          FOLLOW
+        </strong>
+
+        <a href="#">
+          Instagram
+        </a>
+
+        <a href="#">
+          TikTok
+        </a>
+
+        <a href="#">
+          Spotify
+        </a>
+
+      </div>
+
     </div>
-    <div class="footer-bottom"><p>&copy; 2026 Vinyl Figures</p><p>Keep spinning.</p></div>
+
+
+    <div class="footer-bottom">
+
+      <p>
+        &copy; 2026 Vinyl Records
+      </p>
+
+      <p>
+        KEEP SPINNING.
+      </p>
+
+    </div>
+
   </footer>
 
-  <script type="module" src="assets/js/controller/app.js"></script>
+
+  <script type="module" src="./assets/js/controller/app.js"></script>
 
 </body>
+
 </html>

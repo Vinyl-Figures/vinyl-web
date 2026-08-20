@@ -20,14 +20,17 @@ if (linkConta && !logado) {
   linkConta.href = ROTAS.entrar;
 }
 
-alternar(document.querySelector(`footer nav a[href="${ROTAS.conta}"]`)?.closest('li'), logado);
-alternar(document.querySelector(`footer nav a[href="${ROTAS.entrar}"]`)?.closest('li'), !logado);
+const linkContaRodape = document.querySelector(`footer nav a[href="${ROTAS.conta}"]`);
+const linkEntrarRodape = document.querySelector(`footer nav a[href="${ROTAS.entrar}"]`);
+
+alternar(linkContaRodape?.closest('li') || linkContaRodape, logado);
+alternar(linkEntrarRodape?.closest('li') || linkEntrarRodape, !logado);
 
 
 
 
-const primeiroCrumb = document.querySelector('main > nav[aria-label="Você está aqui"] ol li:first-child a');
-const crumbAtual = document.querySelector('main > nav[aria-label="Você está aqui"] ol li[aria-current="page"]');
+const primeiroCrumb = document.querySelector('main nav[aria-label="Você está aqui"] ol li:first-child a');
+const crumbAtual = document.querySelector('main nav[aria-label="Você está aqui"] ol li[aria-current="page"]');
 if (logado && primeiroCrumb && crumbAtual?.textContent.trim() !== 'Catálogo') {
   primeiroCrumb.textContent = 'Catálogo';
   primeiroCrumb.href = ROTAS.catalogo;

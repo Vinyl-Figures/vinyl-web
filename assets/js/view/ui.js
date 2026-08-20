@@ -57,6 +57,7 @@ export async function travarBotao(botao, travado, textoOcupado = 'Aguarde…') {
     if (botao.dataset.textoOriginal === undefined) {
       botao.dataset.textoOriginal = botao.textContent;
       botao.dataset.minWidthOriginal = botao.style.minWidth;
+      botao.dataset.htmlOriginal = botao.innerHTML;
       botao.dataset.minHeightOriginal = botao.style.minHeight;
 
 
@@ -80,8 +81,9 @@ export async function travarBotao(botao, travado, textoOcupado = 'Aguarde…') {
       const restante = Math.max(0, DURACAO_MINIMA_CARREGAMENTO - (Date.now() - inicio));
       if (restante) await new Promise((resolver) => setTimeout(resolver, restante));
 
-      botao.textContent = botao.dataset.textoOriginal;
+      botao.innerHTML = botao.dataset.htmlOriginal;
       delete botao.dataset.textoOriginal;
+      delete botao.dataset.htmlOriginal;
       botao.style.minWidth = botao.dataset.minWidthOriginal;
       botao.style.minHeight = botao.dataset.minHeightOriginal;
       delete botao.dataset.minWidthOriginal;

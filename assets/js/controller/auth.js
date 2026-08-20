@@ -57,11 +57,14 @@ if (formEntrar) {
 
 
 
-const formCadastro = document.querySelector('#cad-nome')?.form;
+const formCadastro = document.querySelector('#registerForm') || document.querySelector('#cad-nome')?.form;
 
 if (formCadastro) {
-  aplicarMascara(formCadastro.querySelector('#cad-documento'), mascararCpf);
-  aplicarMascara(formCadastro.querySelector('#cad-celular'), mascararTelefone);
+  const campoDocumento = formCadastro.querySelector('#cad-documento');
+  const campoCelular = formCadastro.querySelector('#cad-celular');
+
+  aplicarMascara(campoDocumento, mascararCpf);
+  aplicarMascara(campoCelular, mascararTelefone);
 
   formCadastro.addEventListener('submit', async (evento) => {
     evento.preventDefault();
@@ -79,8 +82,10 @@ if (formCadastro) {
       return;
     }
 
-    const documento = apenasDigitos(formCadastro.querySelector('#cad-documento')?.value);
-    if (documento.length !== 11) {
+    const documento = apenasDigitos(campoDocumento?.value);
+    const celular = apenasDigitos(campoCelular?.value);
+
+    if (campoDocumento && documento.length !== 11) {
       alertar({
         titulo: 'CPF inválido',
         mensagem: 'O CPF precisa ter 11 dígitos.',
@@ -96,13 +101,16 @@ if (formCadastro) {
 
     try {
 
-      await usuarios.criar({
+      const dadosCadastro = {
         name: formCadastro.querySelector('#cad-nome').value.trim(),
-        document: documento,
-        cellphone: apenasDigitos(formCadastro.querySelector('#cad-celular')?.value),
         email,
         password: senha,
-      });
+      };
+
+      if (documento) dadosCadastro.document = documento;
+      if (celular) dadosCadastro.cellphone = celular;
+
+      await usuarios.criar(dadosCadastro);
 
       await alertar({
         titulo: 'Cadastro realizado com sucesso',
@@ -118,6 +126,24 @@ if (formCadastro) {
       }
     } catch (erro) {
       travarBotao(botao, false);
+      if (erro?.status === 409) {
+        await alertar({
+          titulo: 'Dados já cadastrados',
+          mensagem: 'Já existe uma conta com este e-mail, CPF ou celular. Confira os dados e tente novamente.',
+          tipo: 'erro',
+        });
+        return;
+      }
+
+      if (erro?.status === 400) {
+        await alertar({
+          titulo: 'Revise seus dados',
+          mensagem: 'Informe nome, CPF com 11 dígitos, celular, e-mail e uma senha para criar a conta.',
+          tipo: 'erro',
+        });
+        return;
+      }
+
       mostrarErro(erro);
     }
   });
